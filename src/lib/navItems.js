@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   Bot, BookOpen, Sparkles, FileSpreadsheet, Users, TrendingUp,
-  UserCog, Settings,
+  UserCog, Settings, Wallet, IdCard,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -16,12 +16,19 @@ export const STUDENT_NAV = [
     ],
   },
   {
+    title: 'Records',
+    links: [
+      { to: '/student/idcard',        label: 'ID Card',        icon: IdCard,           badge: 'New' },
+      { to: '/student/fees',          label: 'Tuition & Fees', icon: Wallet,           badge: 'Pay' },
+      { to: '/student/transcript',    label: 'Transcript',     icon: FileSpreadsheet },
+    ],
+  },
+  {
     title: 'Smart',
     links: [
       { to: '/student/chatbot',  label: 'AI Assistant',     icon: Bot, badge: 'AI' },
       { to: '/student/courses',  label: 'Courses',          icon: BookOpen },
-      { to: '/student/learning', label: 'Mobile Learning',  icon: Sparkles, badge: 'New' },
-      { to: '/student/transcript', label: 'Transcript',     icon: FileSpreadsheet },
+      { to: '/student/learning', label: 'Mobile Learning',  icon: Sparkles },
     ],
   },
 ]

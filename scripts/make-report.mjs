@@ -135,7 +135,7 @@ const cover = [
 const abstract = [
   new Paragraph({ alignment: AlignmentType.CENTER, children: [T('ABSTRACT', { size: 28, bold: true, color: NAVY })] }),
   P([T('')], { spacing: { after: 280 } }),
-  Body('SIARM (Smart Institution Academic Resource Management) is a unified academic operating system designed for private universities, with IUGET Bonaberi as its reference deployment. It consolidates fifteen administrative and pedagogical workflows — attendance, results, timetables, announcements, decision support, predictive enrolment, AI chatbot, mobile learning, transcript generation, and more — into one role-aware web platform.'),
+  Body('SIARM (Smart Institution Academic Resource Management) is a unified academic operating system designed for private universities, with IUGET Bonaberi as its reference deployment. It consolidates seventeen administrative and pedagogical workflows — attendance, results, timetables, announcements, decision support, predictive enrolment, AI chatbot, mobile learning, transcript generation, and more — into one role-aware web platform.'),
   Body('The system is implemented as a React 18 single-page application with Tailwind CSS, backed by Firebase (Authentication, Cloud Firestore, Storage) and integrated with the Anthropic Claude API for AI-driven enquiry handling. Access control is hierarchical, exposing role-specific dashboards to Students, Lecturers, Staff, and Administrators.'),
   Body('A demonstrable prototype implements all 15 modules end-to-end with persistent state, IUGET branding, downloadable PDF transcripts, real-time analytics dashboards, and an offline-capable announcement portal. Production builds are deployable to any static CDN. This document describes the problem context, methodology, architectural design, implementation, testing, and the path to future production rollout.'),
   P([T('Keywords: ', { bold: true, size: 22 }), T('academic ERP, role-based access control, React, Firebase, AI in education, predictive analytics, IUGET, Cameroon higher education.', { size: 22 })]),
@@ -329,7 +329,7 @@ const chapter5 = [
     ['1',  'Authentication',          'Email/password, role chip quick-login, demo mode fallback.'],
     ['2',  'Attendance tracking',     'Lecturer marks roll-call; CSV export for students.'],
     ['3',  'Timetable',               'Read-only student view; admin builder with slot editor.'],
-    ['4',  'Results portal',          'Lecturer enters CA + Exam; auto-graded; student view with GPA.'],
+    ['4',  'Results portal',          'Lecturer enters CA + Exam; auto-graded; semester-grouped printable statement.'],
     ['5',  'Offline announcements',   'Cached in localStorage; offline indicator; pin & delete.'],
     ['6',  'AI chatbot',              'Local rules engine + Claude-ready integration point.'],
     ['7',  'Course recommendations',  'AI match score + reasoning; one-click enrol/unenrol.'],
@@ -341,12 +341,32 @@ const chapter5 = [
     ['13', 'Automated recovery',      'Fee-recovery overdue/recovered bar chart.'],
     ['14', 'User management',         'CRUD modal, search, role filter, activate/deactivate.'],
     ['15', 'Settings',                'Institution info, grading scale, academic year selector.'],
+    ['16', 'Tuition payment',         'MoMo / Orange Money / Visa / bank simulation with printable receipt.'],
+    ['17', 'Student ID card',         'Two-sided card with photo, QR, print + PDF + PNG export.'],
   ]),
 
-  H2('5.6  AI Chatbot Implementation'),
+  H2('5.6  Real IUGET Level-3 SWE Courses'),
+  Body('The platform is populated with real Level-3 Software Engineering courses and the lecturers who teach them at IUGET Bonabéri:'),
+  table([
+    ['Code',  'Course',                          'Lecturer'],
+    ['CS501', 'Compiler Design',                 'Mr Nkoma Ngouloure'],
+    ['CS503', 'Research Methodology',            'Mr Nkoma Ngouloure'],
+    ['CS505', 'Embedded Systems',                'Eng Fotseu Julien'],
+    ['CS507', 'Mobile Development',              'Mr Smith Wills'],
+    ['CS509', 'Design Project',                  'Dr Romeo Mougnol'],
+    ['CS511', 'Object Oriented Programming',     'Mr Asongafack Patrick'],
+  ]),
+
+  H2('5.7  Tuition Payment Simulation'),
+  Body('The Fees module simulates a complete payment journey: a student sees their outstanding balance, chooses among four payment methods (MTN Mobile Money, Orange Money, Visa / Mastercard, Bank transfer), enters channel-specific details (phone number for MoMo / OM; card number for Visa; account info for bank), and confirms. After a simulated provider round-trip, the system displays a success state with a printable receipt that includes a unique reference number, timestamp, payer details, payment method, amount, and a verification URL. The receipt can be printed directly or saved as PDF.'),
+
+  H2('5.8  Student ID Card Generator'),
+  Body('Each student has access to a generated digital ID card rendered with the official IUGET logo and brand colours. The card has a front (photo, name, ID, programme, level, validity dates) and a back (emergency contact, blood group, deterministic QR code generated from the student ID, magnetic-stripe styling, official terms). Students can flip between sides, print on standard A4, or export as PNG or as an ID-1-sized PDF (85.60 × 53.98 mm).'),
+
+  H2('5.10  AI Chatbot Implementation'),
   Body('The AI chatbot uses a two-tier strategy. By default, a local rules engine matches the user query against keywords (exam, fee, library, etc.) and returns a pre-written response. When an Anthropic API key is configured via the VITE_ANTHROPIC_API_KEY environment variable, the same UI sends the conversation to Claude for a generative response. This dual-mode design keeps the demo self-contained while leaving a clear path to production.'),
 
-  H2('5.7  Build and Deployment'),
+  H2('5.9  Build and Deployment'),
   Body('A single npm run build command produces a production bundle in dist/. Total bundle size after gzip is approximately 464 kB — well within recommended limits for first contentful paint over 4G. The bundle, public/ brand assets, and an index.html are deployable to any static host: Vercel, Netlify, GitHub Pages, or a self-hosted Nginx.'),
 ]
 
@@ -409,7 +429,7 @@ const chapter7 = [
     ['Source files',                '50'],
     ['Lines of code (approx.)',     '8,800'],
     ['Pages',                       '22'],
-    ['Modules delivered',           '15'],
+    ['Modules delivered',           '17'],
     ['Reusable components',         '12'],
     ['Diagrams produced',           '7'],
     ['Test cases passed',           '18 / 18'],

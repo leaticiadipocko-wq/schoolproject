@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import {
   MOCK_ANNOUNCEMENTS, MOCK_ATTENDANCE, MOCK_RESULTS,
   MOCK_COURSES, MOCK_TIMETABLE, MOCK_RECOMMENDED_COURSES, MOCK_USERS,
+  MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
 
 /**
@@ -12,23 +13,25 @@ import {
  */
 const DataContext = createContext(null)
 
-const STORE_KEY = 'siarm.store.v1'
+const STORE_KEY = 'siarm.store.v2'
 
 const initialState = {
   announcements: MOCK_ANNOUNCEMENTS,
   attendance: MOCK_ATTENDANCE,
-  attendanceLog: [], // records each marked session: { id, course, date, present: [ids], lecturerId }
+  attendanceLog: [],
   results: MOCK_RESULTS,
-  enrolledCourses: ['CS301', 'CS305', 'CS307', 'CS309', 'CS311'],
+  enrolledCourses: ['CS501', 'CS503', 'CS505', 'CS507', 'CS509', 'CS511'],
   recommendedCourses: MOCK_RECOMMENDED_COURSES,
   timetable: MOCK_TIMETABLE,
   users: MOCK_USERS.map(({ password, ...u }) => u),
   notifications: [
     { id: 'n1', text: 'New announcement from Registrar', read: false, time: '2 hours ago' },
-    { id: 'n2', text: 'CS305 grades published', read: false, time: '1 day ago' },
+    { id: 'n2', text: 'CS505 grades published', read: false, time: '1 day ago' },
     { id: 'n3', text: 'Library hours extended', read: true, time: '2 days ago' },
   ],
   theme: 'light',
+  fees: MOCK_FEE_STRUCTURE,
+  payments: MOCK_PAYMENT_HISTORY,
 }
 
 function load() {
@@ -82,7 +85,6 @@ export function DataProvider({ children }) {
   // ---- Attendance ----
   const submitAttendance = useCallback(({ course, date, presentIds, totalStudents, lecturerId }) => {
     setStore((s) => {
-      // Update attendance summary
       const existing = s.attendance.find((a) => a.course === course)
       let next
       if (existing) {
@@ -111,7 +113,6 @@ export function DataProvider({ children }) {
   // ---- Grades / Results ----
   const submitGrades = useCallback(({ course, semester, students }) => {
     setStore((s) => {
-      // Compute course average and add a summary result for the current user
       const newResults = students.map((st) => ({
         course,
         semester,
@@ -121,7 +122,6 @@ export function DataProvider({ children }) {
         grade: gradeFor(st.ca + st.exam),
         studentId: st.id,
       }))
-      // Replace prior submissions for this course/semester
       const cleaned = s.results.filter((r) => !(r.course === course && r.semester === semester))
       return { ...s, results: [...cleaned, ...newResults] }
     })
@@ -203,7 +203,46 @@ export function DataProvider({ children }) {
     document.documentElement.classList.toggle('dark', store.theme === 'dark')
   }, [store.theme])
 
-  // ---- Reset (for demo) ----
+  // ---- Fees / Payments ----
+  /**
+   * Simulate a payment. In production this calls the MoMo / OM API.
+   * Returns { receipt } on success.
+   */
+  const processPayment = useCallback(async ({ amount, method, methodName, phone, reference }) => {
+    // Simulated network round-trip
+    await new Promise((r) => setTimeout(r, 1800))
+
+    // Simulate 95% success rate (always success in demo for predictability)
+    const ok = true
+    if (!ok) throw new Error('Payment provider declined')
+
+    const ref = reference || `${method.toUpperCase()}-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
+    const date = new Date().toISOString()
+    const receipt = {
+      id: `pay-${Date.now()}`,
+      date,
+      amount: Number(amount),
+      method: methodName,
+      methodId: method,
+      phone: phone || '—',
+      reference: ref,
+      status: 'success',
+    }
+
+    setStore((s) => ({
+      ...s,
+      payments: [receipt, ...s.payments],
+      fees: {
+        ...s.fees,
+        paid: s.fees.paid + Number(amount),
+        balance: Math.max(0, s.fees.balance - Number(amount)),
+      },
+    }))
+
+    return receipt
+  }, [])
+
+  // ---- Reset ----
   const resetStore = useCallback(() => {
     localStorage.removeItem(STORE_KEY)
     setStore(initialState)
@@ -219,6 +258,7 @@ export function DataProvider({ children }) {
     markNotificationRead, markAllNotificationsRead,
     setTimetableSlot, removeTimetableSlot,
     toggleTheme,
+    processPayment,
     resetStore,
   }
 

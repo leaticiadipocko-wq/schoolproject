@@ -20,6 +20,8 @@ import Chatbot from '@/pages/student/Chatbot'
 import Courses from '@/pages/student/Courses'
 import Learning from '@/pages/student/Learning'
 import Transcript from '@/pages/student/Transcript'
+import Fees from '@/pages/student/Fees'
+import IDCard from '@/pages/student/IDCard'
 
 // Lecturer pages
 import LecturerDashboard from '@/pages/lecturer/LecturerDashboard'
@@ -70,6 +72,8 @@ export default function App() {
         <Route path="courses"       element={<Courses />} />
         <Route path="learning"      element={<Learning />} />
         <Route path="transcript"    element={<Transcript />} />
+        <Route path="fees"          element={<Fees />} />
+        <Route path="idcard"        element={<IDCard />} />
       </Route>
 
       {/* Lecturer */}

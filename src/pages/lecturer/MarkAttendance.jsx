@@ -10,7 +10,7 @@ export default function MarkAttendance() {
   const { user } = useAuth()
   const { submitAttendance } = useData()
   const [present, setPresent] = useState(new Set(MOCK_STUDENTS.slice(0, 14).map((s) => s.id)))
-  const [course, setCourse] = useState('CS301')
+  const [course, setCourse] = useState('CS501')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [query, setQuery] = useState('')
   const [saving, setSaving] = useState(false)
@@ -59,9 +59,12 @@ export default function MarkAttendance() {
           <div>
             <label className="label">Course</label>
             <select value={course} onChange={(e) => setCourse(e.target.value)} className="input py-2 text-sm">
-              <option value="CS301">CS301 — Software Engineering</option>
-              <option value="CS305">CS305 — Database Systems</option>
-              <option value="CS402">CS402 — Artificial Intelligence</option>
+              <option value="CS501">CS501 — Compiler Design</option>
+              <option value="CS503">CS503 — Research Methodology</option>
+              <option value="CS505">CS505 — Embedded Systems</option>
+              <option value="CS507">CS507 — Mobile Development</option>
+              <option value="CS509">CS509 — Design Project</option>
+              <option value="CS511">CS511 — Object Oriented Programming</option>
             </select>
           </div>
           <div>

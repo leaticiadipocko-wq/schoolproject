@@ -26,7 +26,7 @@ const getGrade = (total) => {
 export default function EnterGrades() {
   const { submitGrades } = useData()
   const [rows, setRows] = useState(seedStudents)
-  const [course, setCourse] = useState('CS301')
+  const [course, setCourse] = useState('CS501')
   const [semester, setSemester] = useState('S2 2026')
   const [saving, setSaving] = useState(false)
 
@@ -90,9 +90,12 @@ export default function EnterGrades() {
 
       <div className="card flex items-center gap-3 flex-wrap">
         <select value={course} onChange={(e) => setCourse(e.target.value)} className="input py-2 text-sm max-w-xs">
-          <option value="CS301">CS301 — Software Engineering</option>
-          <option value="CS305">CS305 — Database Systems</option>
-          <option value="CS402">CS402 — Artificial Intelligence</option>
+          <option value="CS501">CS501 — Compiler Design</option>
+          <option value="CS503">CS503 — Research Methodology</option>
+          <option value="CS505">CS505 — Embedded Systems</option>
+          <option value="CS507">CS507 — Mobile Development</option>
+          <option value="CS509">CS509 — Design Project</option>
+          <option value="CS511">CS511 — Object Oriented Programming</option>
         </select>
         <select value={semester} onChange={(e) => setSemester(e.target.value)} className="input py-2 text-sm max-w-xs">
           <option>S1 2026</option>

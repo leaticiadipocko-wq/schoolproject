@@ -263,13 +263,13 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
 // ===== Slide 14: Modules Implemented =====
 {
   const s = pres.addSlide({ masterName: 'SIARM_MASTER' })
-  title(s, '15 Modules Delivered', 'Every workflow you asked for, working end-to-end')
+  title(s, '17 Modules Delivered', 'Every workflow you asked for, working end-to-end')
 
   const modules = [
     'Role-based authentication (4 roles)',
     'Attendance tracking + CSV export',
     'Smart timetable + AI optimization',
-    'Results & grade entry',
+    'Results & printable grade sheet',
     'Offline announcements portal',
     'AI chatbot (Claude-ready)',
     'Course recommendations (AI match)',
@@ -281,6 +281,8 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
     'Automated fee recovery analytics',
     'User management (CRUD)',
     'Institution settings',
+    'Tuition payment (MoMo, OM, Visa, Bank)',
+    'Student ID card generator',
   ]
   modules.forEach((m, i) => {
     const col = i % 3, row = Math.floor(i / 3)
