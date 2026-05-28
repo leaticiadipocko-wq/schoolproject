@@ -178,7 +178,7 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
 
   s.addText('Evaluation criteria', { x: 0.6, y: 4.3, w: 12, h: 0.4, fontSize: 18, bold: true, color: RED, fontFace: 'Calibri' })
   bullets(s, [
-    'Functional completeness — all 15 modules navigable',
+    'Functional completeness — all 19 modules navigable',
     'Role enforcement — each role sees only its permitted views',
     'Persistence — CRUD survives a page reload',
     'Performance — first contentful paint < 2s on 4G',
@@ -374,13 +374,13 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
   title(s, 'Quantitative Results', 'What the project produced')
 
   const stats = [
-    { v: '50',    l: 'Source files' },
-    { v: '8,800', l: 'Lines of code' },
-    { v: '22',    l: 'Pages' },
-    { v: '15',    l: 'Modules' },
-    { v: '12',    l: 'Reusable components' },
+    { v: '52',    l: 'Source files' },
+    { v: '9,200', l: 'Lines of code' },
+    { v: '24',    l: 'Pages' },
+    { v: '19',    l: 'Modules' },
+    { v: '14',    l: 'Reusable components' },
     { v: '7',     l: 'Diagrams' },
-    { v: '464 kB', l: 'Bundle (gzip)' },
+    { v: '478 kB', l: 'Bundle (gzip)' },
     { v: '< 20 s', l: 'Build time' },
   ]
   stats.forEach((st, i) => {

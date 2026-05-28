@@ -137,7 +137,7 @@ const abstract = [
   P([T('')], { spacing: { after: 280 } }),
   Body('SIARM (Smart Institution Academic Resource Management) is a unified academic operating system designed for private universities, with IUGET Bonaberi as its reference deployment. It consolidates nineteen administrative and pedagogical workflows — attendance, results, timetables, announcements, decision support, predictive enrolment, AI chatbot, mobile learning, transcript generation, and more — into one role-aware web platform.'),
   Body('The system is implemented as a React 18 single-page application with Tailwind CSS, backed by Firebase (Authentication, Cloud Firestore, Storage) and integrated with the Anthropic Claude API for AI-driven enquiry handling. Access control is hierarchical, exposing role-specific dashboards to Students, Lecturers, Staff, and Administrators.'),
-  Body('A demonstrable prototype implements all 15 modules end-to-end with persistent state, IUGET branding, downloadable PDF transcripts, real-time analytics dashboards, and an offline-capable announcement portal. Production builds are deployable to any static CDN. This document describes the problem context, methodology, architectural design, implementation, testing, and the path to future production rollout.'),
+  Body('A demonstrable prototype implements all 19 modules end-to-end with persistent state, IUGET branding, downloadable PDF transcripts and receipts, real-time analytics dashboards, student ID card generation, and an offline-capable PWA shell. Production builds are deployable to any static CDN. This document describes the problem context, methodology, architectural design, implementation, testing, and the path to future production rollout.'),
   P([T('Keywords: ', { bold: true, size: 22 }), T('academic ERP, role-based access control, React, Firebase, AI in education, predictive analytics, IUGET, Cameroon higher education.', { size: 22 })]),
 
   new Paragraph({ children: [new PageBreak()] }),
@@ -192,7 +192,7 @@ const chapter1 = [
   Body('SIARM is scoped as a web-based platform with responsive support for mobile devices. It does not include native mobile applications in this iteration (although React Native is identified as a future direction). Financial transactions (fee collection) are visualised but not processed — the system surfaces fee-recovery analytics without integrating with payment gateways in this prototype. Biometric attendance (face recognition) is identified as a future enhancement; the current attendance module uses lecturer-driven roll-call.'),
 
   H2('1.5  Significance of the Study'),
-  Body('SIARM offers IUGET a clear, deployable upgrade path from fragmented tools to a unified platform. By demonstrating that 15 disparate workflows can be coordinated within a single React + Firebase application, the project provides both an immediate operational tool and a reference architecture for other Cameroonian private universities. The integration of the Anthropic Claude API showcases how modern large-language-model APIs can be used to deliver 24/7 student support at near-zero marginal cost.'),
+  Body('SIARM offers IUGET a clear, deployable upgrade path from fragmented tools to a unified platform. By demonstrating that 19 disparate workflows can be coordinated within a single React + Firebase application, the project provides both an immediate operational tool and a reference architecture for other Cameroonian private universities. The integration of the Anthropic Claude API showcases how modern large-language-model APIs can be used to deliver 24/7 student support at near-zero marginal cost.'),
 
   H2('1.6  Structure of the Report'),
   Body('Chapter 2 surveys related work in academic ERPs and AI in education. Chapter 3 presents the methodology adopted. Chapter 4 details the analysis and design — actors, use cases, data model, architecture, and component decomposition. Chapter 5 walks through the implementation. Chapter 6 reports on testing. Chapter 7 discusses results. Chapter 8 concludes and outlines future work.'),
@@ -231,8 +231,8 @@ const chapter3 = [
   Body('An agile, incremental approach was used. Development proceeded in four week-long sprints, each delivering a usable increment:'),
   bullet('Sprint 1 — Foundation: project scaffold, design system, authentication, role-based routing.'),
   bullet('Sprint 2 — Academic core: attendance, timetable, results, announcements modules.'),
-  bullet('Sprint 3 — Intelligence: AI chatbot, course recommendations, analytics dashboards, transcript generation.'),
-  bullet('Sprint 4 — Polish: branding, persistence layer, documentation, and defence preparation.'),
+  bullet('Sprint 3 — Intelligence: AI chatbot, course recommendations, analytics dashboards, transcript, fees, ID card.'),
+  bullet('Sprint 4 — Polish: PWA offline, command palette, branding, documentation, and defence preparation.'),
 
   H2('3.3  Tools and Technologies'),
   table([
@@ -256,7 +256,7 @@ const chapter3 = [
 
   H2('3.5  Evaluation Criteria'),
   Body('The system is evaluated on five dimensions:'),
-  bullet('Functional completeness — all 15 modules navigable and operational.'),
+  bullet('Functional completeness — all 19 modules navigable and operational.'),
   bullet('Role enforcement — each role sees only its permitted views.'),
   bullet('Persistence — CRUD operations survive a page reload.'),
   bullet('Performance — first contentful paint under 2s on a 4G connection.'),
@@ -268,7 +268,7 @@ const chapter4 = [
   H1('Chapter 4 — System Analysis and Design'),
 
   H2('4.1  Actors and Use Cases'),
-  Body('Four primary actors interact with SIARM: Student, Lecturer, Staff, and Administrator. Permissions are hierarchical — higher roles inherit capabilities of all roles below them. The use-case diagram below summarises the 17 main interactions.'),
+  Body('Four primary actors interact with SIARM: Student, Lecturer, Staff, and Administrator. Permissions are hierarchical — higher roles inherit capabilities of all roles below them. The use-case diagram below summarises the 19 main interactions.'),
   imagePara('03-use-case.png', 600),
   caption('Figure 4.1 — Use case diagram showing 17 use cases across four actors.'),
 
@@ -308,11 +308,11 @@ const chapter5 = [
   H1('Chapter 5 — Implementation'),
 
   H2('5.1  Project Structure'),
-  Body('The codebase organises 50 source files into a clear hierarchy:'),
-  bullet('src/components/ — reusable layout (Sidebar, Navbar, DashboardLayout), atoms (StatCard, PageHeader, EmptyState), guards (ProtectedRoute), and the Logo.'),
+  Body('The codebase organises 52 source files into a clear hierarchy:'),
+  bullet('src/components/ — reusable layout (Sidebar, Navbar, DashboardLayout), atoms (PageHeader, StatCard, EmptyState), guards (ProtectedRoute), Logo, OfflineIndicator, and CommandPalette.'),
   bullet('src/context/ — AuthContext (login, register, logout) and DataContext (CRUD with localStorage persistence).'),
   bullet('src/lib/ — firebase.js, roles.js, navItems.js, mockData.js — single-responsibility helpers.'),
-  bullet('src/pages/ — 22 pages grouped by role under landing/login/register, student/, lecturer/, staff/, admin/.'),
+  bullet('src/pages/ — 24 pages grouped by role under landing/login/register, student/, lecturer/, staff/, admin/.'),
 
   H2('5.2  Authentication and RBAC'),
   Body('AuthContext exposes login, register, and logout methods. It supports two modes: a Firebase-backed mode for production and a DEMO_MODE mode for offline development and the defence demo. ProtectedRoute reads the current user from AuthContext, redirects unauthenticated visitors to /login, and enforces requiredRole. Roles form a numeric hierarchy: student < lecturer < staff < admin.'),
@@ -438,14 +438,14 @@ const chapter7 = [
   H2('7.2  Quantitative Outcomes'),
   table([
     ['Metric', 'Value'],
-    ['Source files',                '50'],
-    ['Lines of code (approx.)',     '8,800'],
-    ['Pages',                       '22'],
+    ['Source files',                '52'],
+    ['Lines of code (approx.)',     '9,200'],
+    ['Pages',                       '24'],
     ['Modules delivered',           '19'],
-    ['Reusable components',         '12'],
+    ['Reusable components',         '14'],
     ['Diagrams produced',           '7'],
     ['Test cases passed',           '18 / 18'],
-    ['Final bundle size (gzipped)', '~464 kB'],
+    ['Final bundle size (gzipped)', '~478 kB'],
     ['Build time',                  '< 20 s'],
   ]),
 
@@ -471,7 +471,7 @@ const chapter8 = [
   H1('Chapter 8 — Conclusion and Future Work'),
 
   H2('8.1  Conclusion'),
-  Body('SIARM demonstrates that a small, focused team — in this case a single Level-3 Software Engineering student — can deliver a unified, AI-augmented academic platform that competes on user experience and architectural quality with much larger commercial offerings. The project meets all stated objectives, includes 15 functional modules, integrates the IUGET visual identity, and ships with full documentation, diagrams, and downloadable artefacts.'),
+  Body('SIARM demonstrates that a small, focused team — in this case a single Level-3 Software Engineering student — can deliver a unified, AI-augmented academic platform that competes on user experience and architectural quality with much larger commercial offerings. The project meets all stated objectives, includes 19 functional modules, integrates the IUGET visual identity, and ships with full documentation, diagrams, and downloadable artefacts.'),
   Body('More importantly, SIARM provides IUGET with a concrete migration path away from fragmented tools: the platform is deployable today, can be branded further, and can be extended without major architectural rewrites.'),
 
   H2('8.2  Future Work'),

@@ -16,7 +16,7 @@ SIARM is a unified, AI-augmented, **offline-capable** academic operating system 
 
 | Dimension | Value |
 |---|---|
-| Source files | 53 |
+| Source files | 52 |
 | Modules delivered | **19** |
 | Roles supported | 4 (Student, Lecturer, Staff, Admin) |
 | Specialties supported | 3 (SWE, CNSM, BST) |
@@ -25,7 +25,7 @@ SIARM is a unified, AI-augmented, **offline-capable** academic operating system 
 | Reusable components | 14 |
 | Architectural diagrams | 7 |
 | Test cases (manual) | 18 / 18 PASS |
-| Production bundle | ~477 kB gzipped |
+| Production bundle | ~478 kB gzipped |
 | Build time | < 20 seconds |
 | Offline-capable | ✓ PWA with service worker |
 | Installable | ✓ Add to home screen on mobile + desktop |
