@@ -44,26 +44,103 @@ export const MOCK_USERS = [
   },
 ]
 
-// Real IUGET Level-3 SWE lecturers and courses
+// Real IUGET courses across all three sections
 export const MOCK_COURSES = [
-  { code: 'CS501', name: 'Compiler Design',           credits: 3, lecturer: 'Mr Nkoma Ngouloure',  level: 3 },
-  { code: 'CS503', name: 'Research Methodology',      credits: 2, lecturer: 'Mr Nkoma Ngouloure',  level: 3 },
-  { code: 'CS505', name: 'Embedded Systems',          credits: 3, lecturer: 'Eng Fotseu Julien',   level: 3 },
-  { code: 'CS507', name: 'Mobile Development',        credits: 3, lecturer: 'Mr Smith Wills',      level: 3 },
-  { code: 'CS509', name: 'Design Project',            credits: 4, lecturer: 'Dr Romeo Mougnol',    level: 3 },
-  { code: 'CS511', name: 'Object Oriented Programming', credits: 3, lecturer: 'Mr Asongafack Patrick', level: 3 },
+  // Level 3 SWE — Bachelor section (evening + Saturday)
+  { code: 'CS501', name: 'Compiler Design',             credits: 3, lecturer: 'Mr Nkoma Ngouloure',     level: 3, track: 'bachelor-evening' },
+  { code: 'CS503', name: 'Research Methodology',        credits: 2, lecturer: 'Mr Nkoma Ngouloure',     level: 3, track: 'bachelor-evening' },
+  { code: 'CS505', name: 'Embedded Systems',            credits: 3, lecturer: 'Eng Fotseu Julien',      level: 3, track: 'bachelor-evening' },
+  { code: 'CS507', name: 'Mobile Development',          credits: 3, lecturer: 'Mr Smith Wills',         level: 3, track: 'bachelor-evening' },
+  { code: 'CS509', name: 'Design Project',              credits: 4, lecturer: 'Dr Romeo Mougnol',       level: 3, track: 'bachelor-evening' },
+  { code: 'CS511', name: 'Object Oriented Programming', credits: 3, lecturer: 'Mr Asongafack Patrick',  level: 3, track: 'bachelor-evening' },
+  // Level 1 — morning section
+  { code: 'CS101', name: 'Intro to Computer Science',   credits: 3, lecturer: 'Mr B. Kamgang',          level: 1, track: 'l1-morning' },
+  { code: 'CS103', name: 'Mathematics for CS',          credits: 3, lecturer: 'Mrs A. Tchio',            level: 1, track: 'l1-morning' },
+  { code: 'CS105', name: 'Programming Fundamentals',    credits: 3, lecturer: 'Mr B. Kamgang',          level: 1, track: 'l1-morning' },
+  { code: 'CS107', name: 'Communication Skills',        credits: 2, lecturer: 'Dr P. Eloundou',         level: 1, track: 'l1-morning' },
+  // Level 2 — morning section
+  { code: 'CS201', name: 'Data Structures & Algorithms',credits: 3, lecturer: 'Mr J. Foncha',           level: 2, track: 'l2-morning' },
+  { code: 'CS203', name: 'Database Systems',            credits: 3, lecturer: 'Mrs L. Awah',            level: 2, track: 'l2-morning' },
+  { code: 'CS205', name: 'Computer Networks',           credits: 3, lecturer: 'Mr J. Foncha',           level: 2, track: 'l2-morning' },
+  { code: 'CS207', name: 'Software Engineering Intro',  credits: 3, lecturer: 'Dr K. Mbah',             level: 2, track: 'l2-morning' },
 ]
 
+// IUGET runs three parallel academic tracks. The Bachelor section (Level 3 SWE)
+// is the main focus of SIARM — it runs Monday–Friday evenings (18:00–22:00)
+// and Saturday all day (08:00–17:00). Level 1 and 2 run Monday–Friday mornings.
+export const TIMETABLE_TRACKS = {
+  'bachelor-evening': {
+    id: 'bachelor-evening',
+    name: 'Bachelor (Level 3) — Evening + Saturday',
+    short: 'Bachelor · Evening',
+    description: 'Mon–Fri 18:00–22:00  ·  Sat 08:00–17:00',
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+    weekdaySlots: ['18:00 - 20:00', '20:00 - 22:00'],
+    saturdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
+    color: 'bg-brand-800',
+  },
+  'l1-morning': {
+    id: 'l1-morning',
+    name: 'Level 1 — Morning',
+    short: 'Level 1 · Morning',
+    description: 'Mon–Fri 08:00–17:00',
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    weekdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
+    saturdaySlots: [],
+    color: 'bg-emerald-600',
+  },
+  'l2-morning': {
+    id: 'l2-morning',
+    name: 'Level 2 — Morning',
+    short: 'Level 2 · Morning',
+    description: 'Mon–Fri 08:00–17:00',
+    days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    weekdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
+    saturdaySlots: [],
+    color: 'bg-accent-600',
+  },
+}
+
+export const ALL_TIMETABLE_SLOTS = [
+  '08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00',
+  '18:00 - 20:00', '20:00 - 22:00',
+]
+
+// Bachelor — Level 3 SWE evening + Saturday schedule
 export const MOCK_TIMETABLE = [
-  { day: 'Monday',    time: '08:00 - 10:00', course: 'CS501', room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure' },
-  { day: 'Monday',    time: '10:00 - 12:00', course: 'CS511', room: 'Lab 2',  lecturer: 'Mr Asongafack Patrick' },
-  { day: 'Tuesday',   time: '08:00 - 10:00', course: 'CS505', room: 'Lab 1',  lecturer: 'Eng Fotseu Julien' },
-  { day: 'Tuesday',   time: '13:00 - 15:00', course: 'CS507', room: 'Lab 3',  lecturer: 'Mr Smith Wills' },
-  { day: 'Wednesday', time: '09:00 - 11:00', course: 'CS509', room: 'Studio', lecturer: 'Dr Romeo Mougnol' },
-  { day: 'Thursday',  time: '08:00 - 10:00', course: 'CS501', room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure' },
-  { day: 'Thursday',  time: '13:00 - 15:00', course: 'CS503', room: 'Hall B', lecturer: 'Mr Nkoma Ngouloure' },
-  { day: 'Friday',    time: '10:00 - 12:00', course: 'CS511', room: 'Lab 2',  lecturer: 'Mr Asongafack Patrick' },
-  { day: 'Friday',    time: '13:00 - 15:00', course: 'CS507', room: 'Lab 3',  lecturer: 'Mr Smith Wills' },
+  // Mon-Fri evenings (18:00 - 22:00) — 2 slots × 5 days = 10 slots
+  { day: 'Monday',    time: '18:00 - 20:00', course: 'CS501', room: 'Hall A',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
+  { day: 'Monday',    time: '20:00 - 22:00', course: 'CS511', room: 'Lab 2',   lecturer: 'Mr Asongafack Patrick',track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '18:00 - 20:00', course: 'CS505', room: 'Lab 1',   lecturer: 'Eng Fotseu Julien',    track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '20:00 - 22:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
+  { day: 'Wednesday', time: '18:00 - 20:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
+  { day: 'Wednesday', time: '20:00 - 22:00', course: 'CS503', room: 'Hall B',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '18:00 - 20:00', course: 'CS501', room: 'Hall A',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '20:00 - 22:00', course: 'CS511', room: 'Lab 2',   lecturer: 'Mr Asongafack Patrick',track: 'bachelor-evening' },
+  { day: 'Friday',    time: '18:00 - 20:00', course: 'CS505', room: 'Lab 1',   lecturer: 'Eng Fotseu Julien',    track: 'bachelor-evening' },
+  { day: 'Friday',    time: '20:00 - 22:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
+  // Saturday full day (08:00 - 17:00) — 4 slots
+  { day: 'Saturday',  time: '08:00 - 10:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '10:00 - 12:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '13:00 - 15:00', course: 'CS503', room: 'Hall B',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '15:00 - 17:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
+
+  // Level 1 — morning session (placeholder, to be filled by admin)
+  { day: 'Monday',    time: '08:00 - 10:00', course: 'CS101', room: 'Hall C',  lecturer: 'Mr B. Kamgang',        track: 'l1-morning' },
+  { day: 'Monday',    time: '10:00 - 12:00', course: 'CS103', room: 'Hall C',  lecturer: 'Mrs A. Tchio',          track: 'l1-morning' },
+  { day: 'Tuesday',   time: '08:00 - 10:00', course: 'CS105', room: 'Lab 4',   lecturer: 'Mr B. Kamgang',        track: 'l1-morning' },
+  { day: 'Tuesday',   time: '13:00 - 15:00', course: 'CS107', room: 'Hall C',  lecturer: 'Dr P. Eloundou',       track: 'l1-morning' },
+  { day: 'Wednesday', time: '10:00 - 12:00', course: 'CS101', room: 'Hall C',  lecturer: 'Mr B. Kamgang',        track: 'l1-morning' },
+  { day: 'Thursday',  time: '08:00 - 10:00', course: 'CS103', room: 'Hall C',  lecturer: 'Mrs A. Tchio',          track: 'l1-morning' },
+  { day: 'Friday',    time: '13:00 - 15:00', course: 'CS105', room: 'Lab 4',   lecturer: 'Mr B. Kamgang',        track: 'l1-morning' },
+
+  // Level 2 — morning session
+  { day: 'Monday',    time: '08:00 - 10:00', course: 'CS201', room: 'Hall D',  lecturer: 'Mr J. Foncha',          track: 'l2-morning' },
+  { day: 'Monday',    time: '13:00 - 15:00', course: 'CS203', room: 'Lab 5',   lecturer: 'Mrs L. Awah',           track: 'l2-morning' },
+  { day: 'Tuesday',   time: '10:00 - 12:00', course: 'CS205', room: 'Hall D',  lecturer: 'Mr J. Foncha',          track: 'l2-morning' },
+  { day: 'Wednesday', time: '08:00 - 10:00', course: 'CS207', room: 'Lab 5',   lecturer: 'Dr K. Mbah',            track: 'l2-morning' },
+  { day: 'Thursday',  time: '10:00 - 12:00', course: 'CS201', room: 'Hall D',  lecturer: 'Mr J. Foncha',          track: 'l2-morning' },
+  { day: 'Friday',    time: '13:00 - 15:00', course: 'CS203', room: 'Lab 5',   lecturer: 'Mrs L. Awah',           track: 'l2-morning' },
 ]
 
 export const MOCK_ATTENDANCE = [

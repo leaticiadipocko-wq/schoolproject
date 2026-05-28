@@ -14,9 +14,9 @@ export default function LecturerDashboard() {
     <div className="space-y-6">
       <div className="card bg-gradient-to-br from-accent-600 to-brand-600 text-white border-0">
         <div>
-          <div className="text-white/80 text-sm">Good day,</div>
-          <h2 className="text-3xl font-display font-bold mt-1">Dr. {user?.name?.split(' ').slice(-1)} 👋</h2>
-          <p className="text-white/80 mt-1.5">{user?.department} · {user?.courses?.length || 0} courses this semester</p>
+          <div className="text-white/80 text-sm">Good evening,</div>
+          <h2 className="text-3xl font-display font-bold mt-1">{user?.name} 👋</h2>
+          <p className="text-white/80 mt-1.5">{user?.department} · {user?.courses?.length || 0} courses this semester · Bachelor section</p>
         </div>
       </div>
 

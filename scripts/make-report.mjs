@@ -357,6 +357,16 @@ const chapter5 = [
     ['CS511', 'Object Oriented Programming',     'Mr Asongafack Patrick'],
   ]),
 
+  Body('IUGET runs three parallel academic tracks. The Bachelor section (Level 3) — the primary focus of SIARM — operates Monday through Friday evenings (18:00 to 22:00) plus Saturday all day (08:00 to 17:00). Level 1 and Level 2 run the morning shift from Monday to Friday (08:00 to 17:00). The Timetable module therefore exposes a track selector so students, lecturers, and administrators can switch between the three schedules:'),
+  table([
+    ['Track',                            'Days',                  'Hours',          'Notes'],
+    ['Bachelor (Level 3) — Evening',     'Mon–Fri + Saturday',    '18:00–22:00 + 08:00–17:00 Sat', 'Primary track · 14 sessions / week'],
+    ['Level 1 — Morning',                'Mon–Fri',               '08:00–17:00',    'Foundation courses'],
+    ['Level 2 — Morning',                'Mon–Fri',               '08:00–17:00',    'Intermediate courses'],
+  ]),
+
+  Body('Each timetable entry persists a track identifier, so the same DataContext store can hold all three timetables simultaneously without conflict. The Timetable Builder admin page lets staff edit one track at a time via a track-aware grid.'),
+
   H2('5.7  Tuition Payment Simulation'),
   Body('The Fees module simulates a complete payment journey: a student sees their outstanding balance, chooses among four payment methods (MTN Mobile Money, Orange Money, Visa / Mastercard, Bank transfer), enters channel-specific details (phone number for MoMo / OM; card number for Visa; account info for bank), and confirms. After a simulated provider round-trip, the system displays a success state with a printable receipt that includes a unique reference number, timestamp, payer details, payment method, amount, and a verification URL. The receipt can be printed directly or saved as PDF.'),
 

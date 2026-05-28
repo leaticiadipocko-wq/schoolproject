@@ -11,7 +11,10 @@ export default function StudentDashboard() {
   const { user } = useAuth()
   const { attendance, announcements: allAnnouncements, timetable, enrolledCourses, recommendedCourses, fees } = useData()
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' })
-  const todayClasses = timetable.filter((t) => t.day === today)
+  // Show only the Bachelor (Level 3) evening + Saturday schedule
+  const todayClasses = timetable.filter(
+    (t) => t.day === today && (t.track || 'bachelor-evening') === 'bachelor-evening'
+  )
   const avgAttendance = attendance.length
     ? Math.round(attendance.reduce((s, a) => s + a.percent, 0) / attendance.length)
     : 0
