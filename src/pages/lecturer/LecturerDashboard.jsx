@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom'
 import { BookOpen, ClipboardCheck, Users, FileSpreadsheet, ArrowRight } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
-import { MOCK_TIMETABLE } from '@/lib/mockData'
+import { useData } from '@/context/DataContext'
 import StatCard from '@/components/ui/StatCard'
 
 export default function LecturerDashboard() {
   const { user } = useAuth()
+  const { timetable } = useData()
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' })
-  const todayClasses = MOCK_TIMETABLE.filter((t) => t.day === today && user?.courses?.includes(t.course))
+  const todayClasses = timetable.filter((t) => t.day === today && user?.courses?.includes(t.course))
 
   return (
     <div className="space-y-6">

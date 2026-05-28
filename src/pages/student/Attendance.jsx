@@ -1,11 +1,23 @@
+import toast from 'react-hot-toast'
 import { ClipboardCheck, Download } from 'lucide-react'
-import { MOCK_ATTENDANCE } from '@/lib/mockData'
+import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 
 export default function Attendance() {
-  const overall = Math.round(
-    MOCK_ATTENDANCE.reduce((s, a) => s + a.percent, 0) / MOCK_ATTENDANCE.length
-  )
+  const { attendance } = useData()
+  const overall = attendance.length
+    ? Math.round(attendance.reduce((s, a) => s + a.percent, 0) / attendance.length)
+    : 0
+
+  const exportCsv = () => {
+    const csv = ['Course,Attended,Total,Percent', ...attendance.map((a) => `${a.course},${a.attended},${a.total},${a.percent}`)].join('\n')
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url; link.download = 'attendance.csv'; link.click()
+    URL.revokeObjectURL(url)
+    toast.success('Attendance exported')
+  }
 
   return (
     <div className="space-y-6">
@@ -13,7 +25,7 @@ export default function Attendance() {
         title="Attendance"
         subtitle="Track your presence across all enrolled courses"
         actions={
-          <button className="btn-secondary"><Download size={16} /> Export</button>
+          <button onClick={exportCsv} className="btn-secondary"><Download size={16} /> Export</button>
         }
       />
 
@@ -44,7 +56,7 @@ export default function Attendance() {
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
-            {MOCK_ATTENDANCE.map((a) => (
+            {attendance.map((a) => (
               <tr key={a.course} className="hover:bg-ink-50/50 transition">
                 <td className="p-4 font-medium">{a.course}</td>
                 <td className="p-4 text-ink-600">{a.attended}</td>

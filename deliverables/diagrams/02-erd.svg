@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" width="1100" height="760">
+
+<style>
+  .bg { fill: #ffffff; }
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+  .subtitle { font-size: 12px; fill: #64748b; }
+  .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; ry: 10; }
+  .box-brand { fill: #eff4ff; stroke: #1e3aa0; stroke-width: 2; rx: 10; ry: 10; }
+  .box-accent { fill: #fef2f2; stroke: #e63946; stroke-width: 2; rx: 10; ry: 10; }
+  .box-ink { fill: #1e3aa0; stroke: #172250; rx: 10; ry: 10; }
+  .label { font-size: 13px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+  .label-white { font-size: 13px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+  .label-sm { font-size: 11px; fill: #64748b; text-anchor: middle; }
+  .label-sm-white { font-size: 11px; fill: #c7d2fe; text-anchor: middle; }
+  .arrow { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .arrow-brand { stroke: #1e3aa0; stroke-width: 2; fill: none; marker-end: url(#arrow-brand); }
+  .arrow-red { stroke: #e63946; stroke-width: 1.8; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 5,3; }
+  .group-label { font-size: 11px; font-weight: 700; fill: #1e3aa0; text-anchor: start; letter-spacing: 1px; }
+  .group-box { fill: rgba(30,58,160,0.04); stroke: #1e3aa0; stroke-width: 1; stroke-dasharray: 4,3; rx: 14; ry: 14; }
+  .er-attr { font-size: 11px; fill: #334155; }
+  .er-key { font-size: 11px; font-weight: 700; fill: #1e3aa0; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1e3aa0"/></marker>
+  <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+</defs>
+
+<rect class="bg" width="1100" height="760"/>
+<text x="40" y="38" class="title">SIARM — Entity Relationship Diagram</text>
+<text x="40" y="58" class="subtitle">9 core entities · enforced via Firestore document references and security rules</text>
+<rect x="60" y="100" width="220" height="164" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="60" y="100" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="170" y="120" class="label-white">User</text><text x="72" y="150" class="er-key">PK uid : string</text><text x="72" y="170" class="er-attr">email : string</text><text x="72" y="190" class="er-attr">name : string</text><text x="72" y="210" class="er-attr">role : enum</text><text x="72" y="230" class="er-attr">avatar : url</text><text x="72" y="250" class="er-attr">createdAt : timestamp</text><rect x="60" y="360" width="220" height="144" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="60" y="360" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="170" y="380" class="label-white">Student</text><text x="72" y="410" class="er-key">PK studentId : string</text><text x="72" y="430" class="er-key">FK uid → User</text><text x="72" y="450" class="er-attr">program : string</text><text x="72" y="470" class="er-attr">level : int</text><text x="72" y="490" class="er-attr">cgpa : float</text><rect x="60" y="580" width="220" height="124" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="60" y="580" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="170" y="600" class="label-white">Lecturer</text><text x="72" y="630" class="er-key">PK lecturerId : string</text><text x="72" y="650" class="er-key">FK uid → User</text><text x="72" y="670" class="er-attr">department : string</text><text x="72" y="690" class="er-attr">title : string</text><rect x="420" y="100" width="220" height="144" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="420" y="100" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="530" y="120" class="label-white">Course</text><text x="432" y="150" class="er-key">PK code : string</text><text x="432" y="170" class="er-attr">name : string</text><text x="432" y="190" class="er-attr">credits : int</text><text x="432" y="210" class="er-attr">level : int</text><text x="432" y="230" class="er-key">FK lecturerId → Lecturer</text><rect x="420" y="320" width="220" height="144" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="420" y="320" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="530" y="340" class="label-white">Enrollment</text><text x="432" y="370" class="er-key">PK id : string</text><text x="432" y="390" class="er-key">FK studentId → Student</text><text x="432" y="410" class="er-key">FK courseCode → Course</text><text x="432" y="430" class="er-attr">semester : string</text><text x="432" y="450" class="er-attr">status : enum</text><rect x="420" y="520" width="220" height="144" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="420" y="520" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="530" y="540" class="label-white">Attendance</text><text x="432" y="570" class="er-key">PK id : string</text><text x="432" y="590" class="er-key">FK enrollmentId → Enrollment</text><text x="432" y="610" class="er-attr">date : date</text><text x="432" y="630" class="er-attr">present : bool</text><text x="432" y="650" class="er-attr">markedBy : Lecturer</text><rect x="780" y="100" width="220" height="184" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="780" y="100" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="890" y="120" class="label-white">Result</text><text x="792" y="150" class="er-key">PK id : string</text><text x="792" y="170" class="er-key">FK enrollmentId → Enrollment</text><text x="792" y="190" class="er-attr">ca : int (0-30)</text><text x="792" y="210" class="er-attr">exam : int (0-70)</text><text x="792" y="230" class="er-attr">total : int</text><text x="792" y="250" class="er-attr">grade : string</text><text x="792" y="270" class="er-attr">gpa : float</text><rect x="780" y="340" width="220" height="184" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="780" y="340" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="890" y="360" class="label-white">Announcement</text><text x="792" y="390" class="er-key">PK id : string</text><text x="792" y="410" class="er-attr">title : string</text><text x="792" y="430" class="er-attr">body : text</text><text x="792" y="450" class="er-attr">audience : enum</text><text x="792" y="470" class="er-attr">pinned : bool</text><text x="792" y="490" class="er-key">FK authorUid → User</text><text x="792" y="510" class="er-attr">createdAt : ts</text><rect x="780" y="580" width="220" height="144" rx="8" ry="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="2"/>
+      <rect x="780" y="580" width="220" height="30" rx="8" ry="8" fill="#1e3aa0"/>
+      <text x="890" y="600" class="label-white">TimetableSlot</text><text x="792" y="630" class="er-key">PK id : string</text><text x="792" y="650" class="er-key">FK courseCode → Course</text><text x="792" y="670" class="er-attr">day : enum</text><text x="792" y="690" class="er-attr">time : string</text><text x="792" y="710" class="er-attr">room : string</text><path d="M280,182 L280,360" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="280" y="267" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : 1</text><path d="M170,504 L170,580" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="170" y="538" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle"></text><path d="M280,432 L420,380" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="350" y="402" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : N</text><path d="M280,214 L220,390" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="250" y="298" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle"></text><path d="M530,244 L530,320" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="530" y="278" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : N</text><path d="M530,464 L530,520" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="530" y="488" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : N</text><path d="M640,370 L780,160" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="710" y="261" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : 1</text><path d="M640,610 L780,524" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="710" y="563" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">M : N</text><path d="M640,214 L780,630" stroke="#475569" stroke-width="1.5" fill="none"/>
+      <text x="710" y="418" font-size="10" fill="#1e3aa0" font-weight="700" text-anchor="middle">1 : N</text>
+</svg>

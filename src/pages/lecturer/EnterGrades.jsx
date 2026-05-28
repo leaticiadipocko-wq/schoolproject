@@ -2,8 +2,9 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import { Save, Upload } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
+import { useData } from '@/context/DataContext'
 
-const seedStudents = Array.from({ length: 12 }, (_, i) => ({
+const seedStudents = () => Array.from({ length: 12 }, (_, i) => ({
   id: `IUGET/2023/CS/${String(140 + i).padStart(4, '0')}`,
   name: ['Alice Mbah', 'Brian Etoh', 'Clara Wirba', 'David Nfor', 'Esther Akem',
          'Frank Tabi', 'Gloria Mbi', 'Henri Anye', 'Ivy Nkeng', 'Joel Tagne',
@@ -23,14 +24,51 @@ const getGrade = (total) => {
 }
 
 export default function EnterGrades() {
+  const { submitGrades } = useData()
   const [rows, setRows] = useState(seedStudents)
   const [course, setCourse] = useState('CS301')
+  const [semester, setSemester] = useState('S2 2026')
+  const [saving, setSaving] = useState(false)
 
   const update = (id, field, value) => {
-    setRows((r) => r.map((row) => row.id === id ? { ...row, [field]: Number(value) || 0 } : row))
+    const n = Math.max(0, Math.min(field === 'ca' ? 30 : 70, Number(value) || 0))
+    setRows((r) => r.map((row) => row.id === id ? { ...row, [field]: n } : row))
   }
 
-  const save = () => toast.success(`Grades saved for ${course} · ${rows.length} students`)
+  const save = async () => {
+    setSaving(true)
+    await new Promise((r) => setTimeout(r, 400))
+    submitGrades({ course, semester, students: rows })
+    toast.success(`Grades saved for ${course} · ${rows.length} students`)
+    setSaving(false)
+  }
+
+  const importCsv = () => {
+    const input = document.createElement('input')
+    input.type = 'file'
+    input.accept = '.csv'
+    input.onchange = (e) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        try {
+          const lines = String(reader.result).split(/\r?\n/).filter(Boolean)
+          const parsed = lines.slice(1).map((l) => {
+            const [id, name, ca, exam] = l.split(',')
+            return { id, name, ca: Number(ca), exam: Number(exam) }
+          }).filter((r) => r.id)
+          if (parsed.length === 0) return toast.error('No valid rows in CSV')
+          setRows(parsed)
+          toast.success(`Imported ${parsed.length} students`)
+        } catch {
+          toast.error('Invalid CSV format')
+        }
+      }
+      reader.readAsText(file)
+    }
+    input.click()
+  }
 
   const avg = rows.length ? Math.round(rows.reduce((s, r) => s + r.ca + r.exam, 0) / rows.length) : 0
   const passed = rows.filter((r) => r.ca + r.exam >= 50).length
@@ -42,17 +80,23 @@ export default function EnterGrades() {
         subtitle="Submit continuous assessment and exam scores"
         actions={
           <>
-            <button className="btn-secondary"><Upload size={16} /> Import CSV</button>
-            <button onClick={save} className="btn-primary"><Save size={16} /> Submit</button>
+            <button onClick={importCsv} className="btn-secondary"><Upload size={16} /> Import CSV</button>
+            <button onClick={save} disabled={saving} className="btn-primary">
+              <Save size={16} /> {saving ? 'Submitting…' : 'Submit'}
+            </button>
           </>
         }
       />
 
       <div className="card flex items-center gap-3 flex-wrap">
         <select value={course} onChange={(e) => setCourse(e.target.value)} className="input py-2 text-sm max-w-xs">
-          <option>CS301 — Software Engineering</option>
-          <option>CS305 — Database Systems</option>
-          <option>CS402 — Artificial Intelligence</option>
+          <option value="CS301">CS301 — Software Engineering</option>
+          <option value="CS305">CS305 — Database Systems</option>
+          <option value="CS402">CS402 — Artificial Intelligence</option>
+        </select>
+        <select value={semester} onChange={(e) => setSemester(e.target.value)} className="input py-2 text-sm max-w-xs">
+          <option>S1 2026</option>
+          <option>S2 2026</option>
         </select>
         <div className="ml-auto flex gap-2">
           <span className="badge-info">Avg {avg}</span>
@@ -100,7 +144,7 @@ export default function EnterGrades() {
                   <td className="p-4">
                     <span className={`badge ${
                       total >= 70 ? 'bg-emerald-100 text-emerald-700' :
-                      total >= 50 ? 'bg-brand-100 text-brand-700' :
+                      total >= 50 ? 'bg-brand-100 text-brand-800' :
                       total >= 40 ? 'bg-amber-100 text-amber-700' :
                       'bg-red-100 text-red-700'
                     }`}>{getGrade(total)}</span>

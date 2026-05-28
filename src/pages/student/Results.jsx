@@ -1,4 +1,4 @@
-import { MOCK_RESULTS } from '@/lib/mockData'
+import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 import StatCard from '@/components/ui/StatCard'
 import { Award, TrendingUp, Target } from 'lucide-react'
@@ -6,11 +6,14 @@ import { Award, TrendingUp, Target } from 'lucide-react'
 const gradePoints = { 'A': 4, 'B+': 3.5, 'B': 3, 'C+': 2.5, 'C': 2, 'D': 1, 'F': 0 }
 
 export default function Results() {
-  const gpa = (
-    MOCK_RESULTS.reduce((s, r) => s + (gradePoints[r.grade] || 0), 0) / MOCK_RESULTS.length
-  ).toFixed(2)
-  const best = MOCK_RESULTS.reduce((m, r) => (r.total > m.total ? r : m), MOCK_RESULTS[0])
-  const passed = MOCK_RESULTS.filter((r) => r.total >= 50).length
+  const { results: storedResults } = useData()
+  // Only show results without a studentId (general/aggregate) or for the current user
+  const results = storedResults.filter((r) => !r.studentId)
+  const gpa = results.length
+    ? (results.reduce((s, r) => s + (gradePoints[r.grade] || 0), 0) / results.length).toFixed(2)
+    : '0.00'
+  const best = results.length ? results.reduce((m, r) => (r.total > m.total ? r : m), results[0]) : null
+  const passed = results.filter((r) => r.total >= 50).length
 
   return (
     <div className="space-y-6">
@@ -18,8 +21,8 @@ export default function Results() {
 
       <div className="grid sm:grid-cols-3 gap-4">
         <StatCard icon={Award} label="Current GPA" value={gpa} color="brand" />
-        <StatCard icon={TrendingUp} label="Highest Score" value={`${best.total} (${best.course})`} color="green" />
-        <StatCard icon={Target} label="Courses Passed" value={`${passed} / ${MOCK_RESULTS.length}`} color="accent" />
+        <StatCard icon={TrendingUp} label="Highest Score" value={best ? `${best.total} (${best.course})` : '—'} color="green" />
+        <StatCard icon={Target} label="Courses Passed" value={`${passed} / ${results.length}`} color="accent" />
       </div>
 
       <div className="card overflow-hidden p-0">
@@ -35,7 +38,7 @@ export default function Results() {
             </tr>
           </thead>
           <tbody className="divide-y divide-ink-100">
-            {MOCK_RESULTS.map((r, i) => (
+            {results.map((r, i) => (
               <tr key={i} className="hover:bg-ink-50/50">
                 <td className="p-4 font-medium">{r.course}</td>
                 <td className="p-4 text-ink-600">{r.semester}</td>

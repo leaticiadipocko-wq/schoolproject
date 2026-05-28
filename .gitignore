@@ -26,3 +26,7 @@ npm-debug.log*
 
 # Vite
 .vite/
+
+# Keep deliverables tracked but ignore log files
+*.log
+/tmp/logs/

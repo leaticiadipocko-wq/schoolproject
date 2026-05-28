@@ -5,7 +5,7 @@
 export const MOCK_USERS = [
   {
     uid: 'stu-001',
-    email: 'student@siarm.edu',
+    email: 'student@iuget.cm',
     password: 'password',
     role: 'student',
     name: 'Alice Mbah',
@@ -16,7 +16,7 @@ export const MOCK_USERS = [
   },
   {
     uid: 'lec-001',
-    email: 'lecturer@siarm.edu',
+    email: 'lecturer@iuget.cm',
     password: 'password',
     role: 'lecturer',
     name: 'Dr. Samuel Tagne',
@@ -26,7 +26,7 @@ export const MOCK_USERS = [
   },
   {
     uid: 'sta-001',
-    email: 'staff@siarm.edu',
+    email: 'staff@iuget.cm',
     password: 'password',
     role: 'staff',
     name: 'Mrs. Linda Foncha',
@@ -35,7 +35,7 @@ export const MOCK_USERS = [
   },
   {
     uid: 'adm-001',
-    email: 'admin@siarm.edu',
+    email: 'admin@iuget.cm',
     password: 'password',
     role: 'admin',
     name: 'Prof. James Murdza',
@@ -93,7 +93,7 @@ export const MOCK_ANNOUNCEMENTS = [
   {
     id: 'a-2',
     title: 'Library extends opening hours',
-    body: 'The university library will now open from 7am to 10pm during the exam period.',
+    body: 'The IUGET library will now open from 7am to 10pm during the exam period.',
     author: 'Library',
     audience: 'students',
     createdAt: '2026-05-24T14:00:00Z',
@@ -179,3 +179,12 @@ export const MOCK_AI_INSIGHTS = [
   { type: 'info',     text: 'Predicted enrollment for 2026 intake: 1,240 applicants (+22%).' },
   { type: 'success',  text: 'Lecturer Dr. S. Tagne has the highest student satisfaction this term.' },
 ]
+
+export const MOCK_STUDENTS = Array.from({ length: 18 }, (_, i) => ({
+  id: `IUGET/2023/CS/${String(140 + i).padStart(4, '0')}`,
+  name: ['Alice Mbah', 'Brian Etoh', 'Clara Wirba', 'David Nfor', 'Esther Akem',
+         'Frank Tabi', 'Gloria Mbi', 'Henri Anye', 'Ivy Nkeng', 'Joel Tagne',
+         'Karen Asaba', 'Leo Nfah', 'Mary Tah', 'Noah Bate', 'Olivia Foncha',
+         'Paul Etame', 'Queen Nya', 'Ralph Tane'][i],
+  avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`,
+}))

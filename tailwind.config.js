@@ -8,29 +8,32 @@ export default {
   theme: {
     extend: {
       colors: {
-        // SIARM brand palette — deep academic blue + intelligent violet accents
+        // IUGET official brand palette — red, navy, with gray accents
         brand: {
-          50:  '#eef2ff',
-          100: '#e0e7ff',
-          200: '#c7d2fe',
-          300: '#a5b4fc',
-          400: '#818cf8',
-          500: '#6366f1',
-          600: '#4f46e5',
-          700: '#4338ca',
-          800: '#3730a3',
-          900: '#312e81',
-          950: '#1e1b4b',
+          50:  '#eff4ff',
+          100: '#dbe6fe',
+          200: '#bfd4fe',
+          300: '#93b8fd',
+          400: '#6090fa',
+          500: '#3b6df5',
+          600: '#2451e6',
+          700: '#1d3fc7',
+          800: '#1e3aa0',   // IUGET deep navy
+          900: '#1e3478',
+          950: '#172250',
         },
         accent: {
-          50:  '#ecfeff',
-          100: '#cffafe',
-          200: '#a5f3fc',
-          300: '#67e8f9',
-          400: '#22d3ee',
-          500: '#06b6d4',
-          600: '#0891b2',
-          700: '#0e7490',
+          // IUGET red
+          50:  '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#e63946',   // IUGET signature red
+          700: '#c62b38',
+          800: '#a3232f',
+          900: '#7f1d1d',
         },
         ink: {
           50:  '#f8fafc',
@@ -52,7 +55,7 @@ export default {
       },
       boxShadow: {
         soft: '0 4px 20px -2px rgba(15, 23, 42, 0.06)',
-        glow: '0 0 40px -10px rgba(99, 102, 241, 0.5)',
+        glow: '0 0 40px -10px rgba(30, 58, 160, 0.5)',
       },
       animation: {
         'fade-in': 'fadeIn 0.4s ease-out',

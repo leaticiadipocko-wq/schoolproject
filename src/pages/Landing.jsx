@@ -35,11 +35,11 @@ export default function Landing() {
       {/* Nav */}
       <nav className="sticky top-0 z-30 backdrop-blur-lg bg-white/70 border-b border-ink-100">
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3.5">
-          <Logo />
+          <Logo size={42} />
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
-            <a href="#features" className="hover:text-brand-600 transition">Features</a>
-            <a href="#vision" className="hover:text-brand-600 transition">Vision</a>
-            <a href="#about" className="hover:text-brand-600 transition">About</a>
+            <a href="#features" className="hover:text-accent-600 transition">Features</a>
+            <a href="#vision" className="hover:text-accent-600 transition">Vision</a>
+            <a href="#about" className="hover:text-accent-600 transition">About</a>
           </div>
           <div className="flex items-center gap-2">
             <Link to="/login" className="btn-ghost">Sign in</Link>
@@ -59,15 +59,18 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
           >
             <span className="badge-info mb-6 inline-flex">
-              <Sparkles size={12} /> AI-powered academic platform
+              <Sparkles size={12} /> Built for IUGET · AI-powered academic platform
             </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
               The unified <span className="gradient-text">academic OS</span><br />
-              for modern universities.
+              for IUGET University.
             </h1>
             <p className="mt-6 text-lg md:text-xl text-ink-600 max-w-2xl mx-auto">
               SIARM brings attendance, results, timetables, AI analytics, mobile learning,
-              and decision support into one seamless platform — built for private universities.
+              and decision support into one seamless platform — tailored for IUGET Bonaberi.
+            </p>
+            <p className="mt-3 text-sm italic text-accent-700 font-medium">
+              « Bien choisir c'est déjà réussir » — IUGET
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link to="/register" className="btn-primary px-6 py-3 text-base">
@@ -78,11 +81,11 @@ export default function Landing() {
               </Link>
             </div>
             <p className="mt-4 text-xs text-ink-500">
-              Demo credentials → <span className="font-mono">student@siarm.edu / password</span>
+              Demo credentials → <span className="font-mono">student@iuget.cm / password</span>
             </p>
           </motion.div>
 
-          {/* Hero illustration */}
+          {/* Hero stats card */}
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
@@ -100,7 +103,7 @@ export default function Landing() {
                     <div key={s.label} className="rounded-xl bg-ink-50 p-5 text-left">
                       <div className="text-sm text-ink-500">{s.label}</div>
                       <div className="text-3xl font-display font-bold mt-1">{s.value}</div>
-                      <div className="text-xs text-green-600 mt-1 font-medium">{s.trend}</div>
+                      <div className="text-xs text-accent-600 mt-1 font-medium">{s.trend}</div>
                     </div>
                   ))}
                 </div>
@@ -145,7 +148,7 @@ export default function Landing() {
                 transition={{ duration: 0.4 }}
                 className="card-hover group"
               >
-                <div className="w-11 h-11 rounded-xl bg-brand-100 text-brand-600 flex items-center justify-center group-hover:bg-brand-600 group-hover:text-white transition">
+                <div className="w-11 h-11 rounded-xl bg-brand-100 text-brand-800 flex items-center justify-center group-hover:bg-brand-800 group-hover:text-white transition">
                   <Icon size={22} />
                 </div>
                 <h3 className="font-semibold text-lg mt-4">{title}</h3>
@@ -157,10 +160,10 @@ export default function Landing() {
       </section>
 
       {/* Vision */}
-      <section id="vision" className="py-24 bg-gradient-to-br from-brand-950 to-ink-900 text-white">
+      <section id="vision" className="py-24 bg-gradient-to-br from-brand-900 to-brand-950 text-white">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-display font-bold">
-            One platform. <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-300 to-accent-300">Every role.</span>
+            One platform. <span className="text-accent-400">Every role.</span>
           </h2>
           <p className="mt-5 text-ink-300 max-w-2xl mx-auto text-lg">
             Built with a hierarchical, role-based architecture so each user sees exactly
@@ -185,27 +188,28 @@ export default function Landing() {
       {/* CTA */}
       <section id="about" className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-display font-bold">Ready to modernize your institution?</h2>
+          <h2 className="text-4xl font-display font-bold">Ready to modernize IUGET?</h2>
           <p className="mt-4 text-ink-600 text-lg">
             Start with the demo, explore every module, then connect Firebase to go live.
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Link to="/register" className="btn-primary px-6 py-3 text-base">
-              Get started free <ArrowRight size={18} />
+              Get started <ArrowRight size={18} />
             </Link>
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="btn-secondary px-6 py-3 text-base">
-              <Github size={18} /> View source
+            <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="btn-secondary px-6 py-3 text-base">
+              Visit IUGET
             </a>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-10 border-t border-ink-100">
+      <footer className="py-10 border-t border-ink-100 bg-ink-50">
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <Logo size={28} />
-          <div className="text-sm text-ink-500">
-            © {new Date().getFullYear()} SIARM. Bachelor project — IUGET Bonaberi.
+          <Logo size={32} />
+          <div className="text-sm text-ink-500 text-center md:text-right">
+            © {new Date().getFullYear()} SIARM · Bachelor project — IUGET Bonaberi<br />
+            <span className="text-xs">By James Murdza · Level 3 SWE</span>
           </div>
         </div>
       </footer>

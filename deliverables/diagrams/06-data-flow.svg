@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="1100" height="700">
+
+<style>
+  .bg { fill: #ffffff; }
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+  .subtitle { font-size: 12px; fill: #64748b; }
+  .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; ry: 10; }
+  .box-brand { fill: #eff4ff; stroke: #1e3aa0; stroke-width: 2; rx: 10; ry: 10; }
+  .box-accent { fill: #fef2f2; stroke: #e63946; stroke-width: 2; rx: 10; ry: 10; }
+  .box-ink { fill: #1e3aa0; stroke: #172250; rx: 10; ry: 10; }
+  .label { font-size: 13px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+  .label-white { font-size: 13px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+  .label-sm { font-size: 11px; fill: #64748b; text-anchor: middle; }
+  .label-sm-white { font-size: 11px; fill: #c7d2fe; text-anchor: middle; }
+  .arrow { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .arrow-brand { stroke: #1e3aa0; stroke-width: 2; fill: none; marker-end: url(#arrow-brand); }
+  .arrow-red { stroke: #e63946; stroke-width: 1.8; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 5,3; }
+  .group-label { font-size: 11px; font-weight: 700; fill: #1e3aa0; text-anchor: start; letter-spacing: 1px; }
+  .group-box { fill: rgba(30,58,160,0.04); stroke: #1e3aa0; stroke-width: 1; stroke-dasharray: 4,3; rx: 14; ry: 14; }
+  .er-attr { font-size: 11px; fill: #334155; }
+  .er-key { font-size: 11px; font-weight: 700; fill: #1e3aa0; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1e3aa0"/></marker>
+  <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+</defs>
+
+<rect class="bg" width="1100" height="700"/>
+<text x="40" y="38" class="title">SIARM — Data Flow Diagram (Level 1)</text>
+<text x="40" y="58" class="subtitle">Seven processes, five data stores, and five external entities</text>
+
+    <rect x="40" y="150" width="120" height="50" fill="#1e3aa0" rx="8"/>
+    <text x="100" y="179" class="label-white">Student</text>
+    <rect x="40" y="280" width="120" height="50" fill="#1e3aa0" rx="8"/>
+    <text x="100" y="309" class="label-white">Lecturer</text>
+    <rect x="40" y="410" width="120" height="50" fill="#1e3aa0" rx="8"/>
+    <text x="100" y="439" class="label-white">Admin</text>
+    <rect x="940" y="150" width="120" height="50" fill="#1e3aa0" rx="8"/>
+    <text x="1000" y="179" class="label-white">AI / Claude</text>
+    <rect x="940" y="280" width="120" height="50" fill="#1e3aa0" rx="8"/>
+    <text x="1000" y="309" class="label-white">Email</text>
+    <circle cx="280" cy="175" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="280" y="170" class="label-sm">1.0</text>
+    <text x="280" y="187" class="label" font-size="12">Auth</text>
+    <circle cx="280" cy="305" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="280" y="300" class="label-sm">2.0</text>
+    <text x="280" y="317" class="label" font-size="12">Attend.</text>
+    <circle cx="280" cy="435" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="280" y="430" class="label-sm">3.0</text>
+    <text x="280" y="447" class="label" font-size="12">Manage</text>
+    <circle cx="550" cy="175" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="550" y="170" class="label-sm">4.0</text>
+    <text x="550" y="187" class="label" font-size="12">Results</text>
+    <circle cx="550" cy="305" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="550" y="300" class="label-sm">5.0</text>
+    <text x="550" y="317" class="label" font-size="12">Announce</text>
+    <circle cx="550" cy="435" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="550" y="430" class="label-sm">6.0</text>
+    <text x="550" y="447" class="label" font-size="12">Analytics</text>
+    <circle cx="810" cy="305" r="56" fill="#eff4ff" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="810" y="300" class="label-sm">7.0</text>
+    <text x="810" y="317" class="label" font-size="12">Chatbot</text>
+    <line x1="700" y1="580" x2="880" y2="580" stroke="#1e3aa0" stroke-width="2"/>
+    <line x1="700" y1="620" x2="880" y2="620" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="710" y="597" class="label-sm" text-anchor="start">D1</text>
+    <text x="710" y="612" class="label" text-anchor="start" font-size="12">D1  Users</text>
+    <line x1="900" y1="580" x2="1080" y2="580" stroke="#1e3aa0" stroke-width="2"/>
+    <line x1="900" y1="620" x2="1080" y2="620" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="910" y="597" class="label-sm" text-anchor="start">D2</text>
+    <text x="910" y="612" class="label" text-anchor="start" font-size="12">D2  Courses</text>
+    <line x1="500" y1="580" x2="680" y2="580" stroke="#1e3aa0" stroke-width="2"/>
+    <line x1="500" y1="620" x2="680" y2="620" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="510" y="597" class="label-sm" text-anchor="start">D3</text>
+    <text x="510" y="612" class="label" text-anchor="start" font-size="12">D3  Attendance</text>
+    <line x1="300" y1="580" x2="480" y2="580" stroke="#1e3aa0" stroke-width="2"/>
+    <line x1="300" y1="620" x2="480" y2="620" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="310" y="597" class="label-sm" text-anchor="start">D4</text>
+    <text x="310" y="612" class="label" text-anchor="start" font-size="12">D4  Results</text>
+    <line x1="100" y1="580" x2="280" y2="580" stroke="#1e3aa0" stroke-width="2"/>
+    <line x1="100" y1="620" x2="280" y2="620" stroke="#1e3aa0" stroke-width="2"/>
+    <text x="110" y="597" class="label-sm" text-anchor="start">D5</text>
+    <text x="110" y="612" class="label" text-anchor="start" font-size="12">D5  Announcements</text>
+    <path d="M160,175 L224,175" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="192" y="171" font-size="10" fill="#1e3aa0" font-weight="600" text-anchor="middle">credentials</text>
+    <path d="M160,305 L224,305" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="192" y="301" font-size="10" fill="#1e3aa0" font-weight="600" text-anchor="middle">roll-call</text>
+    <path d="M160,435 L224,435" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="192" y="431" font-size="10" fill="#1e3aa0" font-weight="600" text-anchor="middle">admin ops</text>
+    <path d="M940,175 L866,305" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="903" y="236" font-size="10" fill="#1e3aa0" font-weight="600" text-anchor="middle">AI reply</text>
+    <path d="M550,270 L940,200" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    <text x="745" y="231" font-size="10" fill="#1e3aa0" font-weight="600" text-anchor="middle">enquiry</text>
+    <path d="M280,230 L280,580" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    
+    <path d="M280,360 L380,580" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    
+    <path d="M550,230 L550,580" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    
+    <path d="M550,360 L600,580" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    
+    <path d="M550,490 L700,580" stroke="#475569" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+    
+</svg>

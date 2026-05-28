@@ -7,10 +7,10 @@ import { roleHome } from '@/lib/roles'
 import Logo from '@/components/Logo'
 
 const DEMO_ACCOUNTS = [
-  { label: 'Student',   email: 'student@siarm.edu',   color: 'bg-brand-100 text-brand-700' },
-  { label: 'Lecturer',  email: 'lecturer@siarm.edu',  color: 'bg-accent-100 text-accent-700' },
-  { label: 'Staff',     email: 'staff@siarm.edu',     color: 'bg-amber-100 text-amber-700' },
-  { label: 'Admin',     email: 'admin@siarm.edu',     color: 'bg-emerald-100 text-emerald-700' },
+  { label: 'Student',   email: 'student@iuget.cm',   color: 'bg-brand-100 text-brand-800' },
+  { label: 'Lecturer',  email: 'lecturer@iuget.cm',  color: 'bg-accent-100 text-accent-700' },
+  { label: 'Staff',     email: 'staff@iuget.cm',     color: 'bg-amber-100 text-amber-700' },
+  { label: 'Admin',     email: 'admin@iuget.cm',     color: 'bg-emerald-100 text-emerald-700' },
 ]
 
 export default function Login() {

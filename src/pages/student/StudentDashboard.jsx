@@ -2,17 +2,18 @@ import { Link } from 'react-router-dom'
 import { ClipboardCheck, CalendarClock, FileText, BookOpen, Sparkles, TrendingUp, ArrowRight, Bot } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts'
 import { useAuth } from '@/context/AuthContext'
-import { MOCK_ATTENDANCE, MOCK_ANNOUNCEMENTS, MOCK_TIMETABLE, MOCK_RECOMMENDED_COURSES } from '@/lib/mockData'
+import { useData } from '@/context/DataContext'
 import StatCard from '@/components/ui/StatCard'
 
 export default function StudentDashboard() {
   const { user } = useAuth()
+  const { attendance, announcements: allAnnouncements, timetable, enrolledCourses, recommendedCourses } = useData()
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' })
-  const todayClasses = MOCK_TIMETABLE.filter((t) => t.day === today)
-  const avgAttendance = Math.round(
-    MOCK_ATTENDANCE.reduce((s, a) => s + a.percent, 0) / MOCK_ATTENDANCE.length
-  )
-  const announcements = MOCK_ANNOUNCEMENTS.slice(0, 3)
+  const todayClasses = timetable.filter((t) => t.day === today)
+  const avgAttendance = attendance.length
+    ? Math.round(attendance.reduce((s, a) => s + a.percent, 0) / attendance.length)
+    : 0
+  const announcements = allAnnouncements.slice(0, 3)
 
   return (
     <div className="space-y-6">
@@ -51,14 +52,14 @@ export default function StudentDashboard() {
             </Link>
           </div>
           <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={MOCK_ATTENDANCE}>
+            <BarChart data={attendance}>
               <XAxis dataKey="course" stroke="#94a3b8" fontSize={12} />
               <YAxis stroke="#94a3b8" fontSize={12} />
               <Tooltip
                 contentStyle={{ borderRadius: 12, border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.06)' }}
               />
               <Bar dataKey="percent" radius={[8, 8, 0, 0]}>
-                {MOCK_ATTENDANCE.map((d, i) => (
+                {attendance.map((d, i) => (
                   <Cell key={i} fill={d.percent >= 75 ? '#6366f1' : '#f59e0b'} />
                 ))}
               </Bar>
@@ -119,7 +120,7 @@ export default function StudentDashboard() {
             <h3 className="font-display font-bold text-lg">Recommended for You</h3>
           </div>
           <div className="space-y-3">
-            {MOCK_RECOMMENDED_COURSES.map((c) => (
+            {recommendedCourses.map((c) => (
               <div key={c.code} className="p-3 rounded-xl bg-white border border-brand-100">
                 <div className="flex items-center justify-between">
                   <div className="font-medium text-sm">{c.code} · {c.name}</div>

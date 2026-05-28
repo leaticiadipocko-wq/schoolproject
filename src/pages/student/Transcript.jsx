@@ -4,7 +4,7 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import toast from 'react-hot-toast'
 import { useAuth } from '@/context/AuthContext'
-import { MOCK_RESULTS } from '@/lib/mockData'
+import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 import Logo from '@/components/Logo'
 
@@ -12,11 +12,13 @@ const gradePoints = { 'A': 4, 'B+': 3.5, 'B': 3, 'C+': 2.5, 'C': 2, 'D': 1, 'F':
 
 export default function Transcript() {
   const { user } = useAuth()
+  const { results: allResults } = useData()
+  const MOCK_RESULTS = allResults.filter((r) => !r.studentId)
   const ref = useRef()
 
-  const cgpa = (
-    MOCK_RESULTS.reduce((s, r) => s + (gradePoints[r.grade] || 0), 0) / MOCK_RESULTS.length
-  ).toFixed(2)
+  const cgpa = MOCK_RESULTS.length
+    ? (MOCK_RESULTS.reduce((s, r) => s + (gradePoints[r.grade] || 0), 0) / MOCK_RESULTS.length).toFixed(2)
+    : '0.00'
 
   const handleDownload = async () => {
     toast.loading('Generating PDF…', { id: 'pdf' })

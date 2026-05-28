@@ -1,18 +1,25 @@
 import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Menu, Bell, Search, LogOut, Settings, User as UserIcon, ChevronDown } from 'lucide-react'
+import { Menu, Bell, Search, LogOut, Settings, User as UserIcon, ChevronDown, Moon, Sun, Check } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { useData } from '@/context/DataContext'
 import { ROLE_LABELS } from '@/lib/roles'
 
 export default function Navbar({ onMenu, title }) {
   const { user, logout } = useAuth()
+  const { notifications, markNotificationRead, markAllNotificationsRead, theme, toggleTheme } = useData()
   const navigate = useNavigate()
-  const [open, setOpen] = useState(false)
-  const menuRef = useRef()
+  const [profileOpen, setProfileOpen] = useState(false)
+  const [notifOpen, setNotifOpen] = useState(false)
+  const profileRef = useRef()
+  const notifRef = useRef()
+
+  const unread = notifications.filter((n) => !n.read).length
 
   useEffect(() => {
     const close = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setOpen(false)
+      if (profileRef.current && !profileRef.current.contains(e.target)) setProfileOpen(false)
+      if (notifRef.current && !notifRef.current.contains(e.target)) setNotifOpen(false)
     }
     document.addEventListener('mousedown', close)
     return () => document.removeEventListener('mousedown', close)
@@ -42,18 +49,63 @@ export default function Navbar({ onMenu, title }) {
             className="input pl-10 py-2 text-sm"
             placeholder="Search modules, courses, people…"
           />
-          <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-mono text-ink-400 border border-ink-200 px-1.5 py-0.5 rounded">⌘K</kbd>
         </div>
 
-        <button className="relative p-2 rounded-xl hover:bg-ink-100 text-ink-600">
-          <Bell size={18} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-500" />
+        {/* Theme toggle */}
+        <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title="Toggle theme">
+          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
+        {/* Notifications */}
+        <div className="relative" ref={notifRef}>
+          <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 rounded-xl hover:bg-ink-100 text-ink-600">
+            <Bell size={18} />
+            {unread > 0 && (
+              <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
+                {unread}
+              </span>
+            )}
+          </button>
+          {notifOpen && (
+            <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-ink-100 shadow-soft overflow-hidden animate-fade-in">
+              <div className="flex items-center justify-between p-4 border-b border-ink-100">
+                <div className="font-display font-bold">Notifications</div>
+                {unread > 0 && (
+                  <button onClick={markAllNotificationsRead} className="text-xs text-brand-700 hover:underline">
+                    Mark all read
+                  </button>
+                )}
+              </div>
+              <div className="max-h-80 overflow-y-auto">
+                {notifications.length === 0 ? (
+                  <div className="p-6 text-center text-sm text-ink-500">No notifications</div>
+                ) : notifications.map((n) => (
+                  <button
+                    key={n.id}
+                    onClick={() => markNotificationRead(n.id)}
+                    className={`w-full text-left p-3 hover:bg-ink-50 transition border-b border-ink-50 last:border-0 ${
+                      !n.read ? 'bg-brand-50/40' : ''
+                    }`}
+                  >
+                    <div className="flex items-start gap-2.5">
+                      {!n.read && <span className="w-2 h-2 rounded-full bg-accent-500 mt-1.5 shrink-0" />}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-ink-800">{n.text}</div>
+                        <div className="text-[11px] text-ink-500 mt-0.5">{n.time}</div>
+                      </div>
+                      {n.read && <Check size={14} className="text-ink-400 shrink-0" />}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
         {/* Profile */}
-        <div className="relative" ref={menuRef}>
+        <div className="relative" ref={profileRef}>
           <button
-            onClick={() => setOpen(!open)}
+            onClick={() => setProfileOpen(!profileOpen)}
             className="flex items-center gap-2.5 pl-1 pr-2 py-1 rounded-xl hover:bg-ink-100 transition"
           >
             <img
@@ -68,7 +120,7 @@ export default function Navbar({ onMenu, title }) {
             <ChevronDown size={14} className="text-ink-400" />
           </button>
 
-          {open && (
+          {profileOpen && (
             <div className="absolute right-0 mt-2 w-60 bg-white rounded-2xl border border-ink-100 shadow-soft overflow-hidden animate-fade-in">
               <div className="p-4 border-b border-ink-100">
                 <div className="flex items-center gap-3">

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" width="1100" height="700">
+
+<style>
+  .bg { fill: #ffffff; }
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+  .subtitle { font-size: 12px; fill: #64748b; }
+  .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; ry: 10; }
+  .box-brand { fill: #eff4ff; stroke: #1e3aa0; stroke-width: 2; rx: 10; ry: 10; }
+  .box-accent { fill: #fef2f2; stroke: #e63946; stroke-width: 2; rx: 10; ry: 10; }
+  .box-ink { fill: #1e3aa0; stroke: #172250; rx: 10; ry: 10; }
+  .label { font-size: 13px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+  .label-white { font-size: 13px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+  .label-sm { font-size: 11px; fill: #64748b; text-anchor: middle; }
+  .label-sm-white { font-size: 11px; fill: #c7d2fe; text-anchor: middle; }
+  .arrow { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .arrow-brand { stroke: #1e3aa0; stroke-width: 2; fill: none; marker-end: url(#arrow-brand); }
+  .arrow-red { stroke: #e63946; stroke-width: 1.8; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 5,3; }
+  .group-label { font-size: 11px; font-weight: 700; fill: #1e3aa0; text-anchor: start; letter-spacing: 1px; }
+  .group-box { fill: rgba(30,58,160,0.04); stroke: #1e3aa0; stroke-width: 1; stroke-dasharray: 4,3; rx: 14; ry: 14; }
+  .er-attr { font-size: 11px; fill: #334155; }
+  .er-key { font-size: 11px; font-weight: 700; fill: #1e3aa0; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1e3aa0"/></marker>
+  <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+</defs>
+
+<rect class="bg" width="1100" height="700"/>
+<text x="40" y="38" class="title">SIARM — Sequence Diagram (Login Flow)</text>
+<text x="40" y="58" class="subtitle">Student authenticates → AuthContext checks Firebase → Firestore loads profile → Routed to dashboard</text>
+<rect x="60" y="100" width="140" height="40" fill="#1e3aa0" rx="6"/>
+      <text x="130" y="125" class="label-white">Student</text>
+      <line x1="130" y1="140" x2="130" y2="640" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3,3"/><rect x="260" y="100" width="140" height="40" fill="#1e3aa0" rx="6"/>
+      <text x="330" y="125" class="label-white">Login Page</text>
+      <line x1="330" y1="140" x2="330" y2="640" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3,3"/><rect x="460" y="100" width="140" height="40" fill="#1e3aa0" rx="6"/>
+      <text x="530" y="125" class="label-white">AuthContext</text>
+      <line x1="530" y1="140" x2="530" y2="640" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3,3"/><rect x="660" y="100" width="140" height="40" fill="#1e3aa0" rx="6"/>
+      <text x="730" y="125" class="label-white">Firebase Auth</text>
+      <line x1="730" y1="140" x2="730" y2="640" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3,3"/><rect x="860" y="100" width="140" height="40" fill="#1e3aa0" rx="6"/>
+      <text x="930" y="125" class="label-white">Firestore</text>
+      <line x1="930" y1="140" x2="930" y2="640" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="3,3"/><rect x="324" y="180" width="12" height="420" fill="#1e3aa0" opacity="0.2"/><rect x="524" y="220" width="12" height="360" fill="#1e3aa0" opacity="0.2"/><rect x="724" y="280" width="12" height="180" fill="#1e3aa0" opacity="0.2"/><rect x="924" y="380" width="12" height="160" fill="#1e3aa0" opacity="0.2"/><path d="M130,180 L330,180" stroke="#1e3aa0" stroke-width="1.8" fill="none" marker-end="url(#arrow-brand)" />
+      <text x="230" y="174" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">1. Enter email + password</text><path d="M330,220 L530,220" stroke="#1e3aa0" stroke-width="1.8" fill="none" marker-end="url(#arrow-brand)" />
+      <text x="430" y="214" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">2. login(email, password)</text><path d="M530,280 L730,280" stroke="#1e3aa0" stroke-width="1.8" fill="none" marker-end="url(#arrow-brand)" />
+      <text x="630" y="274" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">3. signInWithEmailAndPassword()</text><path d="M730,340 L530,340" stroke="#94a3b8" stroke-width="1.8" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="630" y="334" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">4. JWT credentials</text><path d="M530,380 L930,380" stroke="#1e3aa0" stroke-width="1.8" fill="none" marker-end="url(#arrow-brand)" />
+      <text x="730" y="374" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">5. getDoc(users/uid)</text><path d="M930,440 L530,440" stroke="#94a3b8" stroke-width="1.8" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="730" y="434" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">6. user profile + role</text><path d="M530,480 L330,480" stroke="#94a3b8" stroke-width="1.8" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="430" y="474" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">7. user object</text><path d="M330,540 L130,540" stroke="#94a3b8" stroke-width="1.8" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="230" y="534" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">8. Redirect to /role-home</text><path d="M330,600 L130,600" stroke="#94a3b8" stroke-width="1.8" fill="none" marker-end="url(#arrow)" stroke-dasharray="5,3"/>
+      <text x="230" y="594" font-size="11" fill="#1e293b" text-anchor="middle" font-weight="600">9. Render dashboard</text>
+</svg>
