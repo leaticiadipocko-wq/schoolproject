@@ -7,6 +7,7 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { DataProvider } from './context/DataContext.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
+import CommandPalette from './components/CommandPalette.jsx'
 import './index.css'
 
 // Auto-update the service worker when a new version ships
@@ -26,6 +27,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <DataProvider>
           <App />
+          <CommandPalette />
           <OfflineIndicator />
           <Toaster
             position="top-right"

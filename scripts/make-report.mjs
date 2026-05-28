@@ -135,7 +135,7 @@ const cover = [
 const abstract = [
   new Paragraph({ alignment: AlignmentType.CENTER, children: [T('ABSTRACT', { size: 28, bold: true, color: NAVY })] }),
   P([T('')], { spacing: { after: 280 } }),
-  Body('SIARM (Smart Institution Academic Resource Management) is a unified academic operating system designed for private universities, with IUGET Bonaberi as its reference deployment. It consolidates seventeen administrative and pedagogical workflows — attendance, results, timetables, announcements, decision support, predictive enrolment, AI chatbot, mobile learning, transcript generation, and more — into one role-aware web platform.'),
+  Body('SIARM (Smart Institution Academic Resource Management) is a unified academic operating system designed for private universities, with IUGET Bonaberi as its reference deployment. It consolidates nineteen administrative and pedagogical workflows — attendance, results, timetables, announcements, decision support, predictive enrolment, AI chatbot, mobile learning, transcript generation, and more — into one role-aware web platform.'),
   Body('The system is implemented as a React 18 single-page application with Tailwind CSS, backed by Firebase (Authentication, Cloud Firestore, Storage) and integrated with the Anthropic Claude API for AI-driven enquiry handling. Access control is hierarchical, exposing role-specific dashboards to Students, Lecturers, Staff, and Administrators.'),
   Body('A demonstrable prototype implements all 15 modules end-to-end with persistent state, IUGET branding, downloadable PDF transcripts, real-time analytics dashboards, and an offline-capable announcement portal. Production builds are deployable to any static CDN. This document describes the problem context, methodology, architectural design, implementation, testing, and the path to future production rollout.'),
   P([T('Keywords: ', { bold: true, size: 22 }), T('academic ERP, role-based access control, React, Firebase, AI in education, predictive analytics, IUGET, Cameroon higher education.', { size: 22 })]),
@@ -343,6 +343,8 @@ const chapter5 = [
     ['15', 'Settings',                'Institution info, grading scale, academic year selector.'],
     ['16', 'Tuition payment',         'MoMo / Orange Money / Visa / bank simulation with printable receipt.'],
     ['17', 'Student ID card',         'Two-sided card with photo, QR, print + PDF + PNG export.'],
+    ['18', 'PWA / offline',           'Workbox service worker · installable · app shell cache.'],
+    ['19', 'Command palette',         'Cmd+K / Ctrl+K keyboard-driven navigation · role-aware.'],
   ]),
 
   H2('5.6  Real IUGET Level-3 SWE Courses'),
@@ -439,7 +441,7 @@ const chapter7 = [
     ['Source files',                '50'],
     ['Lines of code (approx.)',     '8,800'],
     ['Pages',                       '22'],
-    ['Modules delivered',           '17'],
+    ['Modules delivered',           '19'],
     ['Reusable components',         '12'],
     ['Diagrams produced',           '7'],
     ['Test cases passed',           '18 / 18'],

@@ -263,12 +263,12 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
 // ===== Slide 14: Modules Implemented =====
 {
   const s = pres.addSlide({ masterName: 'SIARM_MASTER' })
-  title(s, '17 Modules Delivered', 'Every workflow you asked for, working end-to-end')
+  title(s, '19 Modules Delivered', 'Every workflow you asked for, working end-to-end')
 
   const modules = [
     'Role-based authentication (4 roles)',
     'Attendance tracking + CSV export',
-    'Smart timetable + AI optimization',
+    '3-specialty IUGET timetable (SWE/CNSM/BST)',
     'Results & printable grade sheet',
     'Offline announcements portal',
     'AI chatbot (Claude-ready)',
@@ -283,6 +283,8 @@ function shape(slide, x, y, w, h, fill, text, fontSize = 14, color = 'FFFFFF') {
     'Institution settings',
     'Tuition payment (MoMo, OM, Visa, Bank)',
     'Student ID card generator',
+    'PWA / Offline / Installable',
+    'Command palette (Cmd+K)',
   ]
   modules.forEach((m, i) => {
     const col = i % 3, row = Math.floor(i / 3)

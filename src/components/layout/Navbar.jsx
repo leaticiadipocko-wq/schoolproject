@@ -42,14 +42,19 @@ export default function Navbar({ onMenu, title }) {
           </div>
         </div>
 
-        {/* Search */}
-        <div className="hidden md:flex relative w-72">
-          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
-          <input
-            className="input pl-10 py-2 text-sm"
-            placeholder="Search modules, courses, people…"
-          />
-        </div>
+        {/* Search → opens command palette */}
+        <button
+          onClick={() => {
+            // synthesize a ⌘K keydown to open the palette
+            const ev = new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })
+            window.dispatchEvent(ev)
+          }}
+          className="hidden md:flex items-center gap-3 w-72 px-3.5 py-2 rounded-xl bg-white border border-ink-200 text-sm text-ink-400 hover:border-brand-300 hover:text-ink-600 transition"
+        >
+          <Search size={16} />
+          <span className="flex-1 text-left">Search anything…</span>
+          <kbd className="text-[10px] font-mono text-ink-400 border border-ink-200 px-1.5 py-0.5 rounded bg-ink-50">⌘K</kbd>
+        </button>
 
         {/* Theme toggle */}
         <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title="Toggle theme">
