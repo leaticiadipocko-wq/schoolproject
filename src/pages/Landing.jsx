@@ -23,9 +23,9 @@ const features = [
 ]
 
 const stats = [
-  { value: '15+', label: 'Integrated Modules' },
+  { value: '19',  label: 'Integrated Modules' },
   { value: '4',   label: 'User Roles' },
-  { value: 'AI',  label: 'Smart Insights' },
+  { value: '94%', label: 'AI Prediction Accuracy' },
   { value: '∞',   label: 'Possibilities' },
 ]
 
@@ -58,9 +58,9 @@ export default function Landing() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="badge-info mb-6 inline-flex">
-              <Sparkles size={12} /> Built for IUGET · AI-powered academic platform
-            </span>
+              <span className="badge-info mb-6 inline-flex">
+                <Sparkles size={12} /> 19 modules · 4 roles · 3 specialties · PWA offline
+              </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
               The unified <span className="gradient-text">academic OS</span><br />
               for IUGET University.
