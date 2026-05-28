@@ -9,8 +9,9 @@ export const MOCK_USERS = [
     password: 'password',
     role: 'student',
     name: 'Alice Mbah',
-    studentId: 'IUGET/2023/CS/0142',
-    program: 'BSc Computer Science',
+    studentId: 'IUGET/2023/SWE/0142',
+    program: 'Bachelor of Technology — Software Engineering',
+    specialty: 'SWE',
     level: 3,
     avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
   },
@@ -65,18 +66,31 @@ export const MOCK_COURSES = [
   { code: 'CS207', name: 'Software Engineering Intro',  credits: 3, lecturer: 'Dr K. Mbah',             level: 2, track: 'l2-morning' },
 ]
 
-// IUGET runs three parallel academic tracks. The Bachelor section (Level 3 SWE)
-// is the main focus of SIARM — it runs Monday–Friday evenings (18:00–22:00)
-// and Saturday all day (08:00–17:00). Level 1 and 2 run Monday–Friday mornings.
+// IUGET Bachelor of Technology — Bonabéri campus runs three specialties
+// in parallel on the same evening + Saturday grid:
+//   SWE   — Software Engineering
+//   CNSM  — Computer Networks & Multimedia Systems
+//   BST   — Business Strategy & Technology (Geotechnical/Civil track)
+// Reference timetable: N°30/IUGET/C-DIR/P-SP/05-26-SW · Sixth Semester · Week 25–31 May 2026
+export const SPECIALTIES = {
+  SWE:  { id: 'SWE',  name: 'Software Engineering',                  color: 'brand',   chip: 'bg-brand-100 text-brand-800' },
+  CNSM: { id: 'CNSM', name: 'Computer Networks & Multimedia Systems',color: 'accent',  chip: 'bg-accent-100 text-accent-700' },
+  BST:  { id: 'BST',  name: 'Business Strategy & Technology',        color: 'amber',   chip: 'bg-amber-100 text-amber-700' },
+}
+
+// Tracks define when classes happen — the Bachelor section shares one grid
+// across all three specialties. Level 1 and 2 run their own morning grid.
 export const TIMETABLE_TRACKS = {
   'bachelor-evening': {
     id: 'bachelor-evening',
-    name: 'Bachelor (Level 3) — Evening + Saturday',
+    name: 'Bachelor of Technology — Sixth Semester',
     short: 'Bachelor · Evening',
     description: 'Mon–Fri 18:00–22:00  ·  Sat 08:00–17:00',
+    docRef: 'N°30/IUGET/C-DIR/P-SP/05-26-SW',
     days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
     weekdaySlots: ['18:00 - 20:00', '20:00 - 22:00'],
     saturdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
+    specialties: ['SWE', 'CNSM', 'BST'],
     color: 'bg-brand-800',
   },
   'l1-morning': {
@@ -87,6 +101,7 @@ export const TIMETABLE_TRACKS = {
     days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     weekdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
     saturdaySlots: [],
+    specialties: ['SWE', 'CNSM', 'BST'],
     color: 'bg-emerald-600',
   },
   'l2-morning': {
@@ -97,33 +112,72 @@ export const TIMETABLE_TRACKS = {
     days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
     weekdaySlots: ['08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00'],
     saturdaySlots: [],
+    specialties: ['SWE', 'CNSM', 'BST'],
     color: 'bg-accent-600',
   },
 }
+
+// Holidays / non-class days for the current week
+export const HOLIDAYS = [
+  { date: '2026-05-27', day: 'Wednesday', name: 'Eid Al-Adha observation', track: 'bachelor-evening' },
+]
 
 export const ALL_TIMETABLE_SLOTS = [
   '08:00 - 10:00', '10:00 - 12:00', '13:00 - 15:00', '15:00 - 17:00',
   '18:00 - 20:00', '20:00 - 22:00',
 ]
 
-// Bachelor — Level 3 SWE evening + Saturday schedule
+// Bachelor of Technology — Sixth Semester (25–31 May 2026)
+// Sourced from the official IUGET timetable (ref N°30/IUGET/C-DIR/P-SP/05-26-SW).
+// Each row pins a specialty so all three (SWE, CNSM, BST) can share the same grid.
 export const MOCK_TIMETABLE = [
-  // Mon-Fri evenings (18:00 - 22:00) — 2 slots × 5 days = 10 slots
-  { day: 'Monday',    time: '18:00 - 20:00', course: 'CS501', room: 'Hall A',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
-  { day: 'Monday',    time: '20:00 - 22:00', course: 'CS511', room: 'Lab 2',   lecturer: 'Mr Asongafack Patrick',track: 'bachelor-evening' },
-  { day: 'Tuesday',   time: '18:00 - 20:00', course: 'CS505', room: 'Lab 1',   lecturer: 'Eng Fotseu Julien',    track: 'bachelor-evening' },
-  { day: 'Tuesday',   time: '20:00 - 22:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
-  { day: 'Wednesday', time: '18:00 - 20:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
-  { day: 'Wednesday', time: '20:00 - 22:00', course: 'CS503', room: 'Hall B',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
-  { day: 'Thursday',  time: '18:00 - 20:00', course: 'CS501', room: 'Hall A',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
-  { day: 'Thursday',  time: '20:00 - 22:00', course: 'CS511', room: 'Lab 2',   lecturer: 'Mr Asongafack Patrick',track: 'bachelor-evening' },
-  { day: 'Friday',    time: '18:00 - 20:00', course: 'CS505', room: 'Lab 1',   lecturer: 'Eng Fotseu Julien',    track: 'bachelor-evening' },
-  { day: 'Friday',    time: '20:00 - 22:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
-  // Saturday full day (08:00 - 17:00) — 4 slots
-  { day: 'Saturday',  time: '08:00 - 10:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
-  { day: 'Saturday',  time: '10:00 - 12:00', course: 'CS509', room: 'Studio',  lecturer: 'Dr Romeo Mougnol',     track: 'bachelor-evening' },
-  { day: 'Saturday',  time: '13:00 - 15:00', course: 'CS503', room: 'Hall B',  lecturer: 'Mr Nkoma Ngouloure',   track: 'bachelor-evening' },
-  { day: 'Saturday',  time: '15:00 - 17:00', course: 'CS507', room: 'Lab 3',   lecturer: 'Mr Smith Wills',       track: 'bachelor-evening' },
+  // ===== MONDAY 25/05/2026 =====
+  { day: 'Monday',    time: '18:00 - 20:00', specialty: 'SWE',  course: 'Linux Programming',         room: 'Hall A', lecturer: 'Engr Malobe Lottin',   group: '4/6', track: 'bachelor-evening' },
+  { day: 'Monday',    time: '18:00 - 20:00', specialty: 'CNSM', course: 'Linux Programming',         room: 'Hall A', lecturer: 'Engr Malobe Lottin',   group: '4/6', track: 'bachelor-evening' },
+  { day: 'Monday',    time: '18:00 - 20:00', specialty: 'BST',  course: 'Geotechnical Engineering',  room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',     group: '5/6', track: 'bachelor-evening' },
+  { day: 'Monday',    time: '20:00 - 22:00', specialty: 'SWE',  course: 'Computer Graphics',         room: 'Lab 2',  lecturer: 'Mr Nkoma Ngouloure',   group: '3/6', kind: 'CA', track: 'bachelor-evening' },
+  { day: 'Monday',    time: '20:00 - 22:00', specialty: 'CNSM', course: 'Research Topic',            room: 'Studio', lecturer: 'By Supervisor',                       track: 'bachelor-evening' },
+  { day: 'Monday',    time: '20:00 - 22:00', specialty: 'BST',  course: 'Geotechnical Engineering II', room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',   group: '5/6', track: 'bachelor-evening' },
+
+  // ===== TUESDAY 26/05/2026 (partial — placeholders pending full data) =====
+  { day: 'Tuesday',   time: '18:00 - 20:00', specialty: 'SWE',  course: 'Compiler Design',           room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure',                  track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '18:00 - 20:00', specialty: 'CNSM', course: 'Network Security',          room: 'Lab 1',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '18:00 - 20:00', specialty: 'BST',  course: 'Project Management',        room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',                    track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '20:00 - 22:00', specialty: 'SWE',  course: 'Mobile Development',        room: 'Lab 3',  lecturer: 'Mr Smith Wills',                      track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '20:00 - 22:00', specialty: 'CNSM', course: 'Multimedia Systems',        room: 'Lab 1',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Tuesday',   time: '20:00 - 22:00', specialty: 'BST',  course: 'Business Analytics',        room: 'Hall B', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+
+  // ===== WEDNESDAY 27/05/2026 — EID AL-ADHA HOLIDAY (no classes) =====
+
+  // ===== THURSDAY 28/05/2026 (provisional — confirm with screenshot) =====
+  { day: 'Thursday',  time: '18:00 - 20:00', specialty: 'SWE',  course: 'Object Oriented Programming', room: 'Lab 2', lecturer: 'Mr Asongafack Patrick',              track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '18:00 - 20:00', specialty: 'CNSM', course: 'Linux Programming',         room: 'Hall A', lecturer: 'Engr Malobe Lottin',                  track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '18:00 - 20:00', specialty: 'BST',  course: 'Geotechnical Engineering',  room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',                    track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '20:00 - 22:00', specialty: 'SWE',  course: 'Research Methodology',      room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure',                  track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '20:00 - 22:00', specialty: 'CNSM', course: 'Computer Graphics',         room: 'Lab 2',  lecturer: 'Mr Nkoma Ngouloure',                  track: 'bachelor-evening' },
+  { day: 'Thursday',  time: '20:00 - 22:00', specialty: 'BST',  course: 'Geotechnical Engineering II', room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',                  track: 'bachelor-evening' },
+
+  // ===== FRIDAY 29/05/2026 (provisional) =====
+  { day: 'Friday',    time: '18:00 - 20:00', specialty: 'SWE',  course: 'Embedded Systems',          room: 'Lab 1',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Friday',    time: '18:00 - 20:00', specialty: 'CNSM', course: 'Wireless Networks',         room: 'Lab 1',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Friday',    time: '18:00 - 20:00', specialty: 'BST',  course: 'Marketing Strategy',        room: 'Hall B', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+  { day: 'Friday',    time: '20:00 - 22:00', specialty: 'SWE',  course: 'Mobile Development',        room: 'Lab 3',  lecturer: 'Mr Smith Wills',                      track: 'bachelor-evening' },
+  { day: 'Friday',    time: '20:00 - 22:00', specialty: 'CNSM', course: 'IoT Systems',               room: 'Lab 3',  lecturer: 'Mr Smith Wills',                      track: 'bachelor-evening' },
+  { day: 'Friday',    time: '20:00 - 22:00', specialty: 'BST',  course: 'Operations Management',     room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',                    track: 'bachelor-evening' },
+
+  // ===== SATURDAY 30/05/2026 — Full day (provisional) =====
+  { day: 'Saturday',  time: '08:00 - 10:00', specialty: 'SWE',  course: 'Design Project',            room: 'Studio', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '08:00 - 10:00', specialty: 'CNSM', course: 'Design Project',            room: 'Lab 4',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '08:00 - 10:00', specialty: 'BST',  course: 'Design Project',            room: 'Hall C', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '10:00 - 12:00', specialty: 'SWE',  course: 'Design Project (cont.)',    room: 'Studio', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '10:00 - 12:00', specialty: 'CNSM', course: 'Design Project (cont.)',    room: 'Lab 4',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '10:00 - 12:00', specialty: 'BST',  course: 'Design Project (cont.)',    room: 'Hall C', lecturer: 'Dr Romeo Mougnol',                    track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '13:00 - 15:00', specialty: 'SWE',  course: 'Research Methodology',      room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure',                  track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '13:00 - 15:00', specialty: 'CNSM', course: 'Research Methodology',      room: 'Hall A', lecturer: 'Mr Nkoma Ngouloure',                  track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '13:00 - 15:00', specialty: 'BST',  course: 'Business Ethics',           room: 'Hall B', lecturer: 'Mr Kamdem Arnaud',                    track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '15:00 - 17:00', specialty: 'SWE',  course: 'Object Oriented Programming Lab', room: 'Lab 2', lecturer: 'Mr Asongafack Patrick',           track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '15:00 - 17:00', specialty: 'CNSM', course: 'Network Lab',               room: 'Lab 1',  lecturer: 'Eng Fotseu Julien',                   track: 'bachelor-evening' },
+  { day: 'Saturday',  time: '15:00 - 17:00', specialty: 'BST',  course: 'Field Study',               room: 'External', lecturer: 'Mr Kamdem Arnaud',                  track: 'bachelor-evening' },
 
   // Level 1 — morning session (placeholder, to be filled by admin)
   { day: 'Monday',    time: '08:00 - 10:00', course: 'CS101', room: 'Hall C',  lecturer: 'Mr B. Kamgang',        track: 'l1-morning' },

@@ -2,10 +2,23 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { registerSW } from 'virtual:pwa-register'
 import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { DataProvider } from './context/DataContext.jsx'
+import OfflineIndicator from './components/OfflineIndicator.jsx'
 import './index.css'
+
+// Auto-update the service worker when a new version ships
+registerSW({
+  immediate: true,
+  onNeedRefresh() {
+    // Auto-refresh: the next reload picks up the new bundle
+  },
+  onOfflineReady() {
+    // First visit cached — app is ready offline
+  },
+})
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
@@ -13,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <AuthProvider>
         <DataProvider>
           <App />
+          <OfflineIndicator />
           <Toaster
             position="top-right"
             toastOptions={{
