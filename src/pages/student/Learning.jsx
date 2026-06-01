@@ -1,12 +1,11 @@
 import { useState } from 'react'
-import { BookOpen, Clock, Play, Search, Code, Database, Brain, Smartphone } from 'lucide-react'
+import { BookOpen, Clock, Play, Search, Code, Database, Smartphone } from 'lucide-react'
 import { MOCK_LEARNING_TOPICS } from '@/lib/mockData'
 import PageHeader from '@/components/ui/PageHeader'
 
 const CATEGORY_ICON = {
   Web: Code,
   Data: Database,
-  AI: Brain,
   Mobile: Smartphone,
 }
 

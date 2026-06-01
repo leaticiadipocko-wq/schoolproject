@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react'
 import {
   MOCK_ANNOUNCEMENTS, MOCK_ATTENDANCE, MOCK_RESULTS,
-  MOCK_COURSES, MOCK_TIMETABLE, MOCK_RECOMMENDED_COURSES, MOCK_USERS,
+  MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
   MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
 
@@ -21,7 +21,6 @@ const initialState = {
   attendanceLog: [],
   results: MOCK_RESULTS,
   enrolledCourses: ['CS501', 'CS503', 'CS505', 'CS507', 'CS509', 'CS511'],
-  recommendedCourses: MOCK_RECOMMENDED_COURSES,
   timetable: MOCK_TIMETABLE,
   users: MOCK_USERS.map(({ password, ...u }) => u),
   notifications: [

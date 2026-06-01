@@ -294,28 +294,17 @@ export const MOCK_LEARNING_TOPICS = [
     lessons: 14,
   },
   {
-    id: 't-5', category: 'AI', title: 'Intro to Machine Learning', minutes: 90,
-    summary: 'Supervised vs unsupervised learning with real examples.',
-    lessons: 16,
-  },
-  {
-    id: 't-6', category: 'Mobile', title: 'React Native Basics', minutes: 75,
+    id: 't-5', category: 'Mobile', title: 'React Native Basics', minutes: 75,
     summary: 'Build cross-platform mobile apps with React Native.',
     lessons: 15,
   },
 ]
 
-export const MOCK_RECOMMENDED_COURSES = [
-  { code: 'CS601', name: 'Advanced AI & Deep Learning',      match: 94, reason: 'Strong performance in OOP (CS511) and Mobile Dev (CS507)' },
-  { code: 'CS603', name: 'Cloud Computing & DevOps',          match: 88, reason: 'Complements your Compiler Design background' },
-  { code: 'CS605', name: 'Cybersecurity & Ethical Hacking',   match: 81, reason: 'Builds on Embedded Systems coursework' },
-]
-
-export const MOCK_AI_INSIGHTS = [
+export const MOCK_ANNOUNCEMENT_INSIGHTS = [
   { type: 'success',  text: 'Student attendance is up 12% this semester compared to last.' },
-  { type: 'warning',  text: '11% of Level-3 students are at risk in CS511 (OOP) — consider extra tutorials.' },
-  { type: 'info',     text: 'Predicted enrollment for 2026 intake: 1,240 applicants (+22%).' },
-  { type: 'success',  text: 'Lecturer Mr Nkoma Ngouloure has the highest student satisfaction this term.' },
+  { type: 'info',     text: 'Lecturer Mr Nkoma Ngouloure has the highest student satisfaction this term.' },
+  { type: 'warning',  text: 'CS509 Design Project has 4 students at risk of failing — recommend tutorial sessions.' },
+  { type: 'success',  text: 'Tuition collection rate reached 92% — best Q2 result in three years.' },
 ]
 
 export const MOCK_STUDENTS = Array.from({ length: 18 }, (_, i) => ({

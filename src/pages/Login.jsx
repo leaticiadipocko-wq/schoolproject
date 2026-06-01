@@ -48,22 +48,31 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* Left visual */}
-      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-gradient-to-br from-brand-700 via-brand-600 to-accent-600 text-white p-12 flex-col justify-between">
-        <Logo withText={false} size={48} />
+      <div className="hidden lg:flex w-1/2 relative overflow-hidden bg-[linear-gradient(180deg,#fffdf7_0%,#f8f5ee_100%)] text-ink-900 p-12 flex-col justify-between border-r border-ink-100">
+        {/* Logo on a white card so the IUGET emblem stays vivid */}
+        <div className="inline-flex items-center bg-white rounded-2xl shadow-soft px-4 py-3 self-start">
+          <Logo withText size={52} />
+        </div>
+
         <div>
-          <h2 className="text-5xl font-display font-bold leading-tight">
-            Welcome back to <br />the future of education.
+          <h2 className="text-5xl font-display font-bold leading-tight text-ink-900">
+            Welcome back to <br />
+            <span className="text-accent-600">academic excellence.</span>
           </h2>
-          <p className="mt-6 text-lg text-white/80 max-w-md">
+          <p className="mt-6 text-lg text-ink-600 max-w-md">
             Sign in to access your personalized dashboard — attendance,
-            grades, AI tutor, and more.
+            grades, timetable, and results.
+          </p>
+          <p className="mt-4 text-sm italic text-accent-700 font-medium">
+            « Bien choisir c'est déjà réussir » — IUGET
           </p>
         </div>
-        <div className="text-sm text-white/60">© {new Date().getFullYear()} SIARM</div>
 
-        {/* Decorative blobs */}
-        <div className="absolute -top-20 -right-20 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
-        <div className="absolute -bottom-20 -left-20 w-96 h-96 bg-accent-300/20 rounded-full blur-3xl" />
+        <div className="text-sm text-ink-500">© {new Date().getFullYear()} SIARM · IUGET Bonaberi</div>
+
+        {/* Decorative warm blobs — gentle, never overpowering the logo */}
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent-200/40 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-amber-200/40 rounded-full blur-3xl pointer-events-none" />
       </div>
 
       {/* Right form */}

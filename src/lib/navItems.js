@@ -1,6 +1,6 @@
 import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
-  Bot, BookOpen, Sparkles, FileSpreadsheet, Users, TrendingUp,
+  BookOpen, Sparkles, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard,
 } from 'lucide-react'
 
@@ -26,8 +26,6 @@ export const STUDENT_NAV = [
   {
     title: 'Smart',
     links: [
-      { to: '/student/chatbot',  label: 'AI Assistant',     icon: Bot, badge: 'AI' },
-      { to: '/student/courses',  label: 'Courses',          icon: BookOpen },
       { to: '/student/learning', label: 'Mobile Learning',  icon: Sparkles },
     ],
   },
@@ -47,7 +45,6 @@ export const LECTURER_NAV = [
     title: 'Communicate',
     links: [
       { to: '/lecturer/announcements', label: 'Announcements', icon: Megaphone },
-      { to: '/lecturer/chatbot',       label: 'AI Assistant',  icon: Bot, badge: 'AI' },
     ],
   },
 ]
@@ -65,7 +62,7 @@ export const STAFF_NAV = [
   {
     title: 'Insights',
     links: [
-      { to: '/staff/analytics',   label: 'Analytics',         icon: TrendingUp, badge: 'AI' },
+      { to: '/staff/analytics',   label: 'Analytics',         icon: TrendingUp },
     ],
   },
 ]
@@ -75,8 +72,7 @@ export const ADMIN_NAV = [
     title: 'Overview',
     links: [
       { to: '/admin',           label: 'Dashboard',     icon: LayoutDashboard },
-      { to: '/admin/analytics', label: 'AI Analytics',  icon: Sparkles, badge: 'AI' },
-      { to: '/admin/predictions', label: 'Predictions', icon: TrendingUp, badge: 'ML' },
+      { to: '/admin/analytics', label: 'Analytics',     icon: TrendingUp },
     ],
   },
   {

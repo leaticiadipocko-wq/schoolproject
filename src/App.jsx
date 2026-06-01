@@ -16,8 +16,6 @@ import Attendance from '@/pages/student/Attendance'
 import Timetable from '@/pages/student/Timetable'
 import Results from '@/pages/student/Results'
 import Announcements from '@/pages/student/Announcements'
-import Chatbot from '@/pages/student/Chatbot'
-import Courses from '@/pages/student/Courses'
 import Learning from '@/pages/student/Learning'
 import Transcript from '@/pages/student/Transcript'
 import Fees from '@/pages/student/Fees'
@@ -38,7 +36,6 @@ import Analytics from '@/pages/admin/Analytics'
 import UserManagement from '@/pages/admin/UserManagement'
 import TimetableBuilder from '@/pages/admin/TimetableBuilder'
 import AdminAnnouncements from '@/pages/admin/Announcements'
-import Predictions from '@/pages/admin/Predictions'
 import Settings from '@/pages/admin/Settings'
 
 function RoleHome() {
@@ -68,8 +65,6 @@ export default function App() {
         <Route path="timetable"     element={<Timetable />} />
         <Route path="results"       element={<Results />} />
         <Route path="announcements" element={<Announcements />} />
-        <Route path="chatbot"       element={<Chatbot />} />
-        <Route path="courses"       element={<Courses />} />
         <Route path="learning"      element={<Learning />} />
         <Route path="transcript"    element={<Transcript />} />
         <Route path="fees"          element={<Fees />} />
@@ -90,7 +85,6 @@ export default function App() {
         <Route path="attendance"    element={<MarkAttendance />} />
         <Route path="grades"        element={<EnterGrades />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
-        <Route path="chatbot"       element={<Chatbot />} />
       </Route>
 
       {/* Staff */}
@@ -120,7 +114,6 @@ export default function App() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="analytics"     element={<Analytics />} />
-        <Route path="predictions"   element={<Predictions />} />
         <Route path="users"         element={<UserManagement />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
