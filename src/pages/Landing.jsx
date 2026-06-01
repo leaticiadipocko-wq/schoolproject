@@ -2,31 +2,24 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import {
   GraduationCap, ClipboardCheck, CalendarClock, Megaphone,
-  Brain, Bot, TrendingUp, LineChart, FileText, BookOpen,
-  Sparkles, ShieldCheck, ArrowRight, Github,
+  Wallet, IdCard, TrendingUp, LineChart, FileText, BookOpen,
+  UserPlus, ShieldCheck, ArrowRight, Banknote,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 
 const features = [
-  { icon: ClipboardCheck, title: 'Attendance Tracking',     desc: 'Real-time roll-call with biometric-style verification & reports.' },
-  { icon: CalendarClock,  title: 'Smart Timetable',         desc: 'AI-optimized schedules that minimize conflicts and travel time.' },
-  { icon: FileText,       title: 'Results & Transcripts',   desc: 'Generate GPA, certificates, and transcripts on demand.' },
-  { icon: Megaphone,      title: 'Offline Announcements',   desc: 'Reach students even without internet via service-worker cache.' },
-  { icon: Bot,            title: 'AI Chatbot',              desc: 'Answer university enquiries 24/7 with a Claude-powered agent.' },
-  { icon: Brain,          title: 'Decision Support',        desc: 'Data-driven recommendations for academic leadership.' },
-  { icon: TrendingUp,     title: 'Predictive Enrollment',   desc: 'Forecast future intake and resource needs with ML models.' },
-  { icon: LineChart,      title: 'Real-time Analytics',     desc: 'Live dashboards on staff, student, and academic KPIs.' },
-  { icon: BookOpen,       title: 'Mobile Learning',         desc: 'W3Schools-style micro-lessons inside the platform.' },
-  { icon: Sparkles,       title: 'Course Recommendations',  desc: 'Personalized electives based on past performance.' },
-  { icon: ShieldCheck,    title: 'Role-Based Access',       desc: 'Hierarchical permissions for students, lecturers, staff, admin.' },
-  { icon: GraduationCap,  title: 'Automated Recovery',      desc: 'Resit registration, fee tracking, and academic recovery flows.' },
-]
-
-const stats = [
-  { value: '19',  label: 'Integrated Modules' },
-  { value: '4',   label: 'User Roles' },
-  { value: '94%', label: 'AI Prediction Accuracy' },
-  { value: '∞',   label: 'Possibilities' },
+  { icon: ClipboardCheck, title: 'Attendance Tracking',  desc: 'Lecturers mark daily attendance; students view their own records and rates.' },
+  { icon: CalendarClock,  title: 'Timetable Portal',     desc: 'Bachelor evening, Level 1 and Level 2 morning sessions on one screen, by specialty.' },
+  { icon: FileText,       title: 'Results & Transcripts',desc: 'Lecturers enter grades; students view results and download printable transcripts.' },
+  { icon: Megaphone,      title: 'Announcements',        desc: 'Institutional notices that stay available even when offline.' },
+  { icon: Wallet,         title: 'Tuition Payment',      desc: 'Pay tuition via MTN MoMo, Orange Money, Visa, or bank transfer with printable receipts.' },
+  { icon: Banknote,       title: 'Financial Tracking',   desc: 'Bursary dashboard for tuition collected, outstanding balances, and recovery rate.' },
+  { icon: IdCard,         title: 'Student ID Card',      desc: 'Generate and print the official student ID card with photo and verification code.' },
+  { icon: UserPlus,       title: 'Automated Enrolment',  desc: 'Register students one-by-one or by CSV upload; matricule, email and accounts created automatically.' },
+  { icon: LineChart,      title: 'Reporting Dashboards', desc: 'Operational dashboards for students, lecturers, registrar and leadership.' },
+  { icon: BookOpen,       title: 'Mobile Learning',      desc: 'Self-paced course material accessible inside the platform.' },
+  { icon: ShieldCheck,    title: 'Role-Based Access',    desc: 'Hierarchical permissions for students, lecturers, staff and administration.' },
+  { icon: GraduationCap,  title: 'Academic Recovery',    desc: 'Resit registration, deferral handling and continuous-assessment recovery flows.' },
 ]
 
 export default function Landing() {
@@ -59,15 +52,15 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
           >
               <span className="badge-info mb-6 inline-flex">
-                <Sparkles size={12} /> 19 modules · 4 roles · 3 specialties · PWA offline
+                Bachelor of Technology · IUGET Bonabéri
               </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
-              The unified <span className="gradient-text">academic OS</span><br />
+              The unified <span className="gradient-text">academic platform</span><br />
               for IUGET University.
             </h1>
             <p className="mt-6 text-lg md:text-xl text-ink-600 max-w-2xl mx-auto">
-              SIARM brings attendance, results, timetables, AI analytics, mobile learning,
-              and decision support into one seamless platform — tailored for IUGET Bonaberi.
+              SIARM brings attendance, results, timetables, tuition payment and student
+              records into one platform — tailored for IUGET Bonabéri.
             </p>
             <p className="mt-3 text-sm italic text-accent-700 font-medium">
               « Bien choisir c'est déjà réussir » — IUGET
@@ -96,9 +89,9 @@ export default function Landing() {
               <div className="rounded-xl bg-white p-6 shadow-soft">
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { label: 'Active Students', value: '2,847', trend: '+12%' },
-                    { label: 'AI Predictions',   value: '94%',   trend: 'accuracy' },
-                    { label: 'Avg. Attendance',  value: '88%',   trend: '+5%' },
+                    { label: 'Active Students',  value: '2,847', trend: '2025/2026' },
+                    { label: 'Avg. Attendance',  value: '88%',   trend: 'this semester' },
+                    { label: 'Tuition Collected', value: '92%',  trend: 'recovery rate' },
                   ].map((s) => (
                     <div key={s.label} className="rounded-xl bg-ink-50 p-5 text-left">
                       <div className="text-sm text-ink-500">{s.label}</div>
@@ -114,28 +107,17 @@ export default function Landing() {
       </section>
 
       {/* Stats */}
-      <section className="py-14 bg-white border-y border-ink-100">
-        <div className="max-w-5xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {stats.map((s) => (
-            <div key={s.label} className="text-center">
-              <div className="text-4xl md:text-5xl font-display font-bold gradient-text">{s.value}</div>
-              <div className="text-sm text-ink-500 mt-1">{s.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* Features grid */}
       <section id="features" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="badge-info"><Sparkles size={12} /> Capabilities</span>
+            <span className="badge-info">Capabilities</span>
             <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
-              Every academic workflow, <span className="gradient-text">automated.</span>
+              Every academic workflow, <span className="gradient-text">in one place.</span>
             </h2>
             <p className="text-lg text-ink-600 mt-4">
-              From the first day of class to graduation, SIARM handles every touchpoint
-              with intelligence and grace.
+              From admission to graduation, SIARM covers every touchpoint
+              of an IUGET student's journey.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">

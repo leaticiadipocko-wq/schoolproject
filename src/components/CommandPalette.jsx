@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import {
   Search, ArrowRight, CornerDownLeft, ArrowUp, ArrowDown,
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
-  BookOpen, Sparkles, FileSpreadsheet, Wallet, IdCard,
+  BookOpen, GraduationCap, FileSpreadsheet, Wallet, IdCard,
   Users, TrendingUp, UserCog, Settings, Moon, Sun, LogOut,
   Banknote, UserPlus,
 } from 'lucide-react'
@@ -42,7 +42,7 @@ export default function CommandPalette() {
         { id: 'nav-id',     group: 'Navigate', icon: IdCard,         label: 'My ID Card',      shortcut: 'G I', do: () => navigate('/student/idcard') },
         { id: 'nav-fees',   group: 'Navigate', icon: Wallet,         label: 'Tuition & Fees',  shortcut: 'G F', do: () => navigate('/student/fees') },
         { id: 'nav-trans',  group: 'Navigate', icon: FileSpreadsheet, label: 'Transcript',                    do: () => navigate('/student/transcript') },
-        { id: 'nav-learn',  group: 'Navigate', icon: Sparkles,       label: 'Mobile Learning',               do: () => navigate('/student/learning') },
+        { id: 'nav-learn',  group: 'Navigate', icon: GraduationCap,  label: 'Mobile Learning',               do: () => navigate('/student/learning') },
         // Quick actions
         { id: 'act-pay',    group: 'Quick action', icon: Wallet, label: 'Pay tuition fees',               do: () => navigate('/student/fees') },
         { id: 'act-print',  group: 'Quick action', icon: IdCard, label: 'Print my ID card',               do: () => navigate('/student/idcard') },

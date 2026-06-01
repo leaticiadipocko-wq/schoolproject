@@ -62,12 +62,12 @@ export default function Sidebar({ items, open, onClose }) {
         </nav>
 
         <div className="p-3 border-t border-ink-100">
-          <div className="rounded-xl bg-gradient-to-br from-brand-600 to-accent-600 text-white p-4">
-            <div className="font-display font-bold text-sm">SIARM Pro</div>
-            <div className="text-xs text-white/80 mt-1">Unlock AI insights & advanced analytics.</div>
-            <button className="mt-3 w-full bg-white/15 hover:bg-white/25 transition rounded-lg py-1.5 text-xs font-medium">
-              Learn more
-            </button>
+          <div className="rounded-xl bg-gradient-to-br from-brand-700 to-brand-800 text-white p-4">
+            <div className="font-display font-bold text-sm">IUGET Bonabéri</div>
+            <div className="text-xs text-white/80 mt-1">Bachelor of Technology · 2025/2026</div>
+            <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="mt-3 inline-block w-full text-center bg-white/15 hover:bg-white/25 transition rounded-lg py-1.5 text-xs font-medium">
+              Visit iuget.cm
+            </a>
           </div>
         </div>
       </aside>

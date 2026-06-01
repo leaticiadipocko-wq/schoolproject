@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import toast from 'react-hot-toast'
 import {
   UserPlus, Upload, CheckCircle2, Download, Trash2, IdCard,
-  Wallet, Mail, Sparkles, FileText, Loader2,
+  Wallet, Mail, Info, FileText, Loader2,
 } from 'lucide-react'
 import { SPECIALTIES, MOCK_FEE_STRUCTURE } from '@/lib/mockData'
 
@@ -221,7 +221,7 @@ export default function Enrollment() {
           </div>
 
           <div className="rounded-xl border border-dashed border-ink-200 p-3 bg-ink-50 text-xs text-ink-600">
-            <Sparkles size={12} className="inline -mt-0.5 mr-1 text-brand-600" />
+            <Info size={12} className="inline -mt-0.5 mr-1 text-brand-600" />
             On submit, SIARM will auto-create:
             <span className="font-medium"> matricule</span>,
             <span className="font-medium"> university email</span>,

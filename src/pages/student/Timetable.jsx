@@ -5,7 +5,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { TIMETABLE_TRACKS, SPECIALTIES, HOLIDAYS } from '@/lib/mockData'
 import PageHeader from '@/components/ui/PageHeader'
-import { Download, Sparkles, Moon, Sun, Clock, Filter, Calendar } from 'lucide-react'
+import { Download, Printer, Moon, Sun, Clock, Filter, Calendar } from 'lucide-react'
 
 const WEEK_DATES = {
   Monday: '25/05/2026', Tuesday: '26/05/2026', Wednesday: '27/05/2026',
@@ -81,8 +81,8 @@ export default function Timetable() {
         subtitle={`${track.name}  ·  Ref ${track.docRef || ''}`}
         actions={
           <>
-            <button onClick={() => toast.success('Schedule already optimised!')} className="btn-secondary">
-              <Sparkles size={16} /> Optimize
+            <button onClick={() => window.print()} className="btn-secondary">
+              <Printer size={16} /> Print
             </button>
             <button onClick={exportPDF} className="btn-primary">
               <Download size={16} /> Download PDF

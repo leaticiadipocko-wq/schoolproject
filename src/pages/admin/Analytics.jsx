@@ -2,7 +2,7 @@ import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   Legend, CartesianGrid,
 } from 'recharts'
-import { Sparkles, TrendingUp, AlertTriangle, Brain } from 'lucide-react'
+import { Printer, TrendingUp, AlertTriangle, LineChart as LineChartIcon } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 
 const PERFORMANCE = [
@@ -33,22 +33,22 @@ export default function Analytics() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="AI Analytics & Decision Support"
-        subtitle="Data-driven insights for institutional leadership"
-        actions={<button className="btn-primary"><Sparkles size={16} /> Generate report</button>}
+        title="Institutional Analytics"
+        subtitle="Operational dashboards for academic leadership"
+        actions={<button onClick={() => window.print()} className="btn-primary"><Printer size={16} /> Print report</button>}
       />
 
-      {/* AI summary banner */}
-      <div className="card bg-gradient-to-br from-brand-600 via-brand-700 to-accent-700 text-white border-0">
+      {/* Summary banner */}
+      <div className="card bg-gradient-to-br from-brand-700 via-brand-800 to-brand-900 text-white border-0">
         <div className="flex items-start gap-4">
           <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center shrink-0">
-            <Brain size={24} />
+            <LineChartIcon size={24} />
           </div>
           <div>
             <h3 className="text-xl font-display font-bold">This week's executive summary</h3>
             <p className="text-white/85 mt-1.5 max-w-3xl">
-              Overall student performance is trending upward (+5% vs last semester). Computer Science remains the
-              highest-demand department. However, CS307 shows a concerning at-risk cohort of 14% — recommend
+              Overall student performance is up 5% versus last semester. Computer Science remains the
+              highest-enrolment department. CS307 shows an at-risk cohort of 14% — the registrar may consider
               scheduling supplementary tutorials within the next two weeks.
             </p>
           </div>
@@ -92,12 +92,12 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* Predictive at-risk */}
+      {/* Students needing follow-up */}
       <div className="card">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <AlertTriangle size={20} className="text-amber-600" />
-            <h3 className="font-display font-bold text-lg">Predictive Risk: Students Needing Intervention</h3>
+            <h3 className="font-display font-bold text-lg">Students Needing Follow-up</h3>
           </div>
           <span className="badge-warning">{RISK_STUDENTS.length} flagged</span>
         </div>
@@ -109,7 +109,7 @@ export default function Analytics() {
                 <th className="text-left p-4">Course</th>
                 <th className="text-left p-4">Attendance</th>
                 <th className="text-left p-4">Current Grade</th>
-                <th className="text-left p-4">AI Reason</th>
+                <th className="text-left p-4">Notes</th>
                 <th className="text-left p-4">Action</th>
               </tr>
             </thead>

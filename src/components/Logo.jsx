@@ -13,7 +13,7 @@ export default function Logo({ size = 36, withText = true, variant = 'color', cl
       {withText && (
         <div className="flex flex-col leading-none">
           <span className="font-display font-bold text-lg tracking-tight">SIARM</span>
-          <span className="text-[10px] text-ink-500 mt-0.5">Smart Academic Platform · IUGET</span>
+          <span className="text-[10px] text-ink-500 mt-0.5">Academic Resource Management · IUGET</span>
         </div>
       )}
     </div>

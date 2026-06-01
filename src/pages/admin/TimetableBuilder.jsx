@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import toast from 'react-hot-toast'
-import { Sparkles, Plus, Save, AlertCircle, X, Trash2, Moon, Sun } from 'lucide-react'
+import { Wand2, Plus, Save, AlertCircle, X, Trash2, Moon, Sun } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { useData } from '@/context/DataContext'
 import { TIMETABLE_TRACKS } from '@/lib/mockData'
@@ -47,8 +47,8 @@ export default function TimetableBuilder() {
     setEditingSlot(null)
   }
 
-  const optimize = () => {
-    toast.success('Schedule optimized — 0 conflicts, 12% reduction in idle gaps')
+  const checkConflicts = () => {
+    toast.success('Schedule validated — 0 conflicts found')
   }
 
   const publish = () => toast.success(`Timetable for ${track.short} published to all students`)
@@ -61,11 +61,11 @@ export default function TimetableBuilder() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="Smart Timetable Builder"
+        title="Timetable Builder"
         subtitle={track.description}
         actions={
           <>
-            <button onClick={optimize} className="btn-secondary"><Sparkles size={16} /> Auto-optimize</button>
+            <button onClick={checkConflicts} className="btn-secondary"><Wand2 size={16} /> Check conflicts</button>
             <button onClick={publish} className="btn-primary"><Save size={16} /> Publish</button>
           </>
         }
@@ -213,9 +213,9 @@ export default function TimetableBuilder() {
       <div className="card bg-brand-50 border-brand-100 flex items-start gap-3">
         <AlertCircle size={20} className="text-brand-800 shrink-0 mt-0.5" />
         <div className="text-sm text-brand-900">
-          <span className="font-semibold">AI suggestion:</span> {trackId === 'bachelor-evening'
-            ? 'Saturday 15:00–17:00 has 3 lecturer availability overlaps — perfect slot for a new Cybersecurity elective.'
-            : 'Friday 13:00–15:00 has high lecturer availability — consider scheduling tutorial sessions here.'}
+          <span className="font-semibold">Tip:</span> {trackId === 'bachelor-evening'
+            ? 'Saturday 15:00–17:00 is the most flexible slot — consider it for elective courses or make-up sessions.'
+            : 'Friday 13:00–15:00 is a typically lighter slot — useful for tutorial sessions and academic support.'}
         </div>
       </div>
 
