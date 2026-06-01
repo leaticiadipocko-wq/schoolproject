@@ -5,50 +5,7 @@ import html2canvas from 'html2canvas'
 import { Printer, Download, Eye, RotateCcw, ShieldCheck, QrCode } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import PageHeader from '@/components/ui/PageHeader'
-
-// Simple QR-code-like dot matrix generated deterministically from the student ID.
-function fakeQR(seed, size = 21) {
-  let h = 0
-  for (let i = 0; i < seed.length; i++) h = ((h << 5) - h) + seed.charCodeAt(i)
-  const cells = []
-  let v = Math.abs(h)
-  for (let y = 0; y < size; y++) {
-    const row = []
-    for (let x = 0; x < size; x++) {
-      // Corner finder patterns
-      if ((x < 7 && y < 7) || (x >= size - 7 && y < 7) || (x < 7 && y >= size - 7)) {
-        const inOuter  = (x === 0 || y === 0 || x === 6 || y === 6 ||
-                          (x === size - 1 && y < 7) || (y === size - 1 && x < 7) ||
-                          (x === size - 7 && y < 7) || (y === size - 7 && x < 7))
-        const inInner  = (x >= 2 && x <= 4 && y >= 2 && y <= 4) ||
-                         (x >= size - 5 && x <= size - 3 && y >= 2 && y <= 4) ||
-                         (x >= 2 && x <= 4 && y >= size - 5 && y <= size - 3)
-        row.push(inOuter || inInner ? 1 : 0)
-      } else {
-        v = (v * 9301 + 49297) % 233280
-        row.push(v / 233280 > 0.5 ? 1 : 0)
-      }
-    }
-    cells.push(row)
-  }
-  return cells
-}
-
-function QRSquare({ value, size = 100 }) {
-  const matrix = fakeQR(value, 21)
-  const cell = size / 21
-  return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="rounded-lg">
-      <rect width={size} height={size} fill="#ffffff" />
-      {matrix.flatMap((row, y) =>
-        row.map((c, x) => c
-          ? <rect key={`${x}-${y}`} x={x * cell} y={y * cell} width={cell} height={cell} fill="#1e3aa0" />
-          : null
-        )
-      )}
-    </svg>
-  )
-}
+import QRCode from '@/components/QRCode'
 
 export default function IDCard() {
   const { user } = useAuth()
@@ -224,10 +181,10 @@ export default function IDCard() {
 
                 <div className="flex flex-col items-center justify-center">
                   <div className="bg-white p-1.5 rounded-lg shadow border border-ink-200">
-                    <QRSquare value={user?.studentId || 'IUGET'} size={110} />
+                    <QRCode value={`verify.iuget.cm/${user?.studentId?.split('/').pop() || 'student'}`} size={110} />
                   </div>
                   <div className="text-[8px] text-ink-500 mt-1 flex items-center gap-1">
-                    <QrCode size={9} /> Scan to verify
+                    <QrCode size={9} /> verify.iuget.cm
                   </div>
                 </div>
               </div>
