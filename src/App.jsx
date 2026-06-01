@@ -5,6 +5,8 @@ import { roleHome, ROLES } from '@/lib/roles'
 import Landing from '@/pages/Landing'
 import Login from '@/pages/Login'
 import Register from '@/pages/Register'
+import ParentPortal from '@/pages/parent/ParentPortal'
+import ParentRegister from '@/pages/parent/ParentRegister'
 
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -52,6 +54,8 @@ export default function App() {
       <Route path="/" element={<Landing />} />
       <Route path="/login"    element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/parent"   element={<ParentPortal />} />
+      <Route path="/parent/register" element={<ParentRegister />} />
 
       {/* Student */}
       <Route

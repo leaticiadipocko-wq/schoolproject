@@ -164,6 +164,11 @@ export default function Login() {
               Create an account
             </Link>
           </div>
+          <div className="mt-3 text-center">
+            <Link to="/parent" className="text-sm text-accent-700 hover:underline font-medium">
+              Are you a parent? Register your child →
+            </Link>
+          </div>
         </div>
       </div>
     </div>

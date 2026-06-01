@@ -35,6 +35,7 @@ export default function Landing() {
             <a href="#about" className="hover:text-accent-600 transition">About</a>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/parent" className="btn-ghost hidden md:inline-flex">Parent portal</Link>
             <Link to="/login" className="btn-ghost">Sign in</Link>
             <Link to="/register" className="btn-primary">
               Get started <ArrowRight size={16} />
@@ -66,8 +67,8 @@ export default function Landing() {
               « Bien choisir c'est déjà réussir » — IUGET
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/register" className="btn-primary px-6 py-3 text-base">
-                Create free account <ArrowRight size={18} />
+              <Link to="/parent" className="btn-primary px-6 py-3 text-base">
+                Register your child <ArrowRight size={18} />
               </Link>
               <Link to="/login" className="btn-secondary px-6 py-3 text-base">
                 Explore demo
