@@ -1,7 +1,7 @@
 import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, Sparkles, FileSpreadsheet, Users, TrendingUp,
-  UserCog, Settings, Wallet, IdCard,
+  UserCog, Settings, Wallet, IdCard, UserPlus, Banknote,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -55,14 +55,21 @@ export const STAFF_NAV = [
     links: [
       { to: '/staff',               label: 'Dashboard',       icon: LayoutDashboard },
       { to: '/staff/users',         label: 'Users',           icon: Users },
+      { to: '/staff/enrollment',    label: 'Enrolment',       icon: UserPlus, badge: 'Auto' },
       { to: '/staff/timetable',     label: 'Timetable',       icon: CalendarClock },
       { to: '/staff/announcements', label: 'Announcements',   icon: Megaphone },
     ],
   },
   {
+    title: 'Finance',
+    links: [
+      { to: '/staff/finance',       label: 'Tuition Tracking', icon: Banknote, badge: 'New' },
+    ],
+  },
+  {
     title: 'Insights',
     links: [
-      { to: '/staff/analytics',   label: 'Analytics',         icon: TrendingUp },
+      { to: '/staff/analytics',     label: 'Analytics',         icon: TrendingUp },
     ],
   },
 ]
@@ -73,11 +80,13 @@ export const ADMIN_NAV = [
     links: [
       { to: '/admin',           label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/admin/analytics', label: 'Analytics',     icon: TrendingUp },
+      { to: '/admin/finance',   label: 'Finance',       icon: Banknote, badge: 'New' },
     ],
   },
   {
     title: 'Manage',
     links: [
+      { to: '/admin/enrollment',    label: 'Enrolment',     icon: UserPlus, badge: 'Auto' },
       { to: '/admin/users',         label: 'Users',         icon: UserCog },
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },

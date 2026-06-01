@@ -8,12 +8,12 @@ export const MOCK_USERS = [
     email: 'student@iuget.cm',
     password: 'password',
     role: 'student',
-    name: 'Alice Mbah',
+    name: 'Chituh Innocentia',
     studentId: 'IUGET/2023/SWE/0142',
     program: 'Bachelor of Technology — Software Engineering',
     specialty: 'SWE',
     level: 3,
-    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alice',
+    avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia',
   },
   {
     uid: 'lec-001',
@@ -307,14 +307,58 @@ export const MOCK_ANNOUNCEMENT_INSIGHTS = [
   { type: 'success',  text: 'Tuition collection rate reached 92% — best Q2 result in three years.' },
 ]
 
-export const MOCK_STUDENTS = Array.from({ length: 18 }, (_, i) => ({
-  id: `IUGET/2023/CS/${String(140 + i).padStart(4, '0')}`,
-  name: ['Alice Mbah', 'Brian Etoh', 'Clara Wirba', 'David Nfor', 'Esther Akem',
-         'Frank Tabi', 'Gloria Mbi', 'Henri Anye', 'Ivy Nkeng', 'Joel Tagne',
-         'Karen Asaba', 'Leo Nfah', 'Mary Tah', 'Noah Bate', 'Olivia Foncha',
-         'Paul Etame', 'Queen Nya', 'Ralph Tane'][i],
-  avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${i}`,
-}))
+// Real student roster — Chituh Innocentia is the demo account; the rest are
+// classmates across SWE, CNSM, and BST specialties at IUGET Bonabéri.
+const STUDENT_ROSTER = [
+  // Featured students (per IUGET roster)
+  { name: 'Chituh Innocentia', specialty: 'SWE',  level: 3 },
+  { name: 'Nkwenti Deshnic',   specialty: 'SWE',  level: 3 },
+  { name: 'Winner Chinuere',   specialty: 'CNSM', level: 3 },
+  { name: 'Zelio Gerald',      specialty: 'BST',  level: 3 },
+  { name: 'Wandji Adrien',     specialty: 'SWE',  level: 3 },
+  // Other classmates
+  { name: 'Mbah Alice',        specialty: 'CNSM', level: 3 },
+  { name: 'Etoh Brian',        specialty: 'BST',  level: 3 },
+  { name: 'Wirba Clara',       specialty: 'SWE',  level: 3 },
+  { name: 'Nfor David',        specialty: 'CNSM', level: 3 },
+  { name: 'Akem Esther',       specialty: 'BST',  level: 3 },
+  { name: 'Tabi Franklin',     specialty: 'SWE',  level: 3 },
+  { name: 'Mbi Gloria',        specialty: 'CNSM', level: 3 },
+  { name: 'Anye Henri',        specialty: 'SWE',  level: 3 },
+  { name: 'Nkeng Ivy',         specialty: 'BST',  level: 3 },
+  { name: 'Tagne Joel',        specialty: 'SWE',  level: 3 },
+  { name: 'Asaba Karen',       specialty: 'CNSM', level: 3 },
+  { name: 'Nfah Leo',          specialty: 'BST',  level: 3 },
+  { name: 'Tah Mary',          specialty: 'SWE',  level: 3 },
+]
+
+// Deterministic financial state per student — drives the Financial Tracking page
+const FEE_STATES = ['paid', 'partial', 'overdue', 'paid', 'partial', 'paid', 'paid', 'partial', 'overdue', 'paid']
+
+export const MOCK_STUDENTS = STUDENT_ROSTER.map((s, i) => {
+  const idx = String(140 + i).padStart(4, '0')
+  const feeStatus = FEE_STATES[i % FEE_STATES.length]
+  const totalFees = 500000
+  const paid =
+    feeStatus === 'paid'    ? totalFees :
+    feeStatus === 'partial' ? 350000   :
+                              200000   // overdue
+  const lastName = s.name.split(' ').pop().toLowerCase()
+  return {
+    id:        `IUGET/2023/${s.specialty}/${idx}`,
+    name:      s.name,
+    email:     `${lastName}.${idx}@iuget.cm`,
+    specialty: s.specialty,
+    level:     s.level,
+    program:   `Bachelor of Technology — ${s.specialty}`,
+    feeStatus,
+    feesPaid:  paid,
+    feesTotal: totalFees,
+    feesBalance: totalFees - paid,
+    enrolledOn: `2023-09-${String(15 + (i % 10)).padStart(2, '0')}`,
+    avatar:    `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s.name)}`,
+  }
+})
 
 // Tuition fee data
 export const MOCK_FEE_STRUCTURE = {

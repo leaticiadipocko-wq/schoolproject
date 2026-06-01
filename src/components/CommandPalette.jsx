@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom'
 import {
   Search, ArrowRight, CornerDownLeft, ArrowUp, ArrowDown,
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
-  Bot, BookOpen, Sparkles, FileSpreadsheet, Wallet, IdCard,
+  BookOpen, Sparkles, FileSpreadsheet, Wallet, IdCard,
   Users, TrendingUp, UserCog, Settings, Moon, Sun, LogOut,
+  Banknote, UserPlus,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
@@ -41,8 +42,6 @@ export default function CommandPalette() {
         { id: 'nav-id',     group: 'Navigate', icon: IdCard,         label: 'My ID Card',      shortcut: 'G I', do: () => navigate('/student/idcard') },
         { id: 'nav-fees',   group: 'Navigate', icon: Wallet,         label: 'Tuition & Fees',  shortcut: 'G F', do: () => navigate('/student/fees') },
         { id: 'nav-trans',  group: 'Navigate', icon: FileSpreadsheet, label: 'Transcript',                    do: () => navigate('/student/transcript') },
-        { id: 'nav-chat',   group: 'Navigate', icon: Bot,            label: 'AI Assistant',    shortcut: 'G C', do: () => navigate('/student/chatbot') },
-        { id: 'nav-courses',group: 'Navigate', icon: BookOpen,       label: 'Courses',                       do: () => navigate('/student/courses') },
         { id: 'nav-learn',  group: 'Navigate', icon: Sparkles,       label: 'Mobile Learning',               do: () => navigate('/student/learning') },
         // Quick actions
         { id: 'act-pay',    group: 'Quick action', icon: Wallet, label: 'Pay tuition fees',               do: () => navigate('/student/fees') },
@@ -61,13 +60,16 @@ export default function CommandPalette() {
     if (role === 'staff' || role === 'admin') {
       const prefix = role === 'admin' ? '/admin' : '/staff'
       base.push(
-        { id: 'nav-dash',   group: 'Navigate', icon: LayoutDashboard, label: 'Dashboard',         do: () => navigate(prefix) },
-        { id: 'nav-anly',   group: 'Navigate', icon: Sparkles,        label: 'AI Analytics',      do: () => navigate(`${prefix}/analytics`) },
-        { id: 'nav-pred',   group: 'Navigate', icon: TrendingUp,      label: 'Predictions',       do: () => navigate('/admin/predictions') },
-        { id: 'nav-usr',    group: 'Navigate', icon: UserCog,         label: 'Users',             do: () => navigate(`${prefix}/users`) },
-        { id: 'nav-tt',     group: 'Navigate', icon: CalendarClock,   label: 'Timetable Builder', do: () => navigate(`${prefix}/timetable`) },
-        { id: 'nav-ann',    group: 'Navigate', icon: Megaphone,       label: 'Announcements',     do: () => navigate(`${prefix}/announcements`) },
-        { id: 'nav-set',    group: 'Navigate', icon: Settings,        label: 'Settings',          do: () => navigate('/admin/settings') },
+        { id: 'nav-dash',   group: 'Navigate', icon: LayoutDashboard, label: 'Dashboard',          do: () => navigate(prefix) },
+        { id: 'nav-anly',   group: 'Navigate', icon: TrendingUp,      label: 'Analytics',          do: () => navigate(`${prefix}/analytics`) },
+        { id: 'nav-fin',    group: 'Navigate', icon: Banknote,        label: 'Tuition tracking',   shortcut: 'G $', do: () => navigate(`${prefix}/finance`) },
+        { id: 'nav-enr',    group: 'Navigate', icon: UserPlus,        label: 'Enrol new student',  shortcut: 'G N', do: () => navigate(`${prefix}/enrollment`) },
+        { id: 'nav-usr',    group: 'Navigate', icon: UserCog,         label: 'Users',              do: () => navigate(`${prefix}/users`) },
+        { id: 'nav-tt',     group: 'Navigate', icon: CalendarClock,   label: 'Timetable Builder',  do: () => navigate(`${prefix}/timetable`) },
+        { id: 'nav-ann',    group: 'Navigate', icon: Megaphone,       label: 'Announcements',      do: () => navigate(`${prefix}/announcements`) },
+        ...(role === 'admin' ? [
+          { id: 'nav-set', group: 'Navigate', icon: Settings, label: 'Settings', do: () => navigate('/admin/settings') },
+        ] : []),
       )
     }
 

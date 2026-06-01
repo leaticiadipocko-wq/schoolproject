@@ -29,6 +29,7 @@ import EnterGrades from '@/pages/lecturer/EnterGrades'
 
 // Staff pages
 import StaffDashboard from '@/pages/staff/StaffDashboard'
+import Enrollment from '@/pages/staff/Enrollment'
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
@@ -37,6 +38,7 @@ import UserManagement from '@/pages/admin/UserManagement'
 import TimetableBuilder from '@/pages/admin/TimetableBuilder'
 import AdminAnnouncements from '@/pages/admin/Announcements'
 import Settings from '@/pages/admin/Settings'
+import Finance from '@/pages/admin/Finance'
 
 function RoleHome() {
   const { user } = useAuth()
@@ -98,6 +100,8 @@ export default function App() {
       >
         <Route index element={<StaffDashboard />} />
         <Route path="users"         element={<UserManagement />} />
+        <Route path="enrollment"    element={<Enrollment />} />
+        <Route path="finance"       element={<Finance />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="analytics"     element={<Analytics />} />
@@ -114,6 +118,8 @@ export default function App() {
       >
         <Route index element={<AdminDashboard />} />
         <Route path="analytics"     element={<Analytics />} />
+        <Route path="finance"       element={<Finance />} />
+        <Route path="enrollment"    element={<Enrollment />} />
         <Route path="users"         element={<UserManagement />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />

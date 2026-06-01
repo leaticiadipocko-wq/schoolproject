@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { Users, FileText, ClipboardCheck, Megaphone, ArrowRight } from 'lucide-react'
+import { Users, FileText, ClipboardCheck, Megaphone, ArrowRight, UserPlus, Banknote } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import StatCard from '@/components/ui/StatCard'
 
@@ -22,7 +22,17 @@ export default function StaffDashboard() {
 
       <div className="card">
         <h3 className="font-display font-bold text-lg mb-4">Quick Operations</h3>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <Link to="/staff/enrollment" className="p-4 rounded-xl border border-brand-200 bg-gradient-to-br from-brand-50 to-accent-50 hover:shadow-soft transition">
+            <UserPlus size={20} className="text-brand-700" />
+            <div className="font-medium mt-2 text-sm">Enrol New Student</div>
+            <div className="text-[11px] text-ink-500 mt-0.5">Auto matricule + account + ID + fees</div>
+          </Link>
+          <Link to="/staff/finance" className="p-4 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50 to-amber-50 hover:shadow-soft transition">
+            <Banknote size={20} className="text-emerald-700" />
+            <div className="font-medium mt-2 text-sm">Tuition Tracking</div>
+            <div className="text-[11px] text-ink-500 mt-0.5">All MoMo / OM / card payments</div>
+          </Link>
           <Link to="/staff/users" className="p-4 rounded-xl border border-ink-200 hover:border-brand-300 hover:bg-brand-50 transition">
             <Users size={20} className="text-brand-600" />
             <div className="font-medium mt-2 text-sm">Manage Users</div>
