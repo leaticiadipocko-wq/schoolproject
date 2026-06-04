@@ -5,6 +5,8 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, Info } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { roleHome } from '@/lib/roles'
 import Logo from '@/components/Logo'
+import { useLang } from '@/context/LanguageContext'
+import { Languages } from 'lucide-react'
 
 const DEMO_ACCOUNTS = [
   { label: 'Student',   email: 'student@iuget.cm',   color: 'bg-brand-100 text-brand-800' },
@@ -15,6 +17,7 @@ const DEMO_ACCOUNTS = [
 
 export default function Login() {
   const { login, demoMode } = useAuth()
+  const { t, lang, toggle } = useLang()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -27,11 +30,11 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!email || !password) return toast.error('Please fill in all fields')
+    if (!email || !password) return toast.error(t('login.error.empty'))
     setLoading(true)
     try {
       const u = await login(email, password)
-      toast.success(`Welcome back, ${u.name?.split(' ')[0] || 'friend'}!`)
+      toast.success(t('login.success', { name: u.name?.split(' ')[0] || '' }))
       navigate(from || roleHome(u.role), { replace: true })
     } catch (err) {
       toast.error(err.message || 'Sign in failed')
@@ -56,19 +59,18 @@ export default function Login() {
 
         <div>
           <h2 className="text-5xl font-display font-bold leading-tight text-ink-900">
-            Welcome back to <br />
-            <span className="text-accent-600">academic excellence.</span>
+            {t('login.welcomeBack')} <br />
+            <span className="text-accent-600">{t('login.tagline')}</span>
           </h2>
           <p className="mt-6 text-lg text-ink-600 max-w-md">
-            Sign in to access your personalized dashboard — attendance,
-            grades, timetable, and results.
+            {t('login.welcomeSub')}
           </p>
           <p className="mt-4 text-sm italic text-accent-700 font-medium">
             « Bien choisir c'est déjà réussir » — IUGET
           </p>
         </div>
 
-        <div className="text-sm text-ink-500">© {new Date().getFullYear()} SIARM · IUGET Bonaberi</div>
+        <div className="text-sm text-ink-500">© {new Date().getFullYear()} SIARM · IUGET Bonabéri</div>
 
         {/* Decorative warm blobs — gentle, never overpowering the logo */}
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent-200/40 rounded-full blur-3xl pointer-events-none" />
@@ -80,16 +82,21 @@ export default function Login() {
         <div className="w-full max-w-md">
           <div className="lg:hidden mb-8 flex justify-center"><Logo /></div>
 
-          <h1 className="text-3xl font-display font-bold">Sign in</h1>
-          <p className="text-ink-500 mt-1.5">Continue to your SIARM dashboard.</p>
+          <div className="flex items-center justify-between">
+            <h1 className="text-3xl font-display font-bold">{t('login.title')}</h1>
+            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase">
+              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
+            </button>
+          </div>
+          <p className="text-ink-500 mt-1.5">{t('login.subtitle')}</p>
 
           {demoMode && (
             <div className="mt-6 p-4 rounded-xl bg-brand-50 border border-brand-100 text-sm">
               <div className="flex items-start gap-2">
                 <Info size={16} className="text-brand-600 mt-0.5 shrink-0" />
                 <div>
-                  <div className="font-medium text-brand-900">Demo mode is on</div>
-                  <div className="text-brand-700 mt-0.5">Click a role below to fill in demo credentials.</div>
+                  <div className="font-medium text-brand-900">{t('login.demoMode')}</div>
+                  <div className="text-brand-700 mt-0.5">{t('login.demoMode.sub')}</div>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {DEMO_ACCOUNTS.map((a) => (
                       <button
@@ -109,7 +116,7 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>
-              <label className="label">Email address</label>
+              <label className="label">{t('login.email')}</label>
               <div className="relative">
                 <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
                 <input
@@ -124,7 +131,7 @@ export default function Login() {
             </div>
 
             <div>
-              <label className="label">Password</label>
+              <label className="label">{t('login.password')}</label>
               <div className="relative">
                 <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
                 <input
@@ -148,25 +155,25 @@ export default function Login() {
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 text-ink-600">
                 <input type="checkbox" className="rounded border-ink-300" />
-                Remember me
+                {t('login.rememberMe')}
               </label>
-              <a href="#" className="text-brand-600 hover:underline">Forgot password?</a>
+              <a href="#" className="text-brand-600 hover:underline">{t('login.forgot')}</a>
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full py-3">
-              {loading ? 'Signing in…' : <>Sign in <ArrowRight size={16} /></>}
+              {loading ? t('login.signing') : <>{t('common.signIn')} <ArrowRight size={16} /></>}
             </button>
           </form>
 
           <div className="mt-6 text-center text-sm text-ink-600">
-            New to SIARM?{' '}
+            {t('login.newAccount')}{' '}
             <Link to="/register" className="text-brand-600 font-medium hover:underline">
-              Create an account
+              {t('login.createAccount')}
             </Link>
           </div>
           <div className="mt-3 text-center">
             <Link to="/parent" className="text-sm text-accent-700 hover:underline font-medium">
-              Are you a parent? Register your child →
+              {t('login.parentCta')}
             </Link>
           </div>
         </div>

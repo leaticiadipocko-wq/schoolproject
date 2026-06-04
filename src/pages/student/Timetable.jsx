@@ -5,7 +5,8 @@ import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { TIMETABLE_TRACKS, SPECIALTIES, HOLIDAYS } from '@/lib/mockData'
 import PageHeader from '@/components/ui/PageHeader'
-import { Download, Printer, Moon, Sun, Clock, Filter, Calendar } from 'lucide-react'
+import { Download, Printer, Moon, Sun, Clock, Filter, Calendar, CalendarPlus } from 'lucide-react'
+import { downloadIcs } from '@/lib/icsExport'
 
 const WEEK_DATES = {
   Monday: '25/05/2026', Tuesday: '26/05/2026', Wednesday: '27/05/2026',
@@ -81,6 +82,19 @@ export default function Timetable() {
         subtitle={`${track.name}  ·  Ref ${track.docRef || ''}`}
         actions={
           <>
+            <button
+              onClick={() => {
+                const slots = entries.filter((e) => specialtyFilter === 'all' || e.specialty === specialtyFilter)
+                downloadIcs(slots, `iuget-timetable-${trackId}-${specialtyFilter}.ics`, {
+                  calName: `IUGET ${track.short} ${specialtyFilter === 'all' ? '' : '(' + specialtyFilter + ')'}`,
+                })
+                toast.success(`${slots.length} events exported to calendar`)
+              }}
+              className="btn-secondary"
+              title="Export to Google Calendar / Apple Calendar / Outlook"
+            >
+              <CalendarPlus size={16} /> Add to calendar
+            </button>
             <button onClick={() => window.print()} className="btn-secondary">
               <Printer size={16} /> Print
             </button>

@@ -3,9 +3,10 @@ import { motion } from 'framer-motion'
 import {
   GraduationCap, ClipboardCheck, CalendarClock, Megaphone,
   Wallet, IdCard, TrendingUp, LineChart, FileText, BookOpen,
-  UserPlus, ShieldCheck, ArrowRight, Banknote,
+  UserPlus, ShieldCheck, ArrowRight, Banknote, Languages,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
+import { useLang } from '@/context/LanguageContext'
 
 const features = [
   { icon: ClipboardCheck, title: 'Attendance Tracking',  desc: 'Lecturers mark daily attendance; students view their own records and rates.' },
@@ -23,6 +24,7 @@ const features = [
 ]
 
 export default function Landing() {
+  const { t, lang, toggle } = useLang()
   return (
     <div className="min-h-screen bg-ink-50">
       {/* Nav */}
@@ -30,15 +32,18 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3.5">
           <Logo size={42} />
           <div className="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
-            <a href="#features" className="hover:text-accent-600 transition">Features</a>
-            <a href="#vision" className="hover:text-accent-600 transition">Vision</a>
-            <a href="#about" className="hover:text-accent-600 transition">About</a>
+            <a href="#features" className="hover:text-accent-600 transition">{t('landing.nav.features')}</a>
+            <a href="#vision"   className="hover:text-accent-600 transition">{t('landing.nav.vision')}</a>
+            <a href="#about"    className="hover:text-accent-600 transition">{t('landing.nav.about')}</a>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/parent" className="btn-ghost hidden md:inline-flex">Parent portal</Link>
-            <Link to="/login" className="btn-ghost">Sign in</Link>
+            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase" title={t('common.lang.toggle')}>
+              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
+            </button>
+            <Link to="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</Link>
+            <Link to="/login"  className="btn-ghost">{t('common.signIn')}</Link>
             <Link to="/register" className="btn-primary">
-              Get started <ArrowRight size={16} />
+              {t('common.getStarted')} <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -53,29 +58,28 @@ export default function Landing() {
             transition={{ duration: 0.6 }}
           >
               <span className="badge-info mb-6 inline-flex">
-                Bachelor of Technology · IUGET Bonabéri
+                {t('landing.hero.badge')}
               </span>
             <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
-              The unified <span className="gradient-text">academic platform</span><br />
-              for IUGET University.
+              {t('landing.hero.title1')} <span className="gradient-text">{t('landing.hero.title2')}</span><br />
+              {t('landing.hero.title3')}
             </h1>
             <p className="mt-6 text-lg md:text-xl text-ink-600 max-w-2xl mx-auto">
-              SIARM brings attendance, results, timetables, tuition payment and student
-              records into one platform — tailored for IUGET Bonabéri.
+              {t('landing.hero.subtitle')}
             </p>
             <p className="mt-3 text-sm italic text-accent-700 font-medium">
-              « Bien choisir c'est déjà réussir » — IUGET
+              {t('landing.hero.motto')}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
               <Link to="/parent" className="btn-primary px-6 py-3 text-base">
-                Register your child <ArrowRight size={18} />
+                {t('landing.hero.cta.parent')} <ArrowRight size={18} />
               </Link>
               <Link to="/login" className="btn-secondary px-6 py-3 text-base">
-                Explore demo
+                {t('landing.hero.cta.demo')}
               </Link>
             </div>
             <p className="mt-4 text-xs text-ink-500">
-              Demo credentials → <span className="font-mono">student@iuget.cm / password</span>
+              {t('landing.hero.demo')}
             </p>
           </motion.div>
 
@@ -90,9 +94,9 @@ export default function Landing() {
               <div className="rounded-xl bg-white p-6 shadow-soft">
                 <div className="grid grid-cols-3 gap-4">
                   {[
-                    { label: 'Active Students',  value: '2,847', trend: '2025/2026' },
-                    { label: 'Avg. Attendance',  value: '88%',   trend: 'this semester' },
-                    { label: 'Tuition Collected', value: '92%',  trend: 'recovery rate' },
+                    { label: t('landing.stats.students'),   value: '2,847', trend: t('landing.stats.year') },
+                    { label: t('landing.stats.attendance'), value: '88%',   trend: t('landing.stats.semester') },
+                    { label: t('landing.stats.tuition'),    value: '92%',   trend: t('landing.stats.recovery') },
                   ].map((s) => (
                     <div key={s.label} className="rounded-xl bg-ink-50 p-5 text-left">
                       <div className="text-sm text-ink-500">{s.label}</div>
@@ -112,13 +116,12 @@ export default function Landing() {
       <section id="features" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="badge-info">Capabilities</span>
+            <span className="badge-info">{t('landing.features.badge')}</span>
             <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
-              Every academic workflow, <span className="gradient-text">in one place.</span>
+              {t('landing.features.title1')} <span className="gradient-text">{t('landing.features.title2')}</span>
             </h2>
             <p className="text-lg text-ink-600 mt-4">
-              From admission to graduation, SIARM covers every touchpoint
-              of an IUGET student's journey.
+              {t('landing.features.subtitle')}
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -146,18 +149,17 @@ export default function Landing() {
       <section id="vision" className="py-24 bg-gradient-to-br from-brand-900 to-brand-950 text-white">
         <div className="max-w-5xl mx-auto px-6 text-center">
           <h2 className="text-4xl md:text-5xl font-display font-bold">
-            One platform. <span className="text-accent-400">Every role.</span>
+            {t('landing.vision.title1')} <span className="text-accent-400">{t('landing.vision.title2')}</span>
           </h2>
           <p className="mt-5 text-ink-300 max-w-2xl mx-auto text-lg">
-            Built with a hierarchical, role-based architecture so each user sees exactly
-            what they need — no more, no less.
+            {t('landing.vision.subtitle')}
           </p>
           <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-5">
             {[
-              { role: 'Students',    desc: 'Learn, track, grow' },
-              { role: 'Lecturers',   desc: 'Teach, grade, mentor' },
-              { role: 'Staff',       desc: 'Operate, support, scale' },
-              { role: 'Leadership',  desc: 'Decide with data' },
+              { role: t('landing.vision.role.students'),   desc: t('landing.vision.desc.students')   },
+              { role: t('landing.vision.role.lecturers'),  desc: t('landing.vision.desc.lecturers')  },
+              { role: t('landing.vision.role.staff'),      desc: t('landing.vision.desc.staff')      },
+              { role: t('landing.vision.role.leadership'), desc: t('landing.vision.desc.leadership') },
             ].map((r) => (
               <div key={r.role} className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
                 <div className="text-xl font-display font-bold">{r.role}</div>
@@ -171,16 +173,16 @@ export default function Landing() {
       {/* CTA */}
       <section id="about" className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-display font-bold">Ready to modernize IUGET?</h2>
+          <h2 className="text-4xl font-display font-bold">{t('landing.cta.title')}</h2>
           <p className="mt-4 text-ink-600 text-lg">
-            Start with the demo, explore every module, then connect Firebase to go live.
+            {t('landing.cta.subtitle')}
           </p>
           <div className="mt-8 flex justify-center gap-3">
             <Link to="/register" className="btn-primary px-6 py-3 text-base">
-              Get started <ArrowRight size={18} />
+              {t('common.getStarted')} <ArrowRight size={18} />
             </Link>
             <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="btn-secondary px-6 py-3 text-base">
-              Visit IUGET
+              {t('landing.cta.visit')}
             </a>
           </div>
         </div>
@@ -191,8 +193,8 @@ export default function Landing() {
         <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <Logo size={32} />
           <div className="text-sm text-ink-500 text-center md:text-right">
-            © {new Date().getFullYear()} SIARM · Bachelor project — IUGET Bonaberi<br />
-            <span className="text-xs">By James Murdza · Level 3 SWE</span>
+            {t('footer.copyright', { year: new Date().getFullYear() })}<br />
+            <span className="text-xs">{t('footer.author')}</span>
           </div>
         </div>
       </footer>

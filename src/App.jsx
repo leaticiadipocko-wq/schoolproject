@@ -33,6 +33,10 @@ import EnterGrades from '@/pages/lecturer/EnterGrades'
 import StaffDashboard from '@/pages/staff/StaffDashboard'
 import Enrollment from '@/pages/staff/Enrollment'
 
+// Shared pages
+import Profile from '@/pages/Profile'
+import Help    from '@/pages/Help'
+
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
 import Analytics from '@/pages/admin/Analytics'
@@ -75,6 +79,8 @@ export default function App() {
         <Route path="transcript"    element={<Transcript />} />
         <Route path="fees"          element={<Fees />} />
         <Route path="idcard"        element={<IDCard />} />
+        <Route path="profile"       element={<Profile />} />
+        <Route path="help"          element={<Help />} />
       </Route>
 
       {/* Lecturer */}
@@ -91,6 +97,8 @@ export default function App() {
         <Route path="attendance"    element={<MarkAttendance />} />
         <Route path="grades"        element={<EnterGrades />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
+        <Route path="profile"       element={<Profile />} />
+        <Route path="help"          element={<Help />} />
       </Route>
 
       {/* Staff */}
@@ -109,6 +117,8 @@ export default function App() {
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="analytics"     element={<Analytics />} />
+        <Route path="profile"       element={<Profile />} />
+        <Route path="help"          element={<Help />} />
       </Route>
 
       {/* Admin */}
@@ -128,6 +138,8 @@ export default function App() {
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="settings"      element={<Settings />} />
+        <Route path="profile"       element={<Profile />} />
+        <Route path="help"          element={<Help />} />
       </Route>
 
       {/* Authed home redirect */}

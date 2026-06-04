@@ -1,13 +1,18 @@
 import { useState, useRef, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { Menu, Bell, Search, LogOut, Settings, User as UserIcon, ChevronDown, Moon, Sun, Check } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  Menu, Bell, Search, LogOut, Settings, User as UserIcon, ChevronDown,
+  Moon, Sun, Check, Languages, HelpCircle,
+} from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
+import { useLang } from '@/context/LanguageContext'
 import { ROLE_LABELS } from '@/lib/roles'
 
 export default function Navbar({ onMenu, title }) {
   const { user, logout } = useAuth()
   const { notifications, markNotificationRead, markAllNotificationsRead, theme, toggleTheme } = useData()
+  const { lang, toggle: toggleLang, t } = useLang()
   const navigate = useNavigate()
   const [profileOpen, setProfileOpen] = useState(false)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -30,9 +35,13 @@ export default function Navbar({ onMenu, title }) {
     navigate('/login', { replace: true })
   }
 
+  const rolePath = user?.role ? `/${user.role}` : ''
+  const goProfile = () => { setProfileOpen(false); navigate(`${rolePath}/profile`) }
+  const goHelp    = () => { setProfileOpen(false); navigate(`${rolePath}/help`) }
+
   return (
     <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-ink-100">
-      <div className="flex items-center justify-between gap-4 px-4 md:px-8 py-3.5">
+      <div className="flex items-center justify-between gap-3 px-4 md:px-8 py-3.5">
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <button onClick={onMenu} className="lg:hidden text-ink-600 hover:text-ink-900">
             <Menu size={22} />
@@ -45,25 +54,34 @@ export default function Navbar({ onMenu, title }) {
         {/* Search → opens command palette */}
         <button
           onClick={() => {
-            // synthesize a ⌘K keydown to open the palette
             const ev = new KeyboardEvent('keydown', { key: 'k', metaKey: true, bubbles: true })
             window.dispatchEvent(ev)
           }}
-          className="hidden md:flex items-center gap-3 w-72 px-3.5 py-2 rounded-xl bg-white border border-ink-200 text-sm text-ink-400 hover:border-brand-300 hover:text-ink-600 transition"
+          className="hidden md:flex items-center gap-3 w-64 px-3.5 py-2 rounded-xl bg-white border border-ink-200 text-sm text-ink-400 hover:border-brand-300 hover:text-ink-600 transition"
         >
           <Search size={16} />
-          <span className="flex-1 text-left">Search anything…</span>
+          <span className="flex-1 text-left">{t('common.search')}</span>
           <kbd className="text-[10px] font-mono text-ink-400 border border-ink-200 px-1.5 py-0.5 rounded bg-ink-50">⌘K</kbd>
         </button>
 
+        {/* Language toggle */}
+        <button
+          onClick={toggleLang}
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase"
+          title={t('common.lang.toggle')}
+        >
+          <Languages size={14} />
+          {lang === 'en' ? 'FR' : 'EN'}
+        </button>
+
         {/* Theme toggle */}
-        <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title="Toggle theme">
+        <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title={t(theme === 'dark' ? 'common.theme.light' : 'common.theme.dark')}>
           {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
         </button>
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
-          <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 rounded-xl hover:bg-ink-100 text-ink-600">
+          <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 rounded-xl hover:bg-ink-100 text-ink-600" title={t('common.notifications')}>
             <Bell size={18} />
             {unread > 0 && (
               <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
@@ -74,16 +92,16 @@ export default function Navbar({ onMenu, title }) {
           {notifOpen && (
             <div className="absolute right-0 mt-2 w-80 bg-white rounded-2xl border border-ink-100 shadow-soft overflow-hidden animate-fade-in">
               <div className="flex items-center justify-between p-4 border-b border-ink-100">
-                <div className="font-display font-bold">Notifications</div>
+                <div className="font-display font-bold">{t('common.notifications')}</div>
                 {unread > 0 && (
                   <button onClick={markAllNotificationsRead} className="text-xs text-brand-700 hover:underline">
-                    Mark all read
+                    {t('common.markAllRead')}
                   </button>
                 )}
               </div>
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-6 text-center text-sm text-ink-500">No notifications</div>
+                  <div className="p-6 text-center text-sm text-ink-500">{t('common.noNotifications')}</div>
                 ) : notifications.map((n) => (
                   <button
                     key={n.id}
@@ -137,17 +155,20 @@ export default function Navbar({ onMenu, title }) {
                 </div>
               </div>
               <div className="p-2">
-                <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
-                  <UserIcon size={16} /> Profile
+                <button onClick={goProfile} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                  <UserIcon size={16} /> {t('common.profile')}
                 </button>
-                <button className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
-                  <Settings size={16} /> Settings
+                <button onClick={goHelp} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                  <HelpCircle size={16} /> {t('common.help')}
+                </button>
+                <button onClick={toggleLang} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                  <Languages size={16} /> {t('common.lang.toggle')}
                 </button>
                 <button
                   onClick={handleLogout}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-red-50 text-sm text-red-600"
                 >
-                  <LogOut size={16} /> Sign out
+                  <LogOut size={16} /> {t('common.signOut')}
                 </button>
               </div>
             </div>

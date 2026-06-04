@@ -3,9 +3,10 @@ import { motion } from 'framer-motion'
 import {
   GraduationCap, Calendar, Clock, Wallet, ArrowRight, CheckCircle2,
   Globe, Briefcase, Building2, Phone, Mail, MapPin, ShieldCheck,
-  BookOpen, Award, Users,
+  BookOpen, Award, Users, Languages,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
+import { useLang } from '@/context/LanguageContext'
 
 // IUGET — Bachelor of Technology specialties
 // Real Cameroonian higher-education tuition order of magnitude
@@ -90,6 +91,7 @@ const FEE_BREAKDOWN = [
 const TOTAL_FEES = FEE_BREAKDOWN.reduce((s, f) => s + f.value, 0)
 
 export default function ParentPortal() {
+  const { t, lang, toggle } = useLang()
   return (
     <div className="min-h-screen bg-ink-50">
       {/* Top nav */}
@@ -97,15 +99,18 @@ export default function ParentPortal() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3.5">
           <Link to="/"><Logo size={42} /></Link>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-ink-600">
-            <a href="#specialties" className="hover:text-accent-600 transition">Specialties</a>
-            <a href="#fees"        className="hover:text-accent-600 transition">Fees</a>
-            <a href="#calendar"    className="hover:text-accent-600 transition">Calendar</a>
-            <a href="#contact"     className="hover:text-accent-600 transition">Contact</a>
+            <a href="#specialties" className="hover:text-accent-600 transition">{t('parent.nav.specialties')}</a>
+            <a href="#fees"        className="hover:text-accent-600 transition">{t('parent.nav.fees')}</a>
+            <a href="#calendar"    className="hover:text-accent-600 transition">{t('parent.nav.calendar')}</a>
+            <a href="#contact"     className="hover:text-accent-600 transition">{t('parent.nav.contact')}</a>
           </div>
           <div className="flex items-center gap-2">
-            <Link to="/login"            className="btn-ghost hidden sm:inline-flex">Sign in</Link>
+            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase">
+              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
+            </button>
+            <Link to="/login"            className="btn-ghost hidden sm:inline-flex">{t('common.signIn')}</Link>
             <Link to="/parent/register"  className="btn-primary">
-              Register child <ArrowRight size={16} />
+              {t('parent.cta.register')} <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -116,32 +121,30 @@ export default function ParentPortal() {
         <div className="max-w-7xl mx-auto px-6 pt-16 pb-20 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
             <span className="badge-info mb-5 inline-flex">
-              <Calendar size={12} /> Admissions · Academic Year 2026/2027
+              <Calendar size={12} /> {t('parent.hero.badge')}
             </span>
             <h1 className="text-4xl md:text-6xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
-              A future-ready <span className="gradient-text">Bachelor of Technology</span><br />
-              for your child.
+              {t('parent.hero.title1')} <span className="gradient-text">{t('parent.hero.title2')}</span><br />
+              {t('parent.hero.title3')}
             </h1>
             <p className="mt-5 text-lg text-ink-600 max-w-xl">
-              IUGET Bonabéri — the Institut Universitaire du Golfe de Guinée — offers three
-              accredited specialties combining theory, practical projects, and direct industry
-              entry. Everything a parent needs to register their child is on this page.
+              {t('parent.hero.subtitle')}
             </p>
             <p className="mt-3 text-sm italic text-accent-700 font-medium">
               « Bien choisir c'est déjà réussir » — IUGET
             </p>
             <div className="mt-7 flex flex-wrap gap-3">
               <Link to="/parent/register" className="btn-primary px-6 py-3 text-base">
-                Begin registration <ArrowRight size={18} />
+                {t('parent.hero.cta')} <ArrowRight size={18} />
               </Link>
               <a href="#specialties" className="btn-secondary px-6 py-3 text-base">
-                Explore specialties
+                {t('parent.hero.explore')}
               </a>
             </div>
             <div className="mt-6 flex flex-wrap items-center gap-5 text-xs text-ink-500">
-              <span className="inline-flex items-center gap-1.5"><ShieldCheck size={14} className="text-emerald-600" /> MINESUP accredited</span>
-              <span className="inline-flex items-center gap-1.5"><Users size={14} className="text-brand-600" /> 2,800+ students</span>
-              <span className="inline-flex items-center gap-1.5"><Award size={14} className="text-amber-600" /> 92% employment rate</span>
+              <span className="inline-flex items-center gap-1.5"><ShieldCheck size={14} className="text-emerald-600" /> {t('parent.hero.minesup')}</span>
+              <span className="inline-flex items-center gap-1.5"><Users size={14} className="text-brand-600" /> {t('parent.hero.students')}</span>
+              <span className="inline-flex items-center gap-1.5"><Award size={14} className="text-amber-600" /> {t('parent.hero.employment')}</span>
             </div>
           </motion.div>
 
@@ -156,9 +159,9 @@ export default function ParentPortal() {
             <div className="relative bg-white rounded-3xl shadow-soft border border-ink-100 p-6">
               <div className="flex items-start justify-between">
                 <div>
-                  <div className="text-xs text-ink-500 uppercase tracking-wider">Annual Tuition</div>
+                  <div className="text-xs text-ink-500 uppercase tracking-wider">{t('parent.tuitionLabel')}</div>
                   <div className="text-4xl font-display font-bold text-ink-900 mt-1">{TOTAL_FEES.toLocaleString('en-US')}<span className="text-lg text-ink-500"> FCFA</span></div>
-                  <div className="text-sm text-ink-500">All-inclusive · payable in 2 instalments</div>
+                  <div className="text-sm text-ink-500">{t('parent.tuitionSub')}</div>
                 </div>
                 <div className="badge-success">3-year programme</div>
               </div>
@@ -193,11 +196,10 @@ export default function ParentPortal() {
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="badge-info">Bachelor of Technology</span>
             <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
-              Three specialties, <span className="gradient-text">one future.</span>
+              {t('parent.specialty.title1')} <span className="gradient-text">{t('parent.specialty.title2')}</span>
             </h2>
             <p className="text-lg text-ink-600 mt-3">
-              All three programmes share the same evening schedule
-              (Mon–Fri 6 pm – 10 pm and Saturday 8 am – 5 pm), ideal for working students.
+              {t('parent.specialty.subtitle')}
             </p>
           </div>
           <div className="grid lg:grid-cols-3 gap-6">
@@ -225,17 +227,17 @@ export default function ParentPortal() {
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="grid grid-cols-2 gap-3 text-xs">
                       <div className="rounded-xl bg-ink-50 p-3">
-                        <div className="flex items-center gap-1.5 text-ink-500"><Clock size={12} /> Duration</div>
+                        <div className="flex items-center gap-1.5 text-ink-500"><Clock size={12} /> {t('parent.specialty.duration')}</div>
                         <div className="font-semibold text-sm mt-0.5">{s.duration}</div>
                       </div>
                       <div className="rounded-xl bg-ink-50 p-3">
-                        <div className="flex items-center gap-1.5 text-ink-500"><Wallet size={12} /> Tuition / yr</div>
+                        <div className="flex items-center gap-1.5 text-ink-500"><Wallet size={12} /> {t('parent.specialty.tuition')}</div>
                         <div className="font-semibold text-sm mt-0.5">{s.tuition.toLocaleString('en-US')} FCFA</div>
                       </div>
                     </div>
 
                     <div className="mt-5">
-                      <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider">Curriculum highlights</div>
+                      <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider">{t('parent.specialty.curriculum')}</div>
                       <ul className="mt-2 space-y-1.5 text-sm text-ink-700">
                         {s.curriculum.map((c) => (
                           <li key={c} className="flex items-start gap-2">
@@ -247,7 +249,7 @@ export default function ParentPortal() {
                     </div>
 
                     <div className="mt-5">
-                      <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider">Career outlook</div>
+                      <div className="text-xs font-semibold text-ink-500 uppercase tracking-wider">{t('parent.specialty.careers')}</div>
                       <div className="mt-2 flex flex-wrap gap-1.5">
                         {s.careers.map((c) => (
                           <span key={c} className={`${s.pill} text-[11px] px-2 py-0.5 rounded-full font-medium`}>{c}</span>
@@ -259,7 +261,7 @@ export default function ParentPortal() {
                       to={`/parent/register?specialty=${s.id}`}
                       className="mt-auto pt-5 inline-flex items-center justify-center gap-2 font-semibold text-brand-700 hover:text-brand-900"
                     >
-                      Register for {s.short} <ArrowRight size={16} />
+                      {t('parent.specialty.cta', { code: s.short })} <ArrowRight size={16} />
                     </Link>
                   </div>
                 </motion.div>
@@ -275,7 +277,7 @@ export default function ParentPortal() {
           <div className="card">
             <div className="flex items-center gap-2 mb-5">
               <Calendar size={20} className="text-brand-700" />
-              <h2 className="text-2xl font-display font-bold">Academic calendar</h2>
+              <h2 className="text-2xl font-display font-bold">{t('parent.calendar.title')}</h2>
             </div>
             <div className="space-y-3">
               {CALENDAR.map((c, i) => (
@@ -295,11 +297,10 @@ export default function ParentPortal() {
           <div id="fees" className="card">
             <div className="flex items-center gap-2 mb-5">
               <Wallet size={20} className="text-emerald-700" />
-              <h2 className="text-2xl font-display font-bold">Fees & payment options</h2>
+              <h2 className="text-2xl font-display font-bold">{t('parent.fees.title')}</h2>
             </div>
             <p className="text-sm text-ink-600 mb-4">
-              Total tuition: <span className="font-bold text-brand-800">{TOTAL_FEES.toLocaleString('en-US')} FCFA</span> per academic year,
-              all-inclusive. Two instalments accepted (50% at registration, 50% before final exams).
+              {t('parent.fees.sub', { amount: `${TOTAL_FEES.toLocaleString('en-US')} FCFA` })}
             </p>
             <div className="space-y-2.5">
               {[
@@ -319,7 +320,7 @@ export default function ParentPortal() {
               ))}
             </div>
             <Link to="/parent/register" className="btn-primary w-full mt-5 py-3">
-              Proceed to registration <ArrowRight size={16} />
+              {t('parent.fees.proceed')} <ArrowRight size={16} />
             </Link>
           </div>
         </div>
@@ -331,21 +332,21 @@ export default function ParentPortal() {
           <div className="flex items-start gap-3">
             <Building2 size={22} className="text-accent-400 mt-0.5" />
             <div>
-              <div className="text-sm font-semibold">Bonabéri campus</div>
-              <div className="text-sm text-white/70 mt-0.5">Carrefour Bonabéri,<br />Douala, Cameroon</div>
+              <div className="text-sm font-semibold">{t('parent.contact.campus')}</div>
+              <div className="text-sm text-white/70 mt-0.5 whitespace-pre-line">{t('parent.contact.address')}</div>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Phone size={22} className="text-accent-400 mt-0.5" />
             <div>
-              <div className="text-sm font-semibold">Admissions office</div>
+              <div className="text-sm font-semibold">{t('parent.contact.admissions')}</div>
               <div className="text-sm text-white/70 mt-0.5">+237 233 39 12 12<br />+237 690 00 00 00</div>
             </div>
           </div>
           <div className="flex items-start gap-3">
             <Mail size={22} className="text-accent-400 mt-0.5" />
             <div>
-              <div className="text-sm font-semibold">Email</div>
+              <div className="text-sm font-semibold">{t('parent.contact.email')}</div>
               <div className="text-sm text-white/70 mt-0.5">admissions@iuget.cm<br />bursary@iuget.cm</div>
             </div>
           </div>
