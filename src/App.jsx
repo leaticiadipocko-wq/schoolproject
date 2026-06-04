@@ -34,8 +34,9 @@ import StaffDashboard from '@/pages/staff/StaffDashboard'
 import Enrollment from '@/pages/staff/Enrollment'
 
 // Shared pages
-import Profile from '@/pages/Profile'
-import Help    from '@/pages/Help'
+import Profile        from '@/pages/Profile'
+import Help           from '@/pages/Help'
+import OfflineStatus  from '@/pages/OfflineStatus'
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
@@ -81,6 +82,7 @@ export default function App() {
         <Route path="idcard"        element={<IDCard />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
+        <Route path="offline"       element={<OfflineStatus />} />
       </Route>
 
       {/* Lecturer */}
@@ -99,6 +101,7 @@ export default function App() {
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
+        <Route path="offline"       element={<OfflineStatus />} />
       </Route>
 
       {/* Staff */}
@@ -119,6 +122,7 @@ export default function App() {
         <Route path="analytics"     element={<Analytics />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
+        <Route path="offline"       element={<OfflineStatus />} />
       </Route>
 
       {/* Admin */}
@@ -140,6 +144,7 @@ export default function App() {
         <Route path="settings"      element={<Settings />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
+        <Route path="offline"       element={<OfflineStatus />} />
       </Route>
 
       {/* Authed home redirect */}

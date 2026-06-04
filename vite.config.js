@@ -11,9 +11,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'brand/iuget-logo.png', 'brand/iuget-logo-white.png'],
       manifest: {
-        name: 'SIARM · Smart Institution Academic Resource Management',
+        name: 'SIARM · Academic Resource Management — IUGET Bonabéri',
         short_name: 'SIARM',
-        description: 'A unified AI-augmented academic platform for IUGET Bonabéri.',
+        description: 'Unified academic platform for IUGET Bonabéri — attendance, results, timetable, tuition payment, parent portal.',
         theme_color: '#1e3aa0',
         background_color: '#f8fafc',
         display: 'standalone',
@@ -21,33 +21,83 @@ export default defineConfig({
         scope: '/',
         start_url: '/',
         lang: 'en',
+        categories: ['education', 'productivity'],
         icons: [
           { src: '/brand/iuget-logo.png',       sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: '/brand/iuget-logo.png',       sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: '/brand/iuget-logo-white.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        shortcuts: [
+          { name: 'Pay tuition',  short_name: 'Pay',     description: 'Open the tuition payment page', url: '/student/fees',  icons: [{ src: '/brand/iuget-logo.png', sizes: '192x192' }] },
+          { name: 'My timetable', short_name: 'Schedule',description: 'View this week\'s timetable',     url: '/student/timetable', icons: [{ src: '/brand/iuget-logo.png', sizes: '192x192' }] },
+          { name: 'My ID card',   short_name: 'ID Card', description: 'Open the student ID card',       url: '/student/idcard', icons: [{ src: '/brand/iuget-logo.png', sizes: '192x192' }] },
+        ],
       },
       workbox: {
-        // Cache app shell + all js/css/png/svg for true offline operation
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2,ttf}'],
+        // Aggressively precache every static asset so the whole UI is available offline
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,jpg,jpeg,woff,woff2,ttf,json,webp}'],
+        maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,   // 5 MB ceiling
         navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/downloads\//, /^\/deliverables/],
+        cleanupOutdatedCaches: true,
         runtimeCaching: [
           {
-            // Fonts from Google Fonts
+            // Google-Fonts stylesheet — cache-first, long expiry
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts-css', expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 } },
+            options: {
+              cacheName: 'siarm-fonts-css',
+              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
           },
           {
+            // Google-Fonts woff2 files — cache-first
             urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
             handler: 'CacheFirst',
-            options: { cacheName: 'google-fonts-webfonts', expiration: { maxAgeSeconds: 60 * 60 * 24 * 365 } },
+            options: {
+              cacheName: 'siarm-fonts-webfonts',
+              expiration: { maxEntries: 30, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
           },
           {
-            // Avatars
+            // Dicebear avatars — cache-first with generous size
             urlPattern: /^https:\/\/api\.dicebear\.com\/.*/i,
             handler: 'CacheFirst',
-            options: { cacheName: 'avatars', expiration: { maxEntries: 50 } },
+            options: {
+              cacheName: 'siarm-avatars',
+              expiration: { maxEntries: 100, maxAgeSeconds: 60 * 60 * 24 * 30 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // IUGET brand assets
+            urlPattern: /\/brand\/.*/i,
+            handler: 'CacheFirst',
+            options: { cacheName: 'siarm-brand', expiration: { maxEntries: 20 } },
+          },
+          {
+            // Firestore real-time — stale-while-revalidate so the cached
+            // payload is shown immediately and refreshed in the background
+            urlPattern: /^https:\/\/firestore\.googleapis\.com\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'siarm-firestore',
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 200, maxAgeSeconds: 60 * 60 * 24 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
+          {
+            // Anything else under the SIARM origin — fall back to cache
+            urlPattern: ({ url }) => url.origin === self.location.origin,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'siarm-html',
+              networkTimeoutSeconds: 4,
+              expiration: { maxEntries: 80, maxAgeSeconds: 60 * 60 * 24 * 7 },
+            },
           },
         ],
       },

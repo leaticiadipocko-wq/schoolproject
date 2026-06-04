@@ -2,6 +2,7 @@ import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
+  WifiOff,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -29,6 +30,12 @@ export const STUDENT_NAV = [
       { to: '/student/learning', label: 'Mobile Learning',  icon: GraduationCap },
     ],
   },
+  {
+    title: 'System',
+    links: [
+      { to: '/student/offline',  label: 'Offline Mode',     icon: WifiOff },
+    ],
+  },
 ]
 
 export const LECTURER_NAV = [
@@ -45,6 +52,12 @@ export const LECTURER_NAV = [
     title: 'Communicate',
     links: [
       { to: '/lecturer/announcements', label: 'Announcements', icon: Megaphone },
+    ],
+  },
+  {
+    title: 'System',
+    links: [
+      { to: '/lecturer/offline', label: 'Offline Mode', icon: WifiOff },
     ],
   },
 ]
@@ -72,6 +85,12 @@ export const STAFF_NAV = [
       { to: '/staff/analytics',     label: 'Analytics',         icon: TrendingUp },
     ],
   },
+  {
+    title: 'System',
+    links: [
+      { to: '/staff/offline',       label: 'Offline Mode',      icon: WifiOff },
+    ],
+  },
 ]
 
 export const ADMIN_NAV = [
@@ -91,6 +110,12 @@ export const ADMIN_NAV = [
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },
       { to: '/admin/settings',      label: 'Settings',      icon: Settings },
+    ],
+  },
+  {
+    title: 'System',
+    links: [
+      { to: '/admin/offline',       label: 'Offline Mode',  icon: WifiOff },
     ],
   },
 ]
