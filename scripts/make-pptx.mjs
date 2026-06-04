@@ -427,6 +427,70 @@ function caption(slide, txt, y = 6.6) {
   caption(s, 'Same code base · stateless front-end · serverless persistence', 6.8)
 }
 
+/* ─── 22b. METHODOLOGY — AGILE ────────────────────────────── */
+{
+  const s = newSlide()
+  title(s, 'Methodology', 'Scrumban — Scrum cadence + Kanban flow')
+
+  const cards = [
+    { t: 'Cadence',     d: '1-week sprints',           c: NAVY },
+    { t: 'Ceremonies',  d: 'Planning · Review · Retro', c: NAVY },
+    { t: 'Flow',        d: 'WIP limit 3',              c: AMB  },
+    { t: 'Discipline',  d: 'Definition of Done',       c: EM   },
+    { t: 'Backlog',     d: '40 user stories',          c: NAVY },
+    { t: 'Velocity',    d: '22 SP / sprint',           c: EM   },
+  ]
+  cards.forEach((c, i) => {
+    const col = i % 3, row = Math.floor(i / 3)
+    const x = 0.6 + col * 4.25, y = 1.7 + row * 2.4
+    s.addShape('roundRect', { x, y, w: 4, h: 2.1, fill: { color: 'FFFFFF' }, line: { color: c.c, width: 2 }, rectRadius: 0.15 })
+    s.addShape('rect', { x, y, w: 4, h: 0.55, fill: { color: c.c }, line: { type: 'none' } })
+    s.addText(c.t, { x, y, w: 4, h: 0.55, fontSize: 16, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle', fontFace: 'Calibri' })
+    s.addText(c.d, { x: x + 0.2, y: y + 0.7, w: 3.6, h: 1.4, fontSize: 22, bold: true, color: c.c, align: 'center', valign: 'middle', fontFace: 'Calibri' })
+  })
+  caption(s, 'Solo Agile = Scrum cadence + Kanban WIP discipline', 6.7)
+}
+
+/* ─── 22c. SPRINT BACKLOG ─────────────────────────────────── */
+{
+  const s = newSlide()
+  title(s, 'Six sprints · 120 story points', 'Each sprint shipped a working increment')
+
+  const sprints = [
+    { id: 'S1', th: 'Foundations · auth · design system',      sp: '12', c: NAVY },
+    { id: 'S2', th: 'Student & Lecturer surfaces',             sp: '22', c: NAVY },
+    { id: 'S3', th: 'Bursary & Administration',                sp: '23', c: NAVY },
+    { id: 'S4', th: 'Parent Portal + simulated payment',       sp: '29', c: AMB  },
+    { id: 'S5', th: 'Polish · PWA · UML · defence package',    sp: '18', c: NAVY },
+    { id: 'S6', th: 'Bilingual · Profile · Help · ICS',        sp: '16', c: AMB  },
+  ]
+  sprints.forEach((sp, i) => {
+    const y = 1.8 + i * 0.78
+    s.addShape('roundRect', { x: 0.6, y, w: 1, h: 0.65, fill: { color: sp.c }, line: { type: 'none' }, rectRadius: 0.08 })
+    s.addText(sp.id, { x: 0.6, y, w: 1, h: 0.65, fontSize: 22, bold: true, color: 'FFFFFF', align: 'center', valign: 'middle', fontFace: 'Calibri' })
+    s.addText(sp.th, { x: 1.8, y: y + 0.1, w: 8.5, h: 0.5, fontSize: 16, color: INK, fontFace: 'Calibri' })
+    s.addShape('roundRect', { x: 10.5, y, w: 2.2, h: 0.65, fill: { color: 'FFFFFF' }, line: { color: sp.c, width: 1.5 }, rectRadius: 0.08 })
+    s.addText(`${sp.sp} SP`, { x: 10.5, y, w: 2.2, h: 0.65, fontSize: 18, bold: true, color: sp.c, align: 'center', valign: 'middle', fontFace: 'Calibri' })
+  })
+  caption(s, 'Velocity stabilised at 22 SP/sprint · 120 SP delivered in total', 6.7)
+}
+
+/* ─── 22d. BURNDOWN ───────────────────────────────────────── */
+{
+  const s = newSlide()
+  title(s, 'Burndown chart', 'Honest scope tracking — two scope-creep events recorded')
+  image(s, '16-burndown.png', 1.5, 1.5, 10.3, 5)
+  caption(s, 'Figure 5b.2 — Story points remaining over 6 sprints · red dashed = scope added')
+}
+
+/* ─── 22e. KANBAN ─────────────────────────────────────────── */
+{
+  const s = newSlide()
+  title(s, 'Kanban board', 'WIP limit = 3 · snapshot at end of Sprint 4')
+  image(s, '17-kanban.png', 0.8, 1.5, 11.7, 5)
+  caption(s, 'Figure 5b.1 — Backlog · To Do · In Progress (WIP 3) · Review · Done')
+}
+
 /* ─── 23. KEY ACHIEVEMENTS ────────────────────────────────── */
 {
   const s = newSlide()
@@ -435,8 +499,8 @@ function caption(slide, txt, y = 6.6) {
   const ach = [
     { n: '53',    l: 'source files' },
     { n: '24',    l: 'pages' },
-    { n: '14',    l: 'reusable components' },
-    { n: '10',    l: 'architectural diagrams' },
+    { n: '17',    l: 'architectural & UML diagrams' },
+    { n: '6',     l: 'one-week sprints' },
     { n: '5',     l: 'payment channels' },
     { n: '4',     l: 'QR-verifiable artefacts' },
   ]

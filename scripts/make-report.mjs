@@ -197,13 +197,14 @@ const toc = [
     ['Chapter 3 — Requirements Analysis', '13'],
     ['Chapter 4 — System Design', '19'],
     ['Chapter 5 — Implementation', '28'],
-    ['Chapter 6 — Testing and Validation', '38'],
-    ['Chapter 7 — Results and Discussion', '42'],
-    ['Chapter 8 — Conclusion and Future Work', '46'],
+    ['Chapter 5 bis — Agile Methodology', '38'],
+    ['Chapter 6 — Testing and Validation', '44'],
+    ['Chapter 7 — Results and Discussion', '48'],
+    ['Chapter 8 — Conclusion and Future Work', '52'],
     ['', ''],
-    ['References', '48'],
-    ['Appendix A — Architectural Diagrams (full size)', '49'],
-    ['Appendix B — Demo Credentials and Quick Reference', '50'],
+    ['References', '54'],
+    ['Appendix A — Architectural Diagrams (full size)', '55'],
+    ['Appendix B — Demo Credentials and Quick Reference', '56'],
   ].map(([k, v]) =>
     P([T(k, { size: 22, color: INK }), T(` ${'.'.repeat(Math.max(2, 70 - k.length))} `, { size: 22, color: GRAY }), T(v, { size: 22, color: INK })])
   ),
@@ -222,6 +223,8 @@ const toc = [
     'Figure 5.1 — Parent registration flow (5 steps)',
     'Figure 5.2 — Tuition payment simulation across 5 channels',
     'Figure 5.3 — Automated student enrolment pipeline',
+    'Figure 5b.1 — Kanban board snapshot (end of Sprint 4)',
+    'Figure 5b.2 — Sprint burndown chart',
   ].map((line) => P(T(line, { size: 22 }))),
   pageBreak(),
 
@@ -237,6 +240,10 @@ const toc = [
     'Table 5.2 — Lecturer-course assignments (Sixth Semester)',
     'Table 5.3 — Tuition fee breakdown',
     'Table 5.4 — Payment methods and behaviours',
+    'Table 5b.1 — Agile Manifesto values honoured',
+    'Table 5b.2 — Scrum roles in solo-developer Agile',
+    'Table 5b.3 — Backlog distribution by role',
+    'Table 5b.4 — Sprint backlog and delivery',
     'Table 6.1 — Test case summary',
     'Table 7.1 — Performance measurements',
   ].map((line) => P(T(line, { size: 22 }))),
@@ -682,6 +689,94 @@ const chapter5 = [
   Body('Power users access every page through a global Command Palette, opened with ⌘K on macOS or Ctrl+K elsewhere. The palette is role-aware: a Student sees Pay tuition and Print my ID card; a Staff member sees Tuition tracking and Enrol new student. Shortcut hints (G T for timetable, G F for fees) make repeated tasks even faster.'),
 ]
 
+/* ─── CHAPTER 5B — AGILE METHODOLOGY ──────────────────────── */
+const chapter5b = [
+  H1('Chapter 5 bis — Agile Methodology'),
+
+  H2('5b.1  Why Agile, not Waterfall'),
+  Body('Three properties of the SIARM project made an Agile approach the obvious choice. First, the requirements were known to be evolving — the registrar\'s feedback regularly changed the priority order of the backlog, and a locked specification would have grown stale within two weeks. Second, the customer (the IUGET administration) needed to see working software to give credible feedback. Third, the academic deadline was fixed: whatever existed on the defence date had to be defensible, which is best achieved by shipping a working increment every week.'),
+  Body('The exact methodology adopted is best described as Scrumban — Scrum-style cadence (one-week sprints with planning, mid-sprint check, and end-of-sprint review and retrospective) combined with Kanban-style flow management (a single board with WIP limits, five columns: Backlog, To Do, In Progress, Review, Done).'),
+
+  H2('5b.2  The Agile Manifesto, applied to SIARM'),
+  blank(),
+  table([
+    ['Manifesto value', 'How SIARM honoured it'],
+    ['Individuals & interactions',  'Weekly demos to two classmates and one administrative staff member were the single biggest driver of design changes.'],
+    ['Working software',            'Each sprint ended with a build that ran. The report was written after the working code was demonstrable.'],
+    ['Customer collaboration',      'The IUGET registrar acted as the proxy product owner. Her insistence that parents must be able to pay without an account became the founding requirement of the Parent Portal.'],
+    ['Responding to change',        'The original 15-module roadmap grew to 21 modules because the author chose to act on feedback rather than refuse it.'],
+  ], [30, 70]),
+  caption('Table 5b.1 — Agile Manifesto values honoured.'),
+
+  H2('5b.3  Scrumban — solo-developer adaptation'),
+  Body('Pure Scrum prescribes three distinct roles (Product Owner, Scrum Master, Development Team). A solo project necessarily collapses these roles onto one person, which is unusual and worth flagging.'),
+  blank(),
+  table([
+    ['Scrum role',       'Played by',                                    'Adaptation'],
+    ['Product Owner',    'Author + IUGET registrar (proxy customer)',    'Registrar\'s feedback dictated priority; author maintained the backlog.'],
+    ['Scrum Master',     'Author',                                       'Replaced daily stand-ups with a written plan-of-the-day; weekly retrospective.'],
+    ['Development Team', 'Author',                                       'One developer, full-stack.'],
+  ], [22, 38, 40]),
+  caption('Table 5b.2 — Scrum roles in a solo-developer Agile.'),
+
+  H2('5b.4  Definition of Done'),
+  Body('A story is considered Done only when all the following criteria are met:'),
+  bullet('The user-story acceptance criteria are met.'),
+  bullet('The implementation is visible in the running application under DEMO_MODE without external services.'),
+  bullet('The page renders without console errors on Chrome, Firefox, Edge and Safari.'),
+  bullet('User-facing strings are translated into both English and French (from Sprint 6 onwards).'),
+  bullet('The build still passes (npm run build returns exit 0; the production bundle stays under 500 kB gzipped).'),
+  bullet('A pull-request-style self-review has been performed.'),
+
+  H2('5b.5  Product Backlog'),
+  Body('The backlog was expressed as user stories following the standard "As a … I want to … so that …" template. Story points were estimated on a modified Fibonacci scale (1, 2, 3, 5, 8, 13). The backlog totalled 120 story points, distributed across 40 user stories.'),
+  blank(),
+  table([
+    ['Role surface', 'User stories', 'Story points'],
+    ['Parent (public)',    '11', '31 SP'],
+    ['Student',            '12', '32 SP'],
+    ['Lecturer',           '3',  '8 SP'],
+    ['Staff (bursary)',    '7',  '20 SP'],
+    ['Admin',              '4',  '8 SP'],
+    ['Cross-cutting / NFR','5',  '21 SP'],
+    ['TOTAL',              '42', '120 SP'],
+  ], [38, 22, 40]),
+  caption('Table 5b.3 — Backlog distribution by role surface.'),
+
+  H2('5b.6  Sprint backlog and execution'),
+  Body('The work was organised into six one-week sprints. Each sprint produced a demonstrable increment; each ended with a retrospective recorded as "went well", "to improve", and "action for next sprint".'),
+  blank(),
+  table([
+    ['Sprint', 'Theme', 'Committed', 'Achieved'],
+    ['S1', 'Foundations · scaffolding · auth · design system', '12 SP', '12 SP'],
+    ['S2', 'Student & Lecturer surfaces',                      '22 SP', '22 SP'],
+    ['S3', 'Bursary & Administration',                         '23 SP', '23 SP'],
+    ['S4', 'Parent Portal + simulated payment',                '29 SP (15 + 14 added mid-sprint)', '29 SP'],
+    ['S5', 'Polish · PWA · UML · defence package',             '18 SP', '18 SP'],
+    ['S6', 'Bilingual EN/FR + Profile + Help + ICS',           '16 SP (8 + 8 added)', '16 SP'],
+    ['TOTAL', '6 sprints', '120 SP', '120 SP'],
+  ], [10, 50, 20, 20]),
+  caption('Table 5b.4 — Sprint backlog and actual delivery.'),
+
+  H2('5b.7  Kanban board and WIP discipline'),
+  Body('A single physical Kanban board was maintained throughout the project, with five columns and a hard work-in-progress limit of three. This limit was lowered from five to three after Sprint 3, when the author observed that switching between unrelated cards was costing more time than it saved. The figure below shows the board at the end of Sprint 4.'),
+  imagePara('17-kanban.png', 600),
+  caption('Figure 5b.1 — Kanban board snapshot (end of Sprint 4) with WIP-3 discipline.'),
+
+  H2('5b.8  Burndown and velocity'),
+  Body('The burndown chart traces the story-point reduction across the six sprints. Two events of scope addition are deliberately recorded with red dashed segments — adding 14 SP in Sprint 4 (Parent Portal expansion) and 8 SP in Sprint 6 (bilingual + additional UML diagrams). Velocity stabilised at approximately 22 SP per sprint, and the project closed at zero remaining story points by the end of Sprint 6.'),
+  imagePara('16-burndown.png', 600),
+  caption('Figure 5b.2 — Sprint burndown chart with scope-creep transparency.'),
+
+  H2('5b.9  Retrospectives — three honest reflections'),
+  bullet('What worked. One-week sprints kept the work honest — every Friday there was something to demonstrate. The Definition of Done caught regressions early. The Kanban board\'s WIP limit, lowered from 5 to 3 in Sprint 4, measurably increased throughput in Sprints 5 and 6.'),
+  bullet('What did not. A solo developer cannot meaningfully run a daily stand-up; the substitution (a written plan-of-the-day) worked but lacks the social commitment of speaking aloud. Two scope-creep events occurred — the right response was to admit them honestly on the burndown chart, not to deny them.'),
+  bullet('What would change in v2. Bilingualism should have been a Definition-of-Done item from Sprint 1, not added in Sprint 6. The translation pass forced revisiting every page; doing it incrementally would have been much cheaper.'),
+
+  H2('5b.10  Why Agile — the defence-ready answer'),
+  Body('Asked at the defence why Agile and not a Waterfall plan, the honest answer is: Waterfall would have produced a stale design within two weeks. Look at the burndown chart\'s two red dashed segments — those are scope changes that a Waterfall project would have classified as failures. Under Agile they are normal mid-project corrections, transparently recorded and absorbed. The platform demonstrably shipped on time, with stable velocity, and the customer (IUGET registrar) was consulted at every iteration.'),
+]
+
 /* ─── CHAPTER 6 — TESTING ─────────────────────────────────── */
 const chapter6 = [
   H1('Chapter 6 — Testing and Validation'),
@@ -848,6 +943,13 @@ const appendixA = [
   imagePara('08-parent-flow.png', 640),   caption('Figure A.8 — Parent registration flow (full size).'),
   imagePara('09-payment-flow.png', 640),  caption('Figure A.9 — Payment simulation (full size).'),
   imagePara('10-enrolment-flow.png', 640), caption('Figure A.10 — Automated enrolment pipeline (full size).'),
+  imagePara('11-class-diagram.png', 640),  caption('Figure A.11 — UML class diagram (full size).'),
+  imagePara('12-state-payment.png', 640),  caption('Figure A.12 — UML state diagram: payment (full size).'),
+  imagePara('13-state-enrolment.png', 640),caption('Figure A.13 — UML state diagram: enrolment (full size).'),
+  imagePara('14-activity-attendance.png', 640), caption('Figure A.14 — UML activity diagram: attendance (full size).'),
+  imagePara('15-package-diagram.png', 640),caption('Figure A.15 — UML package diagram (full size).'),
+  imagePara('16-burndown.png', 640),       caption('Figure A.16 — Sprint burndown (full size).'),
+  imagePara('17-kanban.png', 640),         caption('Figure A.17 — Kanban board snapshot (full size).'),
 ]
 
 /* ─── APPENDIX B — demo + reference ───────────────────────── */
@@ -939,6 +1041,7 @@ const doc = new Document({
         ...chapter3,
         ...chapter4,
         ...chapter5,
+        ...chapter5b,
         ...chapter6,
         ...chapter7,
         ...chapter8,
