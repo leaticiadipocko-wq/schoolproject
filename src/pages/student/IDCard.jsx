@@ -4,11 +4,15 @@ import jsPDF from 'jspdf'
 import html2canvas from 'html2canvas'
 import { Printer, Download, Eye, RotateCcw, ShieldCheck, QrCode } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 import QRCode from '@/components/QRCode'
 
 export default function IDCard() {
   const { user } = useAuth()
+  const { photos = {}, signatures = {} } = useData()
+  const photoUrl = photos[user?.uid] || user?.avatar
+  const sigUrl   = signatures[user?.uid]
   const [flipped, setFlipped] = useState(false)
   const cardRef = useRef()
 
@@ -105,7 +109,7 @@ export default function IDCard() {
               {/* Photo + info */}
               <div className="relative z-10 flex gap-4 px-5 mt-3">
                 <div className="w-28 h-32 rounded-lg bg-white p-1 shrink-0">
-                  <img src={user?.avatar} alt="" className="w-full h-full rounded-md object-cover bg-ink-100" />
+                  <img src={photoUrl} alt="" className="w-full h-full rounded-md object-cover bg-ink-100" />
                 </div>
                 <div className="flex-1 text-white pt-1">
                   <div className="text-[9px] uppercase tracking-wider opacity-75">Full name</div>
@@ -137,11 +141,16 @@ export default function IDCard() {
               </div>
 
               {/* Bottom strip */}
-              <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur px-5 py-2.5 flex items-center gap-3">
-                <div className="font-mono text-[10px] tracking-wider text-ink-700">
-                  &lt;&lt;{user?.studentId?.replace(/\//g, '&lt;')}&lt;&lt;{user?.name?.toUpperCase().replace(/\s+/g, '&lt;')}&lt;&lt;
+              <div className="absolute bottom-0 left-0 right-0 bg-white/95 backdrop-blur px-5 py-2 flex items-center gap-3">
+                <div className="flex-1 min-w-0">
+                  <div className="font-mono text-[9px] tracking-wider text-ink-700 truncate">
+                    &lt;&lt;{user?.studentId?.replace(/\//g, '&lt;')}&lt;&lt;{user?.name?.toUpperCase().replace(/\s+/g, '&lt;')}&lt;&lt;
+                  </div>
                 </div>
-                <div className="ml-auto flex items-center gap-1.5 text-xs font-semibold text-brand-800">
+                {sigUrl && (
+                  <img src={sigUrl} alt="" className="h-7 object-contain" />
+                )}
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-brand-800">
                   <ShieldCheck size={12} /> Verified
                 </div>
               </div>

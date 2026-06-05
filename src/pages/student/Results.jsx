@@ -14,7 +14,8 @@ const gradePoints = { 'A': 4, 'B+': 3.5, 'B': 3, 'C+': 2.5, 'C': 2, 'D': 1, 'F':
 
 export default function Results() {
   const { user } = useAuth()
-  const { results: storedResults } = useData()
+  const { results: storedResults, signatures = {} } = useData()
+  const registrarSig = signatures['registrar'] || signatures[user?.uid]
   const printRef = useRef()
 
   const results = storedResults.filter((r) => !r.studentId)
@@ -154,11 +155,19 @@ export default function Results() {
         {/* Footer with QR verification */}
         <div className="mt-8 pt-6 border-t border-ink-200 grid grid-cols-3 gap-6 text-xs text-ink-600 items-end">
           <div>
-            <div className="h-10" />
+            <div className="h-12 flex items-end justify-center">
+              {registrarSig
+                ? <img src={registrarSig} alt="" className="h-12 object-contain" />
+                : <span className="text-[10px] text-ink-400 italic">(unsigned)</span>}
+            </div>
             <div className="border-t border-ink-400 pt-1.5">Registrar's signature</div>
           </div>
           <div>
-            <div className="h-10" />
+            <div className="h-12 flex items-end justify-center">
+              <div className="w-16 h-16 rounded-full border-2 border-brand-800 flex items-center justify-center text-[8px] font-bold text-brand-800 text-center leading-tight">
+                IUGET<br />OFFICIAL<br />SEAL
+              </div>
+            </div>
             <div className="border-t border-ink-400 pt-1.5">Official seal</div>
           </div>
           <div className="flex flex-col items-center">

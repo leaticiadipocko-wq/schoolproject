@@ -58,40 +58,50 @@ export default function Profile() {
         <div className="card text-center">
           <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-brand-100 to-accent-100 mx-auto overflow-hidden ring-4 ring-white dark:ring-ink-800 shadow-soft">
             <img src={photoUrl} alt={user?.name} className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={() => setShowCamera(true)}
-              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center shadow-glow hover:bg-brand-800 transition"
-              title={lang === 'en' ? 'Take or upload a photo' : 'Prendre ou importer une photo'}
-            >
-              <Camera size={16} />
-            </button>
           </div>
           <div className="mt-4 font-display font-bold text-xl">{user?.name}</div>
           <div className="text-sm text-ink-500">{user?.email}</div>
           <div className="mt-2 badge-info inline-flex">{user?.role}</div>
+
+          {/* Clear, full-width photo button */}
+          <button
+            type="button"
+            onClick={() => setShowCamera(true)}
+            className="btn-primary w-full mt-4"
+          >
+            <Camera size={16} /> {lang === 'en' ? 'Change photo' : 'Changer la photo'}
+          </button>
+          {photos[user?.uid] && (
+            <button
+              type="button"
+              onClick={() => savePhoto(user?.uid, null)}
+              className="btn-ghost w-full mt-2 text-sm text-red-600"
+            >
+              <Trash2 size={14} /> {lang === 'en' ? 'Remove photo' : 'Supprimer la photo'}
+            </button>
+          )}
         </div>
 
         {/* Form */}
         <form onSubmit={saveProfile} className="card lg:col-span-2 space-y-4">
           <div className="flex items-center gap-2">
             <UserIcon size={20} className="text-brand-600" />
-            <h3 className="font-display font-bold text-lg">Personal information</h3>
+            <h3 className="font-display font-bold text-lg">{lang === 'en' ? 'Personal information' : 'Informations personnelles'}</h3>
           </div>
           <div className="grid sm:grid-cols-2 gap-4">
-            <Field icon={UserIcon} label="Full name"   value={form.name}  onChange={(v) => setForm((f) => ({ ...f, name: v }))} />
-            <Field icon={Mail}     label="Email"       value={form.email} onChange={(v) => setForm((f) => ({ ...f, email: v }))} />
-            <Field icon={Phone}    label="Phone"       value={form.phone} onChange={(v) => setForm((f) => ({ ...f, phone: v }))} />
+            <Field icon={UserIcon} label={lang === 'en' ? 'Full name' : 'Nom complet'} value={form.name}  onChange={(v) => setForm((f) => ({ ...f, name: v }))} />
+            <Field icon={Mail}     label={lang === 'en' ? 'Email' : 'E-mail'}          value={form.email} onChange={(v) => setForm((f) => ({ ...f, email: v }))} />
+            <Field icon={Phone}    label={lang === 'en' ? 'Phone' : 'Téléphone'}       value={form.phone} onChange={(v) => setForm((f) => ({ ...f, phone: v }))} />
             <div>
-              <label className="label">Role</label>
+              <label className="label">{lang === 'en' ? 'Role' : 'Rôle'}</label>
               <input className="input" value={user?.role || ''} disabled />
             </div>
           </div>
           <div>
-            <label className="label">Bio</label>
+            <label className="label">{lang === 'en' ? 'Bio' : 'Biographie'}</label>
             <textarea
               className="input min-h-[80px]"
-              placeholder="A short bio about yourself…"
+              placeholder={lang === 'en' ? 'A short bio about yourself…' : 'Quelques mots à votre sujet…'}
               value={form.bio}
               onChange={(e) => setForm((f) => ({ ...f, bio: e.target.value }))}
             />
@@ -106,16 +116,16 @@ export default function Profile() {
 
       {/* Preferences */}
       <div className="card">
-        <h3 className="font-display font-bold text-lg mb-4">Preferences</h3>
+        <h3 className="font-display font-bold text-lg mb-4">{lang === 'en' ? 'Preferences' : 'Préférences'}</h3>
 
         <div className="grid sm:grid-cols-2 gap-4">
           {/* Language */}
-          <div className="rounded-xl border border-ink-100 p-4">
+          <div className="rounded-xl border border-ink-100 dark:border-ink-800 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
                 <Languages size={20} className="text-brand-600 mt-0.5" />
                 <div>
-                  <div className="font-medium">Language</div>
+                  <div className="font-medium">{lang === 'en' ? 'Language' : 'Langue'}</div>
                   <div className="text-xs text-ink-500 mt-0.5">{lang === 'en' ? 'English (US)' : 'Français'}</div>
                 </div>
               </div>
@@ -127,29 +137,29 @@ export default function Profile() {
           </div>
 
           {/* Theme */}
-          <div className="rounded-xl border border-ink-100 p-4">
+          <div className="rounded-xl border border-ink-100 dark:border-ink-800 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
                 {theme === 'dark' ? <Moon size={20} className="text-brand-600 mt-0.5" /> : <Sun size={20} className="text-brand-600 mt-0.5" />}
                 <div>
-                  <div className="font-medium">Theme</div>
+                  <div className="font-medium">{lang === 'en' ? 'Theme' : 'Thème'}</div>
                   <div className="text-xs text-ink-500 mt-0.5">{theme === 'dark' ? t('common.theme.dark') : t('common.theme.light')}</div>
                 </div>
               </div>
               <button onClick={toggleTheme} className="btn-secondary text-xs">
-                Switch
+                {lang === 'en' ? 'Switch' : 'Changer'}
               </button>
             </div>
           </div>
 
           {/* Email notifications */}
-          <div className="rounded-xl border border-ink-100 p-4">
+          <div className="rounded-xl border border-ink-100 dark:border-ink-800 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
                 <Mail size={20} className="text-emerald-600 mt-0.5" />
                 <div>
-                  <div className="font-medium">Email notifications</div>
-                  <div className="text-xs text-ink-500 mt-0.5">Grades, fees, announcements</div>
+                  <div className="font-medium">{lang === 'en' ? 'Email notifications' : 'Notifications e-mail'}</div>
+                  <div className="text-xs text-ink-500 mt-0.5">{lang === 'en' ? 'Grades, fees, announcements' : 'Notes, scolarité, annonces'}</div>
                 </div>
               </div>
               <Toggle checked={notifyByEmail} onChange={setNotifyByEmail} />
@@ -157,13 +167,13 @@ export default function Profile() {
           </div>
 
           {/* Push notifications */}
-          <div className="rounded-xl border border-ink-100 p-4">
+          <div className="rounded-xl border border-ink-100 dark:border-ink-800 p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-start gap-3">
                 <Bell size={20} className="text-amber-600 mt-0.5" />
                 <div>
-                  <div className="font-medium">Push notifications</div>
-                  <div className="text-xs text-ink-500 mt-0.5">In-browser & mobile</div>
+                  <div className="font-medium">{lang === 'en' ? 'Push notifications' : 'Notifications push'}</div>
+                  <div className="text-xs text-ink-500 mt-0.5">{lang === 'en' ? 'In-browser & mobile' : 'Navigateur & mobile'}</div>
                 </div>
               </div>
               <Toggle checked={notifyByPush} onChange={setNotifyByPush} />

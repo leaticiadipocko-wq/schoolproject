@@ -768,6 +768,9 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon: Icon,
 /* ─── Step 5 — Final confirmation + receipt ───────────────── */
 function SuccessStep({ enrolment, paid }) {
   const printRef = useRef()
+  // Look up the bursar's stored signature from localStorage (or a default placeholder)
+  let bursarSig = null
+  try { bursarSig = JSON.parse(localStorage.getItem('siarm.store.v2') || '{}')?.signatures?.bursar } catch {}
 
   const print = () => window.print()
   const downloadPDF = async () => {
@@ -904,7 +907,11 @@ function SuccessStep({ enrolment, paid }) {
             <div className="border-t border-ink-400 pt-1.5">Parent signature</div>
           </div>
           <div>
-            <div className="h-10" />
+            <div className="h-12 flex items-end justify-center">
+              {bursarSig
+                ? <img src={bursarSig} alt="" className="h-12 object-contain" />
+                : <span className="text-[10px] text-ink-400 italic">(unsigned)</span>}
+            </div>
             <div className="border-t border-ink-400 pt-1.5">Bursar signature</div>
           </div>
           <div>

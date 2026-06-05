@@ -13,7 +13,8 @@ const gradePoints = { 'A': 4, 'B+': 3.5, 'B': 3, 'C+': 2.5, 'C': 2, 'D': 1, 'F':
 
 export default function Transcript() {
   const { user } = useAuth()
-  const { results: allResults } = useData()
+  const { results: allResults, signatures = {} } = useData()
+  const registrarSig = signatures['registrar'] || signatures[user?.uid]
   const MOCK_RESULTS = allResults.filter((r) => !r.studentId)
   const ref = useRef()
 
@@ -120,11 +121,19 @@ export default function Transcript() {
         {/* Signature + Verification QR */}
         <div className="mt-12 pt-6 border-t border-ink-200 grid grid-cols-3 gap-8 items-end">
           <div>
-            <div className="h-12" />
+            <div className="h-14 flex items-end justify-center">
+              {registrarSig
+                ? <img src={registrarSig} alt="" className="h-14 object-contain" />
+                : <span className="text-[10px] text-ink-400 italic">(unsigned)</span>}
+            </div>
             <div className="border-t border-ink-400 pt-2 text-xs text-ink-500">Registrar's Signature</div>
           </div>
           <div>
-            <div className="h-12" />
+            <div className="h-14 flex items-end justify-center">
+              <div className="w-20 h-20 rounded-full border-2 border-brand-800 flex items-center justify-center text-[9px] font-bold text-brand-800 text-center leading-tight">
+                IUGET<br />OFFICIAL<br />SEAL
+              </div>
+            </div>
             <div className="border-t border-ink-400 pt-2 text-xs text-ink-500">Official Seal</div>
           </div>
           <div className="flex flex-col items-center">
