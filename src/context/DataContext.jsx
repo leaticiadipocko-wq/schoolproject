@@ -55,6 +55,30 @@ const initialState = {
   ],
   signatures: {},        // map of userId -> dataUrl
   photos:     {},        // map of userId -> dataUrl
+  auditLog: [
+    { id: 'al-1', actor: 'Mrs Linda Foncha', role: 'staff', action: 'student.enrol',     target: 'IUGET/2026/SWE/0237', at: new Date(Date.now() - 2 * 3600_000).toISOString() },
+    { id: 'al-2', actor: 'Prof. James Murdza', role: 'admin', action: 'announcement.publish', target: 'Mid-semester closure',  at: new Date(Date.now() - 5 * 3600_000).toISOString() },
+    { id: 'al-3', actor: 'Mr Nkoma Ngouloure', role: 'lecturer', action: 'grades.submit', target: 'CS501 — 38 students', at: new Date(Date.now() - 24 * 3600_000).toISOString() },
+  ],
+  assignments: [
+    {
+      id: 'as-1', course: 'CS501', title: 'Lexical Analyser Implementation', dueAt: new Date(Date.now() + 7 * 24 * 3600_000).toISOString(),
+      description: 'Build a hand-written lexer for the toy language defined in lecture 3. Submit your source files as a ZIP.',
+      lecturer: 'Mr Nkoma Ngouloure', maxPoints: 20, createdAt: new Date().toISOString(),
+    },
+    {
+      id: 'as-2', course: 'CS507', title: 'Mobile App MVP', dueAt: new Date(Date.now() + 14 * 24 * 3600_000).toISOString(),
+      description: 'Ship a 3-screen Expo app with navigation and one persisted state slice. Submit the GitHub URL.',
+      lecturer: 'Mr Smith Wills', maxPoints: 30, createdAt: new Date().toISOString(),
+    },
+  ],
+  submissions: [],       // { id, assignmentId, studentId, body, fileName, submittedAt, grade?, feedback? }
+  discussions: [
+    { id: 'd-1', course: 'CS501', author: 'Mr Nkoma Ngouloure', role: 'lecturer',
+      body: 'Welcome to Compiler Design. Drop your questions about lexical analysis here this week.',
+      createdAt: new Date(Date.now() - 24 * 3600_000).toISOString(), replies: [] },
+  ],
+  passwordResets: [],    // { token, email, expiresAt }
 }
 
 function load() {
@@ -291,6 +315,66 @@ export function DataProvider({ children }) {
     setStore((s) => ({ ...s, photos: { ...s.photos, [userId]: dataUrl } }))
   }, [])
 
+  // ---- Audit log ----
+  const logAction = useCallback((entry) => {
+    setStore((s) => ({
+      ...s,
+      auditLog: [{ id: `al-${Date.now()}`, at: new Date().toISOString(), ...entry }, ...(s.auditLog || [])].slice(0, 1000),
+    }))
+  }, [])
+
+  // ---- Assignments ----
+  const createAssignment = useCallback((data) => {
+    setStore((s) => ({
+      ...s,
+      assignments: [{ id: `as-${Date.now()}`, createdAt: new Date().toISOString(), maxPoints: 20, ...data }, ...(s.assignments || [])],
+    }))
+  }, [])
+
+  const submitAssignment = useCallback((data) => {
+    setStore((s) => ({
+      ...s,
+      submissions: [{ id: `sub-${Date.now()}`, submittedAt: new Date().toISOString(), ...data }, ...(s.submissions || [])],
+    }))
+  }, [])
+
+  const gradeSubmission = useCallback((id, payload) => {
+    setStore((s) => ({
+      ...s,
+      submissions: (s.submissions || []).map((sub) => (sub.id === id ? { ...sub, ...payload, gradedAt: new Date().toISOString() } : sub)),
+    }))
+  }, [])
+
+  // ---- Discussions ----
+  const postDiscussion = useCallback((data) => {
+    setStore((s) => ({
+      ...s,
+      discussions: [{ id: `d-${Date.now()}`, createdAt: new Date().toISOString(), replies: [], ...data }, ...(s.discussions || [])],
+    }))
+  }, [])
+
+  const replyToDiscussion = useCallback((discussionId, reply) => {
+    setStore((s) => ({
+      ...s,
+      discussions: (s.discussions || []).map((d) =>
+        d.id === discussionId
+          ? { ...d, replies: [...(d.replies || []), { id: `r-${Date.now()}`, createdAt: new Date().toISOString(), ...reply }] }
+          : d
+      ),
+    }))
+  }, [])
+
+  // ---- Password reset (mock) ----
+  const requestPasswordReset = useCallback((email) => {
+    const token = Math.random().toString(36).slice(2, 10).toUpperCase()
+    const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString()
+    setStore((s) => ({
+      ...s,
+      passwordResets: [{ token, email, expiresAt, used: false }, ...(s.passwordResets || []).slice(0, 19)],
+    }))
+    return { token, expiresAt }
+  }, [])
+
   // ---- Reset ----
   const resetStore = useCallback(() => {
     localStorage.removeItem(STORE_KEY)
@@ -304,6 +388,10 @@ export function DataProvider({ children }) {
     submitGrades,
     publishLesson, deleteLesson,
     saveSignature, savePhoto,
+    logAction,
+    createAssignment, submitAssignment, gradeSubmission,
+    postDiscussion, replyToDiscussion,
+    requestPasswordReset,
     enrollCourse, unenrollCourse,
     addUser, updateUser, deleteUser,
     markNotificationRead, markAllNotificationsRead,

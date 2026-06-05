@@ -2,7 +2,8 @@ import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
-  WifiOff, MapPin, Sparkles,
+  WifiOff, MapPin, Sparkles, ClipboardList, MessageSquare, Activity,
+  Archive, Globe,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -13,6 +14,8 @@ export const STUDENT_NAV = [
       { to: '/student/attendance',    label: 'Attendance',    icon: ClipboardCheck },
       { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
+      { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },
+      { to: '/student/discussions',   label: 'Discussions',   icon: MessageSquare },
       { to: '/student/announcements', label: 'Announcements', icon: Megaphone },
     ],
   },
@@ -46,7 +49,9 @@ export const LECTURER_NAV = [
       { to: '/lecturer/classes',    label: 'My Classes',      icon: BookOpen },
       { to: '/lecturer/attendance', label: 'Mark Attendance', icon: ClipboardCheck },
       { to: '/lecturer/grades',     label: 'Enter Grades',    icon: FileSpreadsheet },
+      { to: '/lecturer/assignments',label: 'Assignments',     icon: ClipboardList },
       { to: '/lecturer/lessons',    label: 'Publish Lesson',  icon: Sparkles },
+      { to: '/lecturer/discussions',label: 'Discussions',     icon: MessageSquare },
     ],
   },
   {
@@ -113,6 +118,14 @@ export const ADMIN_NAV = [
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },
       { to: '/admin/settings',      label: 'Settings',      icon: Settings },
+    ],
+  },
+  {
+    title: 'Compliance',
+    links: [
+      { to: '/admin/audit',         label: 'Audit Log',     icon: Activity },
+      { to: '/admin/minesup',       label: 'MINESUP Reports', icon: Globe },
+      { to: '/admin/export',        label: 'Data Export',   icon: Archive },
     ],
   },
   {
