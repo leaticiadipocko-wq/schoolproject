@@ -2,16 +2,18 @@ import { useState } from 'react'
 import toast from 'react-hot-toast'
 import {
   User as UserIcon, Camera, Mail, Phone, Lock, Languages, Moon, Sun, Save,
-  ShieldCheck, Bell, CheckCircle2, AlertTriangle,
+  ShieldCheck, Bell, CheckCircle2, AlertTriangle, PenLine, Trash2,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { useLang } from '@/context/LanguageContext'
 import PageHeader from '@/components/ui/PageHeader'
+import WebcamCapture from '@/components/WebcamCapture'
+import SignaturePad  from '@/components/SignaturePad'
 
 export default function Profile() {
   const { user } = useAuth()
-  const { theme, toggleTheme } = useData()
+  const { theme, toggleTheme, photos = {}, signatures = {}, savePhoto, saveSignature } = useData()
   const { lang, setLang, t } = useLang()
 
   const [form, setForm] = useState({
@@ -24,6 +26,9 @@ export default function Profile() {
   const [twoFA, setTwoFA] = useState(false)
   const [notifyByEmail, setNotifyByEmail] = useState(true)
   const [notifyByPush,  setNotifyByPush]  = useState(true)
+  const [showCamera, setShowCamera] = useState(false)
+  const photoUrl  = photos[user?.uid] || user?.avatar
+  const sigUrl    = signatures[user?.uid]
 
   const saveProfile = (e) => {
     e.preventDefault()
@@ -51,9 +56,14 @@ export default function Profile() {
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Avatar card */}
         <div className="card text-center">
-          <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-brand-100 to-accent-100 mx-auto overflow-hidden ring-4 ring-white shadow-soft">
-            <img src={user?.avatar} alt={user?.name} className="w-full h-full object-cover" />
-            <button className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center shadow-glow hover:bg-brand-800 transition" title="Change photo">
+          <div className="relative w-32 h-32 rounded-full bg-gradient-to-br from-brand-100 to-accent-100 mx-auto overflow-hidden ring-4 ring-white dark:ring-ink-800 shadow-soft">
+            <img src={photoUrl} alt={user?.name} className="w-full h-full object-cover" />
+            <button
+              type="button"
+              onClick={() => setShowCamera(true)}
+              className="absolute bottom-0 right-0 w-10 h-10 rounded-full bg-brand-700 text-white flex items-center justify-center shadow-glow hover:bg-brand-800 transition"
+              title={lang === 'en' ? 'Take or upload a photo' : 'Prendre ou importer une photo'}
+            >
               <Camera size={16} />
             </button>
           </div>
@@ -211,11 +221,54 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="mt-3 rounded-xl bg-amber-50 border border-amber-100 p-3 text-xs text-amber-900 flex items-start gap-2">
+        <div className="mt-3 rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800 p-3 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2">
           <AlertTriangle size={14} className="mt-0.5 shrink-0" />
-          SIARM never stores your password in plain text. All passwords are hashed via Firebase Authentication (bcrypt + salt).
+          {lang === 'en'
+            ? 'SIARM never stores your password in plain text. Passwords are hashed via Firebase Authentication (bcrypt + salt).'
+            : 'SIARM ne stocke jamais votre mot de passe en clair. Les mots de passe sont hachés via Firebase Authentication (bcrypt + sel).'}
         </div>
       </div>
+
+      {/* Digital signature */}
+      <div className="card">
+        <div className="flex items-center gap-2 mb-1">
+          <PenLine size={20} className="text-accent-600" />
+          <h3 className="font-display font-bold text-lg">
+            {lang === 'en' ? 'Digital signature' : 'Signature numérique'}
+          </h3>
+        </div>
+        <p className="text-sm text-ink-500 mb-4">
+          {lang === 'en'
+            ? 'Draw your signature once. It will appear on every document you sign — results, transcripts, ID cards, receipts.'
+            : 'Tracez votre signature une fois. Elle apparaîtra sur tous les documents signés — résultats, relevés, cartes, reçus.'}
+        </p>
+        {sigUrl ? (
+          <div className="rounded-xl border border-ink-200 dark:border-ink-700 bg-white p-3 mb-4 flex items-center justify-between">
+            <img src={sigUrl} alt="Signature" className="h-24" />
+            <button
+              onClick={() => saveSignature(user?.uid, null)}
+              className="btn-ghost text-sm text-red-600"
+            >
+              <Trash2 size={14} /> {lang === 'en' ? 'Remove' : 'Supprimer'}
+            </button>
+          </div>
+        ) : (
+          <SignaturePad
+            width={520}
+            height={180}
+            onSave={(dataUrl) => saveSignature(user?.uid, dataUrl)}
+            label={lang === 'en' ? 'Draw with your mouse or finger' : 'Tracez avec la souris ou le doigt'}
+          />
+        )}
+      </div>
+
+      {showCamera && (
+        <WebcamCapture
+          onCapture={(dataUrl) => savePhoto(user?.uid, dataUrl)}
+          onClose={() => setShowCamera(false)}
+          initial={photoUrl}
+        />
+      )}
     </div>
   )
 }

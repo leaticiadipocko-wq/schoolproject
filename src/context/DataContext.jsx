@@ -31,6 +31,30 @@ const initialState = {
   theme: 'light',
   fees: MOCK_FEE_STRUCTURE,
   payments: MOCK_PAYMENT_HISTORY,
+  lessons: [
+    {
+      id: 'lesson-1',
+      course: 'CS501',
+      title: 'Introduction to Compiler Phases',
+      body: 'Lexical analysis breaks the source into tokens. Syntax analysis verifies grammar. Semantic analysis checks types and scopes. Code generation finally produces the target.',
+      lecturer: 'Mr Nkoma Ngouloure',
+      attachmentName: null,
+      publishedAt: '2026-05-26T10:00:00Z',
+      duration: '12 min read',
+    },
+    {
+      id: 'lesson-2',
+      course: 'CS507',
+      title: 'React Native — First App',
+      body: 'Set up Expo CLI, scaffold a project, render your first component, and handle navigation with React Navigation.',
+      lecturer: 'Mr Smith Wills',
+      attachmentName: null,
+      publishedAt: '2026-05-24T09:00:00Z',
+      duration: '15 min read',
+    },
+  ],
+  signatures: {},        // map of userId -> dataUrl
+  photos:     {},        // map of userId -> dataUrl
 }
 
 function load() {
@@ -241,6 +265,32 @@ export function DataProvider({ children }) {
     return receipt
   }, [])
 
+  // ---- Lessons (Mobile Learning) ----
+  const publishLesson = useCallback((lesson) => {
+    setStore((s) => ({
+      ...s,
+      lessons: [{
+        id: `lesson-${Date.now()}`,
+        publishedAt: new Date().toISOString(),
+        duration: lesson.duration || '5 min read',
+        ...lesson,
+      }, ...s.lessons],
+    }))
+  }, [])
+
+  const deleteLesson = useCallback((id) => {
+    setStore((s) => ({ ...s, lessons: s.lessons.filter((l) => l.id !== id) }))
+  }, [])
+
+  // ---- Signatures + Photos ----
+  const saveSignature = useCallback((userId, dataUrl) => {
+    setStore((s) => ({ ...s, signatures: { ...s.signatures, [userId]: dataUrl } }))
+  }, [])
+
+  const savePhoto = useCallback((userId, dataUrl) => {
+    setStore((s) => ({ ...s, photos: { ...s.photos, [userId]: dataUrl } }))
+  }, [])
+
   // ---- Reset ----
   const resetStore = useCallback(() => {
     localStorage.removeItem(STORE_KEY)
@@ -252,6 +302,8 @@ export function DataProvider({ children }) {
     addAnnouncement, togglePin, deleteAnnouncement,
     submitAttendance,
     submitGrades,
+    publishLesson, deleteLesson,
+    saveSignature, savePhoto,
     enrollCourse, unenrollCourse,
     addUser, updateUser, deleteUser,
     markNotificationRead, markAllNotificationsRead,

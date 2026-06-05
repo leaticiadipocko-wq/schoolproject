@@ -11,10 +11,14 @@
     @apply bg-ink-50 text-ink-900;
   }
   .dark body {
+    /* Pure dark canvas; content cards lift above it */
     @apply bg-ink-950 text-ink-100;
   }
   h1, h2, h3, h4 {
     @apply font-display tracking-tight;
+  }
+  .dark h1, .dark h2, .dark h3, .dark h4 {
+    @apply text-white;
   }
 }
 
@@ -28,8 +32,14 @@
   .btn-secondary {
     @apply btn bg-white text-ink-800 border border-ink-200 hover:bg-ink-50 focus:ring-brand-500;
   }
+  .dark .btn-secondary {
+    @apply bg-ink-800 text-ink-100 border-ink-700 hover:bg-ink-700;
+  }
   .btn-ghost {
     @apply btn text-ink-700 hover:bg-ink-100 focus:ring-brand-500;
+  }
+  .dark .btn-ghost {
+    @apply text-ink-200 hover:bg-ink-800;
   }
   .btn-danger {
     @apply btn bg-red-600 text-white hover:bg-red-700 focus:ring-red-500;
@@ -37,14 +47,27 @@
   .input {
     @apply w-full px-4 py-2.5 rounded-xl bg-white border border-ink-200 text-ink-900 placeholder-ink-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition;
   }
+  .dark .input {
+    @apply bg-ink-800 border-ink-700 text-white placeholder-ink-500;
+  }
   .label {
     @apply block text-sm font-medium text-ink-700 mb-1.5;
+  }
+  .dark .label {
+    @apply text-ink-200;
   }
   .card {
     @apply bg-white rounded-2xl shadow-soft border border-ink-100 p-6;
   }
+  .dark .card {
+    /* Elevated surface against ink-950 body */
+    @apply bg-ink-900 border-ink-800 text-ink-100;
+  }
   .card-hover {
     @apply card hover:shadow-glow hover:border-brand-200 transition-all duration-300;
+  }
+  .dark .card-hover {
+    @apply hover:border-brand-700;
   }
   .badge {
     @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
@@ -53,15 +76,28 @@
   .badge-warning { @apply badge bg-amber-100 text-amber-700; }
   .badge-danger  { @apply badge bg-red-100 text-red-700; }
   .badge-info    { @apply badge bg-brand-100 text-brand-700; }
+  .dark .badge-success { @apply bg-green-900/40  text-green-300; }
+  .dark .badge-warning { @apply bg-amber-900/40  text-amber-200; }
+  .dark .badge-danger  { @apply bg-red-900/40    text-red-300; }
+  .dark .badge-info    { @apply bg-brand-900/40  text-brand-200; }
 
   .gradient-text {
     @apply bg-clip-text text-transparent bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500;
+  }
+  .dark .gradient-text {
+    @apply bg-gradient-to-r from-brand-300 via-brand-200 to-accent-300;
   }
   .gradient-bg {
     background:
       radial-gradient(ellipse at top, rgba(230, 57, 70, 0.08), transparent 60%),
       radial-gradient(ellipse at bottom right, rgba(245, 158, 11, 0.06), transparent 60%),
       linear-gradient(180deg, #fffdf7 0%, #fafafa 100%);
+  }
+  .dark .gradient-bg {
+    background:
+      radial-gradient(ellipse at top, rgba(230, 57, 70, 0.14), transparent 60%),
+      radial-gradient(ellipse at bottom right, rgba(245, 158, 11, 0.10), transparent 60%),
+      linear-gradient(180deg, #020617 0%, #0f172a 100%);
   }
 }
 
@@ -70,3 +106,19 @@
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { @apply bg-ink-300 rounded-full; }
 ::-webkit-scrollbar-thumb:hover { @apply bg-ink-400; }
+.dark ::-webkit-scrollbar-thumb { @apply bg-ink-700; }
+.dark ::-webkit-scrollbar-thumb:hover { @apply bg-ink-600; }
+
+/* Dark-mode polish for elements that use raw bg-ink/text-ink utilities */
+.dark .bg-ink-50  { @apply bg-ink-900; }
+.dark .bg-ink-100 { @apply bg-ink-800; }
+.dark .border-ink-100 { @apply border-ink-800; }
+.dark .border-ink-200 { @apply border-ink-700; }
+.dark .text-ink-500 { @apply text-ink-400; }
+.dark .text-ink-600 { @apply text-ink-300; }
+.dark .text-ink-700 { @apply text-ink-200; }
+.dark .text-ink-800 { @apply text-ink-100; }
+
+/* Sidebar + Navbar dark surfaces */
+.dark aside { @apply !bg-ink-950 !border-ink-800; }
+.dark header { @apply !bg-ink-900/80 !border-ink-800; }

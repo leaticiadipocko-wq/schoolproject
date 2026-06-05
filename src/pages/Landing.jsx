@@ -3,10 +3,11 @@ import { motion } from 'framer-motion'
 import {
   GraduationCap, ClipboardCheck, CalendarClock, Megaphone,
   Wallet, IdCard, TrendingUp, LineChart, FileText, BookOpen,
-  UserPlus, ShieldCheck, ArrowRight, Banknote, Languages,
+  UserPlus, ShieldCheck, ArrowRight, Banknote,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
+import LangToggle from '@/components/LangToggle'
 
 const features = [
   { icon: ClipboardCheck, title: 'Attendance Tracking',  desc: 'Lecturers mark daily attendance; students view their own records and rates.' },
@@ -37,9 +38,7 @@ export default function Landing() {
             <a href="#about"    className="hover:text-accent-600 transition">{t('landing.nav.about')}</a>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase" title={t('common.lang.toggle')}>
-              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
-            </button>
+            <LangToggle compact />
             <Link to="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</Link>
             <Link to="/login"  className="btn-ghost">{t('common.signIn')}</Link>
             <Link to="/register" className="btn-primary">
@@ -181,9 +180,9 @@ export default function Landing() {
             <Link to="/register" className="btn-primary px-6 py-3 text-base">
               {t('common.getStarted')} <ArrowRight size={18} />
             </Link>
-            <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="btn-secondary px-6 py-3 text-base">
-              {t('landing.cta.visit')}
-            </a>
+            <Link to="/parent" className="btn-secondary px-6 py-3 text-base">
+              {t('landing.hero.cta.parent')}
+            </Link>
           </div>
         </div>
       </section>

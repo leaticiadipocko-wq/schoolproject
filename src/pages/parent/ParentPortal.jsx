@@ -7,6 +7,7 @@ import {
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
+import LangToggle from '@/components/LangToggle'
 
 // IUGET — Bachelor of Technology specialties
 // Real Cameroonian higher-education tuition order of magnitude
@@ -105,9 +106,7 @@ export default function ParentPortal() {
             <a href="#contact"     className="hover:text-accent-600 transition">{t('parent.nav.contact')}</a>
           </div>
           <div className="flex items-center gap-2">
-            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase">
-              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
-            </button>
+            <LangToggle compact />
             <Link to="/login"            className="btn-ghost hidden sm:inline-flex">{t('common.signIn')}</Link>
             <Link to="/parent/register"  className="btn-primary">
               {t('parent.cta.register')} <ArrowRight size={16} />

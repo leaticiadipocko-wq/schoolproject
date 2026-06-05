@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext'
 import { roleHome } from '@/lib/roles'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
-import { Languages } from 'lucide-react'
+import LangToggle from '@/components/LangToggle'
 
 const DEMO_ACCOUNTS = [
   { label: 'Student',   email: 'student@iuget.cm',   color: 'bg-brand-100 text-brand-800' },
@@ -84,9 +84,7 @@ export default function Login() {
 
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-display font-bold">{t('login.title')}</h1>
-            <button onClick={toggle} className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase">
-              <Languages size={14} /> {lang === 'en' ? 'FR' : 'EN'}
-            </button>
+            <LangToggle compact />
           </div>
           <p className="text-ink-500 mt-1.5">{t('login.subtitle')}</p>
 

@@ -2,7 +2,7 @@ import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
-  WifiOff,
+  WifiOff, MapPin, Sparkles,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -46,6 +46,7 @@ export const LECTURER_NAV = [
       { to: '/lecturer/classes',    label: 'My Classes',      icon: BookOpen },
       { to: '/lecturer/attendance', label: 'Mark Attendance', icon: ClipboardCheck },
       { to: '/lecturer/grades',     label: 'Enter Grades',    icon: FileSpreadsheet },
+      { to: '/lecturer/lessons',    label: 'Publish Lesson',  icon: Sparkles },
     ],
   },
   {
@@ -69,6 +70,7 @@ export const STAFF_NAV = [
       { to: '/staff',               label: 'Dashboard',       icon: LayoutDashboard },
       { to: '/staff/users',         label: 'Users',           icon: Users },
       { to: '/staff/enrollment',    label: 'Enrolment',       icon: UserPlus},
+      { to: '/staff/assignments',   label: 'Assignments',     icon: MapPin },
       { to: '/staff/timetable',     label: 'Timetable',       icon: CalendarClock },
       { to: '/staff/announcements', label: 'Announcements',   icon: Megaphone },
     ],
@@ -106,6 +108,7 @@ export const ADMIN_NAV = [
     title: 'Manage',
     links: [
       { to: '/admin/enrollment',    label: 'Enrolment',     icon: UserPlus},
+      { to: '/admin/assignments',   label: 'Assignments',   icon: MapPin },
       { to: '/admin/users',         label: 'Users',         icon: UserCog },
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },

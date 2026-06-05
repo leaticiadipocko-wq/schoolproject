@@ -28,6 +28,7 @@ import LecturerDashboard from '@/pages/lecturer/LecturerDashboard'
 import MyClasses from '@/pages/lecturer/MyClasses'
 import MarkAttendance from '@/pages/lecturer/MarkAttendance'
 import EnterGrades from '@/pages/lecturer/EnterGrades'
+import PublishLesson from '@/pages/lecturer/PublishLesson'
 
 // Staff pages
 import StaffDashboard from '@/pages/staff/StaffDashboard'
@@ -46,6 +47,7 @@ import TimetableBuilder from '@/pages/admin/TimetableBuilder'
 import AdminAnnouncements from '@/pages/admin/Announcements'
 import Settings from '@/pages/admin/Settings'
 import Finance from '@/pages/admin/Finance'
+import Assignments from '@/pages/admin/Assignments'
 
 function RoleHome() {
   const { user } = useAuth()
@@ -98,6 +100,7 @@ export default function App() {
         <Route path="classes"       element={<MyClasses />} />
         <Route path="attendance"    element={<MarkAttendance />} />
         <Route path="grades"        element={<EnterGrades />} />
+        <Route path="lessons"       element={<PublishLesson />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
@@ -117,6 +120,7 @@ export default function App() {
         <Route path="users"         element={<UserManagement />} />
         <Route path="enrollment"    element={<Enrollment />} />
         <Route path="finance"       element={<Finance />} />
+        <Route path="assignments"   element={<Assignments />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="analytics"     element={<Analytics />} />
@@ -138,6 +142,7 @@ export default function App() {
         <Route path="analytics"     element={<Analytics />} />
         <Route path="finance"       element={<Finance />} />
         <Route path="enrollment"    element={<Enrollment />} />
+        <Route path="assignments"   element={<Assignments />} />
         <Route path="users"         element={<UserManagement />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="announcements" element={<AdminAnnouncements />} />

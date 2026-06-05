@@ -8,6 +8,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { useLang } from '@/context/LanguageContext'
 import { ROLE_LABELS } from '@/lib/roles'
+import LangToggle from '@/components/LangToggle'
 
 export default function Navbar({ onMenu, title }) {
   const { user, logout } = useAuth()
@@ -65,14 +66,8 @@ export default function Navbar({ onMenu, title }) {
         </button>
 
         {/* Language toggle */}
-        <button
-          onClick={toggleLang}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-ink-200 hover:bg-ink-50 text-ink-700 text-xs font-bold uppercase"
-          title={t('common.lang.toggle')}
-        >
-          <Languages size={14} />
-          {lang === 'en' ? 'FR' : 'EN'}
-        </button>
+        <LangToggle compact />
+
 
         {/* Theme toggle */}
         <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title={t(theme === 'dark' ? 'common.theme.light' : 'common.theme.dark')}>
