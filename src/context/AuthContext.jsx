@@ -105,73 +105,10 @@ export function AuthProvider({ children }) {
     await signOut(auth)
   }
 
-  /* ─── Session timeout (idle auto-logout) ──────────────────── */
-  const [idleWarning, setIdleWarning] = useState(false)
-  const [secondsLeft, setSecondsLeft] = useState(WARNING_BEFORE_MS / 1000)
-
-  useEffect(() => {
-    if (!user) return
-
-    const touch = () => {
-      try { localStorage.setItem(ACTIVITY_KEY, String(Date.now())) } catch {}
-      setIdleWarning(false)
-    }
-    const EVENTS = ['mousemove', 'keydown', 'click', 'scroll', 'touchstart']
-    EVENTS.forEach((e) => window.addEventListener(e, touch, { passive: true }))
-    touch()
-
-    const id = setInterval(() => {
-      const last = Number(localStorage.getItem(ACTIVITY_KEY) || Date.now())
-      const idleMs = Date.now() - last
-      if (idleMs >= IDLE_TIMEOUT_MS) {
-        EVENTS.forEach((e) => window.removeEventListener(e, touch))
-        clearInterval(id)
-        setIdleWarning(false)
-        logout()
-      } else if (idleMs >= IDLE_TIMEOUT_MS - WARNING_BEFORE_MS) {
-        setIdleWarning(true)
-        setSecondsLeft(Math.max(0, Math.round((IDLE_TIMEOUT_MS - idleMs) / 1000)))
-      }
-    }, 1000)
-
-    return () => {
-      EVENTS.forEach((e) => window.removeEventListener(e, touch))
-      clearInterval(id)
-    }
-  }, [user])  // eslint-disable-line
-
-  const extendSession = () => {
-    try { localStorage.setItem(ACTIVITY_KEY, String(Date.now())) } catch {}
-    setIdleWarning(false)
-  }
-
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, demoMode: DEMO_MODE, idleWarning, secondsLeft, extendSession }}>
+    <AuthContext.Provider value={{ user, loading, login, register, logout, demoMode: DEMO_MODE }}>
       {children}
-      {idleWarning && user && (
-        <IdleWarningOverlay seconds={secondsLeft} onStay={extendSession} onLogout={logout} />
-      )}
     </AuthContext.Provider>
-  )
-}
-
-function IdleWarningOverlay({ seconds, onStay, onLogout }) {
-  return (
-    <div className="fixed inset-0 bg-ink-900/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-      <div className="bg-white dark:bg-ink-900 rounded-2xl shadow-2xl max-w-sm w-full p-6 text-center">
-        <div className="w-14 h-14 rounded-full bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 mx-auto flex items-center justify-center text-2xl">
-          ⏱
-        </div>
-        <h3 className="font-display font-bold text-lg mt-3">You will be signed out</h3>
-        <p className="text-sm text-ink-600 dark:text-ink-300 mt-1">
-          For security, your session ends after 30 minutes of inactivity. Auto-logout in <span className="font-bold text-red-600">{seconds}s</span>.
-        </p>
-        <div className="mt-4 flex gap-2">
-          <button onClick={onLogout} className="btn-secondary flex-1">Sign out now</button>
-          <button onClick={onStay} className="btn-primary flex-1">Stay signed in</button>
-        </div>
-      </div>
-    </div>
   )
 }
 
