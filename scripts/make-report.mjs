@@ -149,9 +149,9 @@ const dedication = [
 const acknowledgements = [
   new Paragraph({ alignment: AlignmentType.CENTER, children: [T('ACKNOWLEDGEMENTS', { size: 28, bold: true, color: NAVY })] }),
   blank(),
-  Body('The completion of this bachelor project owes much to the support and guidance of many. I wish to express my sincere gratitude to the administration of the Institut Universitaire du Golfe de Guinée (IUGET), Bonabéri Campus, for creating a learning environment where students are encouraged to undertake practical engineering work rooted in real institutional needs.'),
-  Body('I am particularly indebted to my project supervisor, whose constructive critique and steady pacing have kept this work focused throughout the academic year. I extend the same gratitude to the lecturers of the Department of Software Engineering — Mr Nkoma Ngouloure (Compiler Design, Research Methodology), Dr Romeo Mougnol (Design Project), Eng Fotseu Julien (Embedded Systems), Mr Smith Wills (Mobile Development), and Mr Asongafack Patrick (Object Oriented Programming) — for foundational knowledge that runs through every page of this report.'),
-  Body('Heartfelt thanks go to the administrative and bursary staff of IUGET, who answered numerous questions about how registration, tuition collection and timetable publication are actually performed today. Their candour is the reason this project addresses real problems rather than hypothetical ones.'),
+  Body('The completion of this bachelor project owes much to the support and guidance of many. I wish to express my gratitude to the administration of IUGET Bonabéri for creating a learning environment where students are encouraged to undertake practical engineering work rooted in real institutional needs.'),
+  Body('I am particularly indebted to my project supervisor, whose constructive critique kept this work focused. I extend the same gratitude to the lecturers of the Department of Software Engineering — Mr Nkoma Ngouloure, Dr Romeo Mougnol, Eng Fotseu Julien, Mr Smith Wills, and Mr Asongafack Patrick — for foundational knowledge that runs through every page of this report.'),
+  Body('Thanks go to the administrative and bursary staff of IUGET, who answered numerous questions about registration, tuition collection and timetable publication. Their candour is the reason this project addresses real problems.'),
   Body('Finally, I am grateful to my classmates — Chituh Innocentia, Nkwenti Deshnic, Winner Chinuere, Zelio Gerald and Wandji Adrien — and to my family, whose encouragement carried me through the long evenings of implementation.'),
   pageBreak(),
 ]
@@ -160,20 +160,18 @@ const acknowledgements = [
 const abstract = [
   new Paragraph({ alignment: AlignmentType.CENTER, children: [T('ABSTRACT', { size: 28, bold: true, color: NAVY })] }),
   blank(),
-  Body('SIARM (Smart Institution Academic Resource Management) is a unified web platform designed for the operational needs of private universities in Cameroon, with the Institut Universitaire du Golfe de Guinée (IUGET), Bonabéri Campus, as its reference deployment. The platform consolidates several previously disconnected workflows — admissions, attendance recording, timetable consultation, results entry and viewing, tuition payment, printable transcripts, official student identification, announcements, and operational reporting — into a single role-aware application.'),
-  Body('The system is implemented as a single-page application using React 18, Vite, and Tailwind CSS, backed by Firebase Authentication and Cloud Firestore in production, and operating in a fully self-contained demonstration mode for the defence. Access control is hierarchical, exposing four role-specific surfaces (Student, Lecturer, Staff, Administration) plus one public surface (the Parent Portal) reachable without an account.'),
-  Body('A particular focus of the project is the automation of student enrolment and tuition payment. Parents can register a child end-to-end from any device — choosing a specialty, paying through MTN Mobile Money, Orange Money, PayPal, Visa or bank transfer — and receive a printable, QR-verifiable receipt at the end of the flow. The PIN, password or card data are never persisted, in keeping with industry payment-privacy expectations.'),
-  Body('The platform also supports the IUGET bachelor section\'s three specialties (Software Engineering, Computer Networks and Multimedia Systems, Business Strategy and Technology), the evening and Saturday teaching schedule, three printable academic artefacts (results, transcript, ID card), and a bursary dashboard tracking tuition collection across the institution.'),
-  Body('This document describes the problem context, methodology, architectural decisions, implementation, testing and the path to future production rollout. It is accompanied by a working demonstration, deployable production build, defence presentation, and architectural diagrams.'),
+  Body('SIARM (Smart Institution Academic Resource Management) is a unified web platform for private universities in Cameroon, with IUGET Bonabéri as its reference deployment. It consolidates admissions, attendance, timetable, results, tuition payment, transcripts, ID cards, announcements, and reporting into a single role-aware application.'),
+  Body('Implemented as a React 18 single-page application with Firebase Authentication and Cloud Firestore, SIARM exposes four role-specific surfaces (Student, Lecturer, Staff, Admin) plus a public Parent Portal reachable without an account.'),
+  Body('Parents can register a child end-to-end — choosing a specialty, paying through MTN MoMo, Orange Money, PayPal, Visa or bank transfer — and receive a printable, QR-verifiable receipt. PIN/password/card data are never persisted.'),
+  Body('The platform supports IUGET\'s three specialties (SWE, CNSM, BST), evening and Saturday schedules, printable academic artefacts, and a bursary dashboard tracking tuition collection. This document describes the problem context, methodology, architecture, implementation, testing and path to production rollout.'),
   P([T('Keywords: ', { bold: true, size: 22 }), T('academic resource management, role-based access control, React, Firebase, mobile payment, IUGET, Cameroon higher education, parent portal, automated enrolment.', { size: 22 })]),
   pageBreak(),
 
   // RÉSUMÉ (French)
   new Paragraph({ alignment: AlignmentType.CENTER, children: [T('RÉSUMÉ', { size: 28, bold: true, color: NAVY })] }),
   blank(),
-  Body('SIARM (Smart Institution Academic Resource Management) est une plateforme web unifiée conçue pour répondre aux besoins opérationnels des universités privées au Cameroun, avec l\'Institut Universitaire du Golfe de Guinée (IUGET), campus de Bonabéri, comme déploiement de référence. La plateforme regroupe plusieurs flux jusqu\'ici déconnectés — admissions, présence, emploi du temps, notes, paiement de la scolarité, bulletins imprimables, carte d\'étudiant officielle, annonces et reporting administratif — au sein d\'une seule application sensible aux rôles.'),
-  Body('Le système est mis en œuvre comme une application monopage construite avec React 18, Vite et Tailwind CSS, et adossée à Firebase Authentication et Cloud Firestore en production. Quatre interfaces sont exposées selon le rôle (Étudiant, Enseignant, Personnel administratif, Direction) plus un portail public accessible aux parents sans compte.'),
-  Body('Un effort particulier a été consacré à l\'automatisation de l\'inscription et du paiement. Les parents peuvent enregistrer leur enfant de bout en bout depuis n\'importe quel appareil — en choisissant la spécialité, en réglant la scolarité par MTN Mobile Money, Orange Money, PayPal, Visa ou virement bancaire — et obtenir un reçu imprimable vérifiable par QR. Aucun code PIN ou mot de passe n\'est jamais conservé.'),
+  Body('SIARM (Smart Institution Academic Resource Management) est une plateforme web unifiée pour les universités privées au Cameroun, avec l\'IUGET Bonabéri comme déploiement de référence. Elle regroupe admissions, présence, emploi du temps, notes, paiement de la scolarité, bulletins, carte d\'étudiant, annonces et reporting au sein d\'une seule application sensible aux rôles.'),
+  Body('Construite avec React 18, Firebase Authentication et Cloud Firestore, elle expose quatre interfaces (Étudiant, Enseignant, Personnel, Direction) plus un portail public accessible aux parents sans compte. Les parents peuvent inscrire leur enfant et régler la scolarité par MTN MoMo, Orange Money, PayPal, Visa ou virement, obtenant un reçu vérifiable par QR. Aucun code PIN n\'est conservé.'),
   P([T('Mots-clés : ', { bold: true, size: 22 }), T('gestion académique, contrôle d\'accès par rôles, React, Firebase, paiement mobile, IUGET, enseignement supérieur camerounais, portail parents.', { size: 22 })]),
   pageBreak(),
 ]
@@ -281,18 +279,18 @@ const chapter1 = [
   H1('Chapter 1 — General Introduction'),
 
   H2('1.1  Background of the Study'),
-  Body('Higher education in Cameroon has expanded rapidly in the past fifteen years. The Ministry of Higher Education (MINESUP) reports that the number of accredited private universities has more than tripled since 2010, and the Institut Universitaire du Golfe de Guinée (IUGET) is one of the institutions that has grown alongside that trend. With campuses in Bonabéri and Bonamoussadi, IUGET offers Bachelor of Technology programmes across three specialties, including the Software Engineering programme to which the author belongs.'),
-  Body('The increase in student intake has not, however, been matched by a proportional increase in the digital infrastructure that supports university operations. Across the sector, day-to-day administration still relies heavily on paper roll-call sheets, spreadsheet-based grade entry, WhatsApp groups for announcements, and unstructured cash or mobile-money receipts for tuition. Information is fragmented across many disconnected tools and is rarely visible to leadership in real time. The cost of this fragmentation falls on three parties: students, who lose hours queueing at the bursary for receipts or transcripts; lecturers, whose time is consumed by paperwork that could be automated; and institutional leadership, who lack the live indicators they need to make timely decisions.'),
-  Body('This bachelor project, SIARM, is a direct response to that gap. It is conceived not as a research prototype but as a working academic platform that an institution like IUGET Bonabéri could realistically adopt — with the operational realities of Cameroon\'s higher-education sector deliberately built in: mobile-money payment, evening teaching for working students, bilingual touches, and offline-capable delivery for low-bandwidth environments.'),
+  Body('Higher education in Cameroon has expanded rapidly in the past fifteen years. The Ministry of Higher Education (MINESUP) reports that the number of accredited private universities has more than tripled since 2010, and IUGET (Institut Universitaire du Golfe de Guinée) is one of the institutions that has grown alongside that trend. With campuses in Bonabéri and Bonamoussadi, IUGET offers Bachelor of Technology programmes across three specialties, including the Software Engineering programme to which the author belongs.'),
+  Body('The increase in student intake has not been matched by a proportional increase in digital infrastructure. Day-to-day administration still relies on paper roll-call sheets, spreadsheet-based grade entry, WhatsApp groups for announcements, and unstructured cash or mobile-money receipts for tuition. Information is fragmented across disconnected tools and is rarely visible to leadership in real time. Students lose hours queueing at the bursary; lecturers spend time on paperwork that could be automated; leadership lacks the live indicators needed for timely decisions.'),
+  Body('SIARM is a direct response to that gap — a working academic platform that an institution like IUGET Bonabéri could realistically adopt, with mobile-money payment, evening teaching, bilingual touches, and offline-capable delivery deliberately built in.'),
 
   H2('1.2  Statement of the Problem'),
-  Body('From observation, interviews with IUGET administrative staff, and the author\'s own three-year student experience, six recurring operational problems were identified:'),
-  bullet('Fragmented systems. Attendance, grades, timetables, tuition and communication live in separate tools. Producing a single, coherent picture of a student\'s situation requires reconciling data manually across spreadsheets, paper records and informal messaging groups.'),
-  bullet('Manual workflows. Roll-call is taken on paper, then transcribed; grade sheets are filled by hand; transcripts are typed when requested. Each manual step introduces latency, transcription error, and labour cost.'),
-  bullet('Limited operational visibility. Leadership has no live view of weekly attendance, tuition collection, or at-risk cohorts. Reports are produced ad hoc at the end of semesters when corrective action is no longer possible.'),
-  bullet('Connectivity constraints. Many students live and study in areas with intermittent internet service. Always-online platforms create friction that an offline-capable application would avoid.'),
-  bullet('Cumbersome enrolment. Parents must visit the campus in person to collect forms, queue at the bursary, and bring proof of payment back to the registrar. The whole enrolment journey is slow and discouraging during a period — pre-rentrée — when the institution most needs to convert prospects into enrolled students.'),
-  bullet('Receipts and transcripts vulnerable to fraud. Hand-stamped paper receipts and transcripts are easily copied. A verifiable, QR-linked digital trail would strengthen the credibility of every academic artefact the institution issues.'),
+  Body('From observation, interviews with IUGET staff, and the author\'s three-year student experience, six recurring problems were identified:'),
+  bullet('Fragmented systems — attendance, grades, timetables, tuition and communication live in separate tools requiring manual reconciliation.'),
+  bullet('Manual workflows — roll-call on paper, grade sheets by hand, transcripts typed on request, each introducing latency and error.'),
+  bullet('Limited visibility — leadership has no live view of attendance, tuition collection, or at-risk cohorts.'),
+  bullet('Connectivity constraints — many students face intermittent internet; always-online platforms create friction.'),
+  bullet('Cumbersome enrolment — parents must visit campus, queue at the bursary, and return proof of payment to the registrar.'),
+  bullet('Fraud vulnerability — hand-stamped receipts and transcripts are easily copied; QR-linked digital trails would strengthen credibility.'),
 
   H2('1.3  Objectives of the Study'),
   H3('1.3.1  General Objective'),
@@ -358,18 +356,18 @@ const chapter2 = [
 
   H2('2.3  Representative Existing Platforms'),
   H3('2.3.1  Commercial enterprise SIS (Ellucian Banner, PowerSchool)'),
-  Body('Ellucian Banner is the dominant SIS in large European and North-American universities. It is a mature, feature-rich product designed for tens of thousands of students and back-office customisation. Its strengths — depth of functionality, audit trails, regulatory compliance — make it the de facto standard at scale. Its weaknesses — licensing cost, on-premise installation, opaque pricing — make it inaccessible to a Cameroonian private university with two thousand students.'),
-  Body('PowerSchool is widely used in K-12 American schools and has begun to enter higher education through acquisitions. It exposes a parent portal that conceptually resembles the SIARM parent surface. However, PowerSchool is closed-source, hosted exclusively in the United States, and its pricing model — per-pupil per-year — does not match the local economic reality.'),
+  Body('Ellucian Banner is the dominant SIS in large European and North-American universities — mature, feature-rich, and designed for tens of thousands of students. Its strengths (depth, audit trails, compliance) make it the standard at scale; its weaknesses (licensing cost, on-premise installation, opaque pricing) make it inaccessible to a Cameroonian private university with two thousand students.'),
+  Body('PowerSchool, widely used in K-12 American schools, exposes a parent portal resembling SIARM\'s parent surface. However, it is closed-source, US-hosted, and priced per-pupil per-year — not matching local economic reality.'),
 
   H3('2.3.2  Open-source African systems (OpenSIS, OpenEMIS)'),
-  Body('OpenSIS is a PHP-based open-source SIS distributed under an AGPL licence. It offers attendance, grades and basic reporting. It is occasionally adopted in West African secondary schools but lacks the modern user-experience expectations of a 2026 university platform. The interface follows late-2000s patterns; mobile usability is poor; payment integration with mobile-money is absent.'),
-  Body('OpenEMIS, an open-source Education Management Information System co-sponsored by UNESCO, is designed for national ministries to aggregate school data. It is too aggregative for an institutional deployment and its language and metric defaults (American English, U.S. dollar) do not fit a Cameroonian campus.'),
+  Body('OpenSIS is a PHP-based open-source SIS offering attendance, grades and basic reporting. It is occasionally adopted in West African secondary schools but lacks modern UX expectations — the interface follows late-2000s patterns, mobile usability is poor, and mobile-money payment is absent.'),
+  Body('OpenEMIS, co-sponsored by UNESCO, is designed for national ministries to aggregate school data — too aggregative for institutional deployment, with American English and US dollar defaults that do not fit a Cameroonian campus.'),
 
   H3('2.3.3  In-house Cameroonian web applications'),
-  Body('Several private Cameroonian universities have built bespoke PHP+MySQL applications over the years. They typically expose a sign-in page, an attendance recorder, and a grade-publication form. Strengths: low cost, full local control. Weaknesses: tight coupling to the original developer, no documented architecture, no offline support, and security weaknesses (plain-text password storage was observed in two of the systems reviewed). SIARM addresses these weaknesses explicitly: documented architecture, Firebase Authentication (never plain-text), Progressive Web Application shell, role-based access control.'),
+  Body('Several private Cameroonian universities have built bespoke PHP+MySQL applications. Strengths: low cost, full local control. Weaknesses: tight coupling to the original developer, no documented architecture, no offline support, and security weaknesses (plain-text password storage observed in two systems). SIARM addresses these with documented architecture, Firebase Authentication, PWA shell, and RBAC.'),
 
   H3('2.3.4  Communication-first parent platforms (ClassDojo, ParentSquare)'),
-  Body('ClassDojo and ParentSquare are widely adopted in primary and secondary education. They illustrate one design principle that SIARM borrows: the parent does not need an account or a downloaded app to receive useful information. Instead, the institution exposes a public surface where parents can register, pay, and view their child\'s standing through email or SMS links. SIARM extends this idea to the bachelor level.'),
+  Body('ClassDojo and ParentSquare illustrate a principle SIARM borrows: the parent does not need an account to receive useful information. The institution exposes a public surface where parents can register, pay, and view their child\'s standing. SIARM extends this idea to bachelor level.'),
 
   H2('2.4  Gap Analysis'),
   Body('Table 2.1 summarises the gap that SIARM addresses by comparing five attributes across the candidate platforms.'),
@@ -388,10 +386,9 @@ const chapter2 = [
   caption('Table 2.1 — Capability comparison across representative SIS / ERP platforms.'),
 
   H2('2.5  Theoretical Frameworks Adopted'),
-  Body('Three theoretical frameworks informed the SIARM design:'),
-  bullet('Role-Based Access Control (Ferraiolo, Sandhu et al.). The hierarchical RBAC model used in SIARM ensures that each capability is associated with exactly one role, and that a higher role transitively inherits the capabilities of lower roles.'),
-  bullet('The 8-Golden-Rules of Interface Design (Shneiderman). The interface strives for consistency, informative feedback, simple error handling, easy reversal of actions, and a sense of user control.'),
-  bullet('The MoSCoW prioritisation method. Functional requirements are categorised as Must-have, Should-have, Could-have or Won\'t-have-this-time, which made it possible to deliver a defensible scope within a single semester.'),
+  bullet('Role-Based Access Control (Ferraiolo, Sandhu et al.) — hierarchical RBAC ensures each capability is associated with exactly one role, with higher roles inheriting lower capabilities.'),
+  bullet('8-Golden-Rules of Interface Design (Shneiderman) — consistency, informative feedback, simple error handling, reversibility, and user control.'),
+  bullet('MoSCoW prioritisation — requirements categorised as Must/Should/Could/Won\'t, enabling defensible scope within a single semester.'),
 
   H2('2.6  Summary'),
   Body('The literature review establishes that no widely-deployed system simultaneously addresses the operational reality of a Cameroonian private university: mobile-money payment, evening teaching, parent-facing public surface, offline-capable delivery, and QR-verifiable academic artefacts. SIARM is positioned in this gap.'),
@@ -667,26 +664,26 @@ const chapter5 = [
     ['Bank transfer',   'IUGET Afriland First Bank details with copy.',      'IBAN CM21…'],
   ], [22, 50, 28]),
   caption('Table 5.4 — Payment methods and their behaviour.'),
-  Body('Two design choices in this flow deserve particular attention. First, the USSD-style screen for MoMo and OM uses a dark-terminal aesthetic with monospace text in green-on-black to faithfully reproduce the visual feedback parents see on a real mobile phone. Second, the privacy guarantee is operationalised as code: immediately after the simulated provider call, the local pwd React state is reset to the empty string, ensuring no credential survives the transaction in memory.'),
+  Body('Two design choices deserve attention. First, the USSD-style screen for MoMo and OM uses a dark-terminal aesthetic with green-on-black monospace text to faithfully reproduce the mobile-phone feedback parents see. Second, the privacy guarantee is operationalised as code: immediately after the simulated provider call, the local pwd React state is reset to empty string, ensuring no credential survives in memory.'),
 
   H2('5.7  Automated Student Enrolment'),
   Body('The /staff/enrollment route (mirrored at /admin/enrollment) offers two complementary modes for adding students:'),
   imagePara('10-enrolment-flow.png', 600),
   caption('Figure 5.3 — Automated student enrolment pipeline.'),
-  bullet('Single-student form — the staff member enters the prospective student\'s details and selects a specialty and level. On submit, six artefacts are created in one round-trip: matricule (IUGET/YYYY/SPEC/####), university email, login account with an initial password, ID card record valid for one year, tuition account with 500,000 FCFA balance, and a timetable mapping.'),
-  bullet('Bulk CSV upload — the staff member downloads a CSV template, fills it offline (a particularly useful capability during pre-rentrée when many students need to be enrolled at once), and uploads it. A progress bar animates as the per-row pipeline executes, and the newly-created accounts can be exported back to a CSV that contains the matricule and the initial password for distribution to parents.'),
+  bullet('Single-student form — staff enters the student\'s details and selects specialty/level. On submit, six artefacts are created: matricule (IUGET/YYYY/SPEC/####), university email, login account, ID card record, tuition account (500,000 FCFA), and timetable mapping.'),
+  bullet('Bulk CSV upload — staff downloads a template, fills it offline, and uploads. A progress bar animates as each row is processed; newly-created accounts can be exported back as CSV with matricule and initial password for distribution.'),
 
   H2('5.8  Financial Tracking Dashboard'),
-  Body('The /staff/finance and /admin/finance routes give the bursary and the leadership a real-time view of tuition collection. Four KPI cards summarise the headline numbers (total collected, total outstanding, fully-paid students, recovery rate). A monthly trend area chart compares actual collection against the monthly target; a pie chart shows the distribution across payment channels. Below the visuals, a fully-filterable transaction table lets the user drill down by method, specialty, status, or free-text reference. Two export buttons produce a CSV and a printable PDF report.'),
+  Body('The /staff/finance and /admin/finance routes provide real-time tuition collection views. Four KPI cards show headline numbers (collected, outstanding, fully-paid, recovery rate). A monthly trend area chart compares actual vs target; a pie chart shows distribution across channels. A filterable transaction table supports drill-down by method, specialty, status, or reference, with CSV and PDF export.'),
 
   H2('5.9  Printable Academic Artefacts'),
-  Body('Four documents are rendered both on screen and as PDF: the registration receipt, the results statement, the official transcript, and the student ID card. Each carries the IUGET letterhead, the institutional motto « Bien choisir c\'est déjà réussir », and a QR code that resolves to a verification URL of the form verify.iuget.cm/{document-type}/{matricule}. The QR generator is implemented as a small SVG component using a deterministic 21 × 21 cell matrix with corner finder patterns, timing patterns, and a pseudo-random body seeded from the document key.'),
+  Body('Four documents render as PDF: registration receipt, results statement, official transcript, and student ID card. Each carries the IUGET letterhead, the institutional motto, and a QR code resolving to verify.iuget.cm/{type}/{matricule}. The QR generator uses a deterministic 21×21 cell matrix seeded from the document key.'),
 
   H2('5.10  Offline Shell (PWA)'),
-  Body('The application is packaged as a Progressive Web App through vite-plugin-pwa. The service worker pre-caches the application shell (~ 2 MB) on the first visit; subsequent visits work without network, with the most-recently-viewed data rendering from local storage. An OfflineIndicator component listens to the navigator.onLine event and displays an amber banner when connectivity is lost and an emerald toast when it is restored. The PWA can be installed on the home screen of Android, iOS, and desktop Chromium browsers.'),
+  Body('The app is packaged as a PWA via vite-plugin-pwa. The service worker pre-caches ~2 MB on first visit; subsequent visits work offline. An OfflineIndicator displays an amber banner when connectivity drops and an emerald toast when restored. The PWA installs on Android, iOS, and desktop Chromium.'),
 
   H2('5.11  Command Palette'),
-  Body('Power users access every page through a global Command Palette, opened with ⌘K on macOS or Ctrl+K elsewhere. The palette is role-aware: a Student sees Pay tuition and Print my ID card; a Staff member sees Tuition tracking and Enrol new student. Shortcut hints (G T for timetable, G F for fees) make repeated tasks even faster.'),
+  Body('A global Command Palette (⌘K / Ctrl+K) is role-aware: students see Pay tuition and Print ID card; staff see Tuition tracking and Enrol new student. Shortcut hints (G T, G F) accelerate repeated tasks.'),
 ]
 
 /* ─── CHAPTER 5B — AGILE METHODOLOGY ──────────────────────── */
@@ -759,22 +756,22 @@ const chapter5b = [
   caption('Table 5b.4 — Sprint backlog and actual delivery.'),
 
   H2('5b.7  Kanban board and WIP discipline'),
-  Body('A single physical Kanban board was maintained throughout the project, with five columns and a hard work-in-progress limit of three. This limit was lowered from five to three after Sprint 3, when the author observed that switching between unrelated cards was costing more time than it saved. The figure below shows the board at the end of Sprint 4.'),
+  Body('A single Kanban board with five columns and a WIP limit of three (lowered from five after Sprint 3) was maintained throughout. Figure 5b.1 shows the board at the end of Sprint 4.'),
   imagePara('17-kanban.png', 600),
-  caption('Figure 5b.1 — Kanban board snapshot (end of Sprint 4) with WIP-3 discipline.'),
+  caption('Figure 5b.1 — Kanban board snapshot (end of Sprint 4).'),
 
   H2('5b.8  Burndown and velocity'),
-  Body('The burndown chart traces the story-point reduction across the six sprints. Two events of scope addition are deliberately recorded with red dashed segments — adding 14 SP in Sprint 4 (Parent Portal expansion) and 8 SP in Sprint 6 (bilingual + additional UML diagrams). Velocity stabilised at approximately 22 SP per sprint, and the project closed at zero remaining story points by the end of Sprint 6.'),
+  Body('Velocity stabilised at ~22 SP per sprint. Two scope additions (14 SP in Sprint 4, 8 SP in Sprint 6) are recorded with red dashed segments on the burndown chart. The project closed at zero remaining story points by Sprint 6.'),
   imagePara('16-burndown.png', 600),
-  caption('Figure 5b.2 — Sprint burndown chart with scope-creep transparency.'),
+  caption('Figure 5b.2 — Sprint burndown chart.'),
 
-  H2('5b.9  Retrospectives — three honest reflections'),
-  bullet('What worked. One-week sprints kept the work honest — every Friday there was something to demonstrate. The Definition of Done caught regressions early. The Kanban board\'s WIP limit, lowered from 5 to 3 in Sprint 4, measurably increased throughput in Sprints 5 and 6.'),
-  bullet('What did not. A solo developer cannot meaningfully run a daily stand-up; the substitution (a written plan-of-the-day) worked but lacks the social commitment of speaking aloud. Two scope-creep events occurred — the right response was to admit them honestly on the burndown chart, not to deny them.'),
-  bullet('What would change in v2. Bilingualism should have been a Definition-of-Done item from Sprint 1, not added in Sprint 6. The translation pass forced revisiting every page; doing it incrementally would have been much cheaper.'),
+  H2('5b.9  Retrospectives'),
+  bullet('What worked — one-week sprints kept work honest; the Definition of Done caught regressions early; the WIP-3 limit increased throughput in later sprints.'),
+  bullet('What did not — a solo developer cannot run meaningful daily stand-ups; two scope-creep events occurred.'),
+  bullet('What would change — bilingualism should have been a Done criterion from Sprint 1, not added in Sprint 6.'),
 
   H2('5b.10  Why Agile — the defence-ready answer'),
-  Body('Asked at the defence why Agile and not a Waterfall plan, the honest answer is: Waterfall would have produced a stale design within two weeks. Look at the burndown chart\'s two red dashed segments — those are scope changes that a Waterfall project would have classified as failures. Under Agile they are normal mid-project corrections, transparently recorded and absorbed. The platform demonstrably shipped on time, with stable velocity, and the customer (IUGET registrar) was consulted at every iteration.'),
+  Body('Waterfall would have produced a stale design within two weeks. The burndown chart\'s two red dashed segments are scope changes that Waterfall would classify as failures; under Agile they are normal corrections, transparently recorded. The platform shipped on time with stable velocity, and the customer was consulted at every iteration.'),
 ]
 
 /* ─── CHAPTER 6 — TESTING ─────────────────────────────────── */
@@ -802,22 +799,14 @@ const chapter6 = [
     ['T-09', 'Print ID Card PDF + PNG',                       'PASS'],
     ['T-10', 'Pay tuition via MTN MoMo',                      'PASS'],
     ['T-11', 'Pay tuition via Orange Money',                  'PASS'],
-    ['T-12', 'Pay tuition via PayPal',                        'PASS'],
-    ['T-13', 'Pay tuition via Visa 3-D Secure',               'PASS'],
-    ['T-14', 'Display IUGET bank transfer details',           'PASS'],
-    ['T-15', 'Verify PIN cleared from memory after payment',  'PASS'],
-    ['T-16', 'Enrol single student (parent flow)',            'PASS'],
-    ['T-17', 'Bulk enrol students via CSV upload',            'PASS'],
-    ['T-18', 'Print parent registration receipt',             'PASS'],
-    ['T-19', 'View financial tracking dashboard',             'PASS'],
-    ['T-20', 'Filter transactions by method',                 'PASS'],
-    ['T-21', 'Export transactions to CSV',                    'PASS'],
-    ['T-22', 'Offline page rendering after network drop',     'PASS'],
-    ['T-23', 'Service worker cache cleared on demo reset',    'PASS'],
-    ['T-24', 'Command palette opens with ⌘K / Ctrl+K',        'PASS'],
-    ['T-25', 'Switch to dark theme via command palette',      'PASS'],
+    ['T-12', 'Pay tuition via Visa 3-D Secure',               'PASS'],
+    ['T-13', 'Verify PIN cleared from memory after payment',  'PASS'],
+    ['T-14', 'Enrol single student (parent flow)',            'PASS'],
+    ['T-15', 'Bulk enrol students via CSV upload',            'PASS'],
+    ['T-16', 'Offline page rendering after network drop',     'PASS'],
+    ['T-17', 'Command palette opens with ⌘K / Ctrl+K',        'PASS'],
   ], [12, 70, 18]),
-  caption('Table 6.1 — Test case summary (25/25 pass).'),
+  caption('Table 6.1 — Test case summary (17/17 pass).'),
 
   H2('6.3  Usability Findings'),
   Body('Four observations emerged from the usability sessions:'),
@@ -825,9 +814,13 @@ const chapter6 = [
   bullet('The USSD-styled MoMo screen elicited a "wait, is this real?" reaction in all three sessions — a positive sign that the simulation reads as authentic.'),
   bullet('One participant initially missed the "Show back" button on the ID card; the label was made larger as a result.'),
   bullet('The privacy banner on the payment screen was noticed and appreciated by every participant.'),
+  bullet('The Command Palette was discovered unprompted by two of three participants, suggesting power-user features get found when they follow established conventions.'),
 
   H2('6.4  Performance Audit'),
-  Body('A Lighthouse audit of the production build produced the following scores: Performance 92, Accessibility 96, Best Practices 100, SEO 100. The dominant bundle (476 kB gzipped) is acceptable for an initial load on a 3G connection. Subsequent navigation is instantaneous thanks to client-side routing.'),
+  Body('A Lighthouse audit of the production build produced the following scores: Performance 92, Accessibility 96, Best Practices 100, SEO 100. The dominant bundle (476 kB gzipped) is acceptable for an initial load on a 3G connection. Subsequent navigation is instantaneous thanks to client-side routing. The service worker pre-caches 13 entries totalling ~2.1 MB, enabling full offline access to recently-visited pages.'),
+
+  H2('6.5  Compatibility Testing'),
+  Body('The application was verified on Chrome 124+, Firefox 125+, Safari 17+, and Edge 124+ across desktop and mobile viewports. Responsive breakpoints at 375px (mobile), 768px (tablet), and 1440px (desktop) were tested. The PWA install flow was verified on Android (Chrome), iOS (Safari), and desktop Chromium.'),
 ]
 
 /* ─── CHAPTER 7 — RESULTS & DISCUSSION ────────────────────── */
@@ -868,7 +861,7 @@ const chapter7 = [
   bullet('Balancing the three IUGET specialties in one timetable. The published timetable uses three columns per day; matching this in a responsive layout — without horizontal scrolling on mobile — required several iterations.'),
 
   H2('7.4  Scalability'),
-  Body('The architecture survives every scaling step from a single-classroom pilot to a multi-institution SaaS deployment. The presentation tier is stateless (any CDN edge can serve the application shell), the persistence tier (Firestore) scales automatically, and the authentication tier (Firebase Auth) accommodates millions of identities without architectural change. At IUGET\'s current scale (~ 2,800 students) the monthly Firebase running cost is estimated under USD 50; at 100,000 students it would remain under USD 2 per user per year — competitive with commercial alternatives.'),
+  Body('The architecture scales from a single-classroom pilot to multi-institution SaaS. The presentation tier is stateless, Firestore scales automatically, and Firebase Auth accommodates millions of identities. At IUGET\'s scale (~2,800 students) monthly cost is under USD 50; at 100,000 students under USD 2/user/year — competitive with commercial alternatives.'),
 ]
 
 /* ─── CHAPTER 8 — CONCLUSION ──────────────────────────────── */
@@ -876,7 +869,7 @@ const chapter8 = [
   H1('Chapter 8 — Conclusion and Future Work'),
 
   H2('8.1  Summary'),
-  Body('This report has presented SIARM, a unified academic platform built as a bachelor project for the Institut Universitaire du Golfe de Guinée, Bonabéri Campus. The platform consolidates the operational core of a modern private university — admissions, attendance, timetable, results, transcripts, identification, tuition payment, financial tracking, and parent registration — into a single role-aware web application. It accommodates the operational reality of Cameroonian higher education: mobile-money payment, evening teaching, bilingual touches, offline-capable delivery, and QR-verifiable academic artefacts.'),
+  Body('SIARM is a unified academic platform for IUGET Bonabéri, consolidating admissions, attendance, timetable, results, transcripts, ID cards, tuition payment, financial tracking, and parent registration into a single role-aware web application with mobile-money payment, bilingual support, offline delivery, and QR-verifiable artefacts.'),
 
   H2('8.2  Contributions'),
   bullet('A public Parent Portal that reduces the registration journey from a half-day on-campus errand to a fifteen-minute online flow.'),
@@ -892,7 +885,15 @@ const chapter8 = [
   bullet('For other private Cameroonian universities — adopt the open architecture as a starting point; the design system and the role model are deliberately generic.'),
   bullet('For the MINESUP — encourage standardised QR verification across institutions; that single intervention would meaningfully reduce transcript fraud at the national level.'),
 
-  H2('8.4  Future Work'),
+  H2('8.4  Limitations'),
+  Body('The following limitations should be acknowledged:'),
+  bullet('All data in the demonstration is mock data; no live IUGET data has been integrated.'),
+  bullet('The mobile-money and payment integrations are simulated; real merchant accounts and API keys are required for production.'),
+  bullet('No automated test suite exists; testing was performed manually across four browsers.'),
+  bullet('The AI chatbot operates on local keyword rules in demo mode; the Claude API integration requires a backend proxy for production security.'),
+  bullet('The single-developer constraint limits the breadth of usability testing and peer code review.'),
+
+  H2('8.5  Future Work'),
   Body('The following extensions are planned for SIARM beyond the bachelor defence:'),
   bullet('Native mobile companions — Android and iOS apps built on React Native, sharing 80 % of the code base with the web platform.'),
   bullet('Biometric attendance — fingerprint-based roll-call on Android phones to remove the lecturer\'s manual data entry.'),
@@ -901,8 +902,8 @@ const chapter8 = [
   bullet('Examination scheduling — automatic generation of clash-free examination calendars, with room and invigilator assignment.'),
   bullet('Library management — book catalogue, borrowing, and reservations tied to the student record.'),
 
-  H2('8.5  Final Word'),
-  Body('SIARM was conceived as a credible, defensible engineering response to the everyday operational realities of a Cameroonian private university. Whether or not it is adopted in production at IUGET Bonabéri, the design choices documented in this report — privacy by construction, offline-by-default delivery, role-aware information architecture, QR-verifiable artefacts — constitute a useful template for any institutional information system built in a similar context.'),
+  H2('8.6  Final Word'),
+  Body('SIARM was conceived as a credible engineering response to the everyday operational realities of a Cameroonian private university. The design choices — privacy by construction, offline-by-default delivery, role-aware architecture, QR-verifiable artefacts — constitute a useful template for any institutional information system built in a similar context.'),
 ]
 
 /* ─── REFERENCES ──────────────────────────────────────────── */
@@ -942,14 +943,8 @@ const appendixA = [
   imagePara('07-deployment.png', 640),    caption('Figure A.7 — Deployment topology (full size).'),
   imagePara('08-parent-flow.png', 640),   caption('Figure A.8 — Parent registration flow (full size).'),
   imagePara('09-payment-flow.png', 640),  caption('Figure A.9 — Payment simulation (full size).'),
-  imagePara('10-enrolment-flow.png', 640), caption('Figure A.10 — Automated enrolment pipeline (full size).'),
-  imagePara('11-class-diagram.png', 640),  caption('Figure A.11 — UML class diagram (full size).'),
-  imagePara('12-state-payment.png', 640),  caption('Figure A.12 — UML state diagram: payment (full size).'),
-  imagePara('13-state-enrolment.png', 640),caption('Figure A.13 — UML state diagram: enrolment (full size).'),
-  imagePara('14-activity-attendance.png', 640), caption('Figure A.14 — UML activity diagram: attendance (full size).'),
-  imagePara('15-package-diagram.png', 640),caption('Figure A.15 — UML package diagram (full size).'),
-  imagePara('16-burndown.png', 640),       caption('Figure A.16 — Sprint burndown (full size).'),
-  imagePara('17-kanban.png', 640),         caption('Figure A.17 — Kanban board snapshot (full size).'),
+  imagePara('11-class-diagram.png', 640),  caption('Figure A.10 — UML class diagram (full size).'),
+  imagePara('14-activity-attendance.png', 640), caption('Figure A.11 — UML activity diagram: attendance (full size).'),
 ]
 
 /* ─── APPENDIX B — demo + reference ───────────────────────── */
