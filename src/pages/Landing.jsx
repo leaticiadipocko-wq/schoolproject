@@ -1,202 +1,257 @@
-import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import Hero from '../components/sections/Hero';
+import ServicesOverview from '../components/sections/ServicesOverview';
+import TeamSection from '../components/sections/TeamSection';
+import AIInteractive from '../components/sections/AIInteractive';
+import WhyChooseUs from '../components/sections/WhyChooseUs';
+import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import {
-  GraduationCap, ClipboardCheck, CalendarClock, Megaphone,
-  Wallet, IdCard, TrendingUp, LineChart, FileText, BookOpen,
-  UserPlus, ShieldCheck, ArrowRight, Banknote,
-} from 'lucide-react'
-import Logo from '@/components/Logo'
-import { useLang } from '@/context/LanguageContext'
-import LangToggle from '@/components/LangToggle'
+  ArrowRight, Globe, Shield, Zap, Users, Award, Code,
+  Network, Monitor, Cpu, Binary, GraduationCap, Wrench, Megaphone,
+  ShoppingCart, Star, HardDrive, MemoryStick
+} from 'lucide-react';
 
-const features = [
-  { icon: ClipboardCheck, title: 'Attendance Tracking',  desc: 'Lecturers mark daily attendance; students view their own records and rates.' },
-  { icon: CalendarClock,  title: 'Timetable Portal',     desc: 'Bachelor evening, Level 1 and Level 2 morning sessions on one screen, by specialty.' },
-  { icon: FileText,       title: 'Results & Transcripts',desc: 'Lecturers enter grades; students view results and download printable transcripts.' },
-  { icon: Megaphone,      title: 'Announcements',        desc: 'Institutional notices that stay available even when offline.' },
-  { icon: Wallet,         title: 'Tuition Payment',      desc: 'Pay tuition via MTN MoMo, Orange Money, Visa, or bank transfer with printable receipts.' },
-  { icon: Banknote,       title: 'Financial Tracking',   desc: 'Bursary dashboard for tuition collected, outstanding balances, and recovery rate.' },
-  { icon: IdCard,         title: 'Student ID Card',      desc: 'Generate and print the official student ID card with photo and verification code.' },
-  { icon: UserPlus,       title: 'Automated Enrolment',  desc: 'Register students one-by-one or by CSV upload; matricule, email and accounts created automatically.' },
-  { icon: LineChart,      title: 'Reporting Dashboards', desc: 'Operational dashboards for students, lecturers, registrar and leadership.' },
-  { icon: BookOpen,       title: 'Mobile Learning',      desc: 'Self-paced course material accessible inside the platform.' },
-  { icon: ShieldCheck,    title: 'Role-Based Access',    desc: 'Hierarchical permissions for students, lecturers, staff and administration.' },
-  { icon: GraduationCap,  title: 'Academic Recovery',    desc: 'Resit registration, deferral handling and continuous-assessment recovery flows.' },
-]
+const partners = [
+  'TechCorp', 'DigitalWave', 'InnovateCam', 'AfriTech', 'DataFlow', 'NetSolutions'
+];
+
+const technologies = [
+  { name: 'React', icon: '⚛️' },
+  { name: 'Python', icon: '🐍' },
+  { name: 'Node.js', icon: '💚' },
+  { name: 'AWS', icon: '☁️' },
+  { name: 'Docker', icon: '🐳' },
+  { name: 'AI/ML', icon: '🤖' },
+  { name: 'Cybersecurity', icon: '🔒' },
+  { name: 'Blockchain', icon: '⛓️' },
+];
 
 export default function Landing() {
-  const { t, lang, toggle } = useLang()
   return (
-    <div className="min-h-screen bg-ink-50">
-      {/* Nav */}
-      <nav className="sticky top-0 z-30 backdrop-blur-lg bg-white/70 border-b border-ink-100">
-        <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3.5">
-          <Logo size={42} />
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-ink-600">
-            <a href="#features" className="hover:text-accent-600 transition">{t('landing.nav.features')}</a>
-            <a href="#vision"   className="hover:text-accent-600 transition">{t('landing.nav.vision')}</a>
-            <a href="#about"    className="hover:text-accent-600 transition">{t('landing.nav.about')}</a>
-          </div>
-          <div className="flex items-center gap-2">
-            <LangToggle compact />
-            <Link to="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</Link>
-            <Link to="/login"  className="btn-ghost">{t('common.signIn')}</Link>
-            <Link to="/register" className="btn-primary">
-              {t('common.getStarted')} <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </nav>
+    <div className="min-h-screen bg-navy-950">
+      <Hero />
 
-      {/* Hero */}
-      <section className="relative gradient-bg overflow-hidden">
-        <div className="max-w-7xl mx-auto px-6 pt-20 pb-28 text-center">
+      {/* Trusted By Section */}
+      <section className="relative py-16 px-4 sm:px-6 lg:px-8 border-y border-white/10">
+        <div className="max-w-7xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-8"
           >
-              <span className="badge-info mb-6 inline-flex">
-                {t('landing.hero.badge')}
-              </span>
-            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tight text-ink-900 leading-[1.05]">
-              {t('landing.hero.title1')} <span className="gradient-text">{t('landing.hero.title2')}</span><br />
-              {t('landing.hero.title3')}
-            </h1>
-            <p className="mt-6 text-lg md:text-xl text-ink-600 max-w-2xl mx-auto">
-              {t('landing.hero.subtitle')}
-            </p>
-            <p className="mt-3 text-sm italic text-accent-700 font-medium">
-              {t('landing.hero.motto')}
-            </p>
-            <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/parent" className="btn-primary px-6 py-3 text-base">
-                {t('landing.hero.cta.parent')} <ArrowRight size={18} />
-              </Link>
-              <Link to="/login" className="btn-secondary px-6 py-3 text-base">
-                {t('landing.hero.cta.demo')}
-              </Link>
-            </div>
-            <p className="mt-4 text-xs text-ink-500">
-              {t('landing.hero.demo')}
-            </p>
+            <p className="text-sm text-gray-500 uppercase tracking-wider">Trusted by leading organizations</p>
           </motion.div>
-
-          {/* Hero stats card */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="mt-16 max-w-5xl mx-auto"
-          >
-            <div className="card-hover p-2 bg-gradient-to-br from-brand-50 to-accent-50 border-brand-100">
-              <div className="rounded-xl bg-white p-6 shadow-soft">
-                <div className="grid grid-cols-3 gap-4">
-                  {[
-                    { label: t('landing.stats.students'),   value: '2,847', trend: t('landing.stats.year') },
-                    { label: t('landing.stats.attendance'), value: '88%',   trend: t('landing.stats.semester') },
-                    { label: t('landing.stats.tuition'),    value: '92%',   trend: t('landing.stats.recovery') },
-                  ].map((s) => (
-                    <div key={s.label} className="rounded-xl bg-ink-50 p-5 text-left">
-                      <div className="text-sm text-ink-500">{s.label}</div>
-                      <div className="text-3xl font-display font-bold mt-1">{s.value}</div>
-                      <div className="text-xs text-accent-600 mt-1 font-medium">{s.trend}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* Stats */}
-      {/* Features grid */}
-      <section id="features" className="py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="badge-info">{t('landing.features.badge')}</span>
-            <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
-              {t('landing.features.title1')} <span className="gradient-text">{t('landing.features.title2')}</span>
-            </h2>
-            <p className="text-lg text-ink-600 mt-4">
-              {t('landing.features.subtitle')}
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {features.map(({ icon: Icon, title, desc }) => (
+          <div className="flex flex-wrap justify-center gap-8 lg:gap-16">
+            {partners.map((partner, index) => (
               <motion.div
-                key={title}
-                initial={{ opacity: 0, y: 16 }}
+                key={partner}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.4 }}
-                className="card-hover group"
+                transition={{ delay: index * 0.1 }}
+                className="text-xl font-bold text-gray-600 hover:text-emerald-400 transition-colors cursor-default font-display"
               >
-                <div className="w-11 h-11 rounded-xl bg-brand-100 text-brand-800 flex items-center justify-center group-hover:bg-brand-800 group-hover:text-white transition">
-                  <Icon size={22} />
-                </div>
-                <h3 className="font-semibold text-lg mt-4">{title}</h3>
-                <p className="text-sm text-ink-600 mt-1.5">{desc}</p>
+                {partner}
               </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Vision */}
-      <section id="vision" className="py-24 bg-gradient-to-br from-brand-900 to-brand-950 text-white">
-        <div className="max-w-5xl mx-auto px-6 text-center">
-          <h2 className="text-4xl md:text-5xl font-display font-bold">
-            {t('landing.vision.title1')} <span className="text-accent-400">{t('landing.vision.title2')}</span>
-          </h2>
-          <p className="mt-5 text-ink-300 max-w-2xl mx-auto text-lg">
-            {t('landing.vision.subtitle')}
-          </p>
-          <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-5">
+      <ServicesOverview />
+
+      {/* Featured Computers Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-950 via-navy-900/50 to-navy-950" />
+        <div className="relative max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
+              <ShoppingCart className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-blue-400 font-medium">Computer Sales</span>
+            </div>
+            <h2 className="heading-2 mb-4">
+              Premium <span className="gradient-text">Computers</span> & Equipment
+            </h2>
+            <p className="body-large max-w-2xl mx-auto">
+              Browse our selection of high-quality laptops, desktops, and accessories.
+              All products come with warranty and after-sales support.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {[
-              { role: t('landing.vision.role.students'),   desc: t('landing.vision.desc.students')   },
-              { role: t('landing.vision.role.lecturers'),  desc: t('landing.vision.desc.lecturers')  },
-              { role: t('landing.vision.role.staff'),      desc: t('landing.vision.desc.staff')      },
-              { role: t('landing.vision.role.leadership'), desc: t('landing.vision.desc.leadership') },
-            ].map((r) => (
-              <div key={r.role} className="rounded-2xl bg-white/5 border border-white/10 p-6 backdrop-blur-sm">
-                <div className="text-xl font-display font-bold">{r.role}</div>
-                <div className="text-sm text-ink-400 mt-1">{r.desc}</div>
-              </div>
+              {
+                name: 'HP ProBook 450 G9',
+                specs: 'i5-1235U • 8GB • 512GB SSD',
+                price: '450,000 FCFA',
+                rating: 4.5,
+                badge: 'Best Seller',
+              },
+              {
+                name: 'Dell Latitude 5530',
+                specs: 'i7-1265U • 16GB • 512GB SSD',
+                price: '580,000 FCFA',
+                rating: 4.7,
+                badge: 'Premium',
+              },
+              {
+                name: 'Lenovo ThinkPad E14',
+                specs: 'Ryzen 5 5625U • 8GB • 256GB SSD',
+                price: '420,000 FCFA',
+                rating: 4.6,
+                badge: 'Popular',
+              },
+            ].map((computer, index) => (
+              <motion.div
+                key={computer.name}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+                className="group rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 hover:border-emerald-500/30 transition-all duration-500 hover:shadow-glow-emerald overflow-hidden"
+              >
+                <div className="h-48 bg-gradient-to-br from-navy-800 to-navy-900 flex items-center justify-center relative">
+                  <Monitor className="w-20 h-20 text-emerald-400/30" />
+                  {computer.badge && (
+                    <div className="absolute top-4 left-4">
+                      <span className="px-3 py-1.5 text-xs font-semibold bg-emerald-500 text-white rounded-full">
+                        {computer.badge}
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="flex items-center gap-1">
+                      <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                      <span className="text-xs text-gray-500">{computer.rating}</span>
+                    </div>
+                  </div>
+                  <h3 className="text-lg font-semibold text-white mb-2 group-hover:text-emerald-400 transition-colors">
+                    {computer.name}
+                  </h3>
+                  <p className="text-sm text-gray-400 mb-4">{computer.specs}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="text-xl font-bold text-emerald-400">{computer.price}</span>
+                    <Link
+                      to="/shop"
+                      className="px-4 py-2 bg-emerald-500/20 text-emerald-400 rounded-lg text-sm font-medium hover:bg-emerald-500/30 transition-colors"
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center"
+          >
+            <Link
+              to="/shop"
+              className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-400 hover:to-blue-500 transition-all duration-300 transform hover:scale-105 shadow-lg group"
+            >
+              Browse All Computers
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      <AIInteractive />
+      <TeamSection />
+      <WhyChooseUs />
+
+      {/* Technologies Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-navy-950 via-navy-900/30 to-navy-950" />
+        <div className="relative max-w-7xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
+              <Code className="w-4 h-4 text-blue-400" />
+              <span className="text-sm text-blue-400 font-medium">Technologies We Use</span>
+            </div>
+            <h2 className="heading-2 mb-4">
+              Fun with <span className="gradient-text">Programming Languages</span>
+            </h2>
+            <p className="body-large max-w-2xl mx-auto">
+              We work with the latest technologies and programming languages to deliver
+              cutting-edge solutions.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {technologies.map((tech, index) => (
+              <motion.div
+                key={tech.name}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.05 }}
+                className="group p-6 rounded-2xl bg-white/5 border border-white/10 hover:border-emerald-500/30 transition-all duration-300 hover:shadow-glow-emerald text-center cursor-default"
+              >
+                <div className="text-4xl mb-3">{tech.icon}</div>
+                <div className="text-sm font-medium text-gray-300 group-hover:text-emerald-400 transition-colors">
+                  {tech.name}
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section id="about" className="py-24 bg-white">
-        <div className="max-w-3xl mx-auto px-6 text-center">
-          <h2 className="text-4xl font-display font-bold">{t('landing.cta.title')}</h2>
-          <p className="mt-4 text-ink-600 text-lg">
-            {t('landing.cta.subtitle')}
-          </p>
-          <div className="mt-8 flex justify-center gap-3">
-            <Link to="/register" className="btn-primary px-6 py-3 text-base">
-              {t('common.getStarted')} <ArrowRight size={18} />
-            </Link>
-            <Link to="/parent" className="btn-secondary px-6 py-3 text-base">
-              {t('landing.hero.cta.parent')}
-            </Link>
-          </div>
+      {/* CTA Section */}
+      <section className="relative py-24 px-4 sm:px-6 lg:px-8 overflow-hidden">
+        <div className="absolute inset-0">
+          <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/20 via-blue-500/20 to-purple-500/20" />
+          <div className="absolute inset-0 cameroon-pattern" />
+        </div>
+        <div className="relative max-w-4xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="heading-2 mb-6">
+              Ready to Start Your <span className="gradient-text">Digital Journey</span>?
+            </h2>
+            <p className="body-large mb-8 max-w-2xl mx-auto">
+              Whether you're looking to upskill, build a project, or grow your business,
+              Navic Tech is here to help you succeed.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/contact"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-emerald-500 to-emerald-600 text-white font-semibold rounded-xl hover:from-emerald-400 hover:to-emerald-500 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-glow-emerald group"
+              >
+                Contact Us Today
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+              <Link
+                to="/internships"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white/30 text-white font-semibold rounded-xl hover:bg-white/10 hover:border-white/50 transition-all duration-300"
+              >
+                Apply for Internship
+              </Link>
+            </div>
+          </motion.div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-10 border-t border-ink-100 bg-ink-50">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-4">
-          <Logo size={32} />
-          <div className="text-sm text-ink-500 text-center md:text-right">
-            {t('footer.copyright', { year: new Date().getFullYear() })}<br />
-            <span className="text-xs">{t('footer.author')}</span>
-          </div>
-        </div>
-      </footer>
     </div>
-  )
+  );
 }

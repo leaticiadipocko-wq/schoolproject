@@ -1,9 +1,9 @@
 {
-  "name": "siarm",
+  "name": "navic-tech",
   "private": true,
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
-  "description": "Smart Institution Academic Resource Management - Unified educational platform",
+  "description": "Navic Tech - Elevating Skills, Delivering Digital Excellence",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
@@ -11,31 +11,20 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.30.1",
-    "firebase": "^11.0.2",
     "framer-motion": "^11.11.17",
-    "html2canvas": "^1.4.1",
-    "jspdf": "^2.5.2",
     "lucide-react": "^0.460.0",
-    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hot-toast": "^2.4.1",
     "react-router-dom": "^6.28.0",
-    "recharts": "^2.13.3"
+    "react-intersection-observer": "^9.10.3"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
-    "archiver": "^8.0.0",
     "autoprefixer": "^10.4.20",
-    "docx": "^9.7.1",
     "postcss": "^8.4.49",
-    "pptxgenjs": "^4.0.1",
-    "sharp": "^0.34.5",
     "tailwindcss": "^3.4.15",
-    "vite": "^5.4.11",
-    "vite-plugin-pwa": "^1.3.0"
+    "vite": "^5.4.11"
   }
 }
