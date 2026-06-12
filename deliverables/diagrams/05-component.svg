@@ -1,0 +1,139 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" width="1100" height="720">
+
+<style>
+  .bg { fill: #ffffff; }
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+  .subtitle { font-size: 12px; fill: #64748b; }
+  .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; ry: 10; }
+  .box-brand { fill: #eff4ff; stroke: #1e3aa0; stroke-width: 2; rx: 10; ry: 10; }
+  .box-accent { fill: #fef2f2; stroke: #e63946; stroke-width: 2; rx: 10; ry: 10; }
+  .box-ink { fill: #1e3aa0; stroke: #172250; rx: 10; ry: 10; }
+  .label { font-size: 13px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+  .label-white { font-size: 13px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+  .label-sm { font-size: 11px; fill: #64748b; text-anchor: middle; }
+  .label-sm-white { font-size: 11px; fill: #c7d2fe; text-anchor: middle; }
+  .arrow { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .arrow-brand { stroke: #1e3aa0; stroke-width: 2; fill: none; marker-end: url(#arrow-brand); }
+  .arrow-red { stroke: #e63946; stroke-width: 1.8; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 5,3; }
+  .group-label { font-size: 11px; font-weight: 700; fill: #1e3aa0; text-anchor: start; letter-spacing: 1px; }
+  .group-box { fill: rgba(30,58,160,0.04); stroke: #1e3aa0; stroke-width: 1; stroke-dasharray: 4,3; rx: 14; ry: 14; }
+  .er-attr { font-size: 11px; fill: #334155; }
+  .er-key { font-size: 11px; font-weight: 700; fill: #1e3aa0; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1e3aa0"/></marker>
+  <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+</defs>
+
+<rect class="bg" width="1100" height="720"/>
+<text x="40" y="38" class="title">SIARM — Component Diagram</text>
+<text x="40" y="58" class="subtitle">React component composition across pages, layout, UI atoms, contexts, and libraries</text>
+<text x="80" y="115" class="group-label">PAGES (22)</text>
+    <rect x="80" y="130" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="144" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="162" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="156" class="label">Landing</text>
+    <text x="170" y="172" class="label-sm">Public marketing</text>
+    <rect x="80" y="210" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="224" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="242" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="236" class="label">Login</text>
+    <text x="170" y="252" class="label-sm">Auth + role chips</text>
+    <rect x="80" y="290" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="304" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="322" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="316" class="label">Register</text>
+    <text x="170" y="332" class="label-sm">Sign up + role pick</text>
+    <rect x="80" y="370" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="384" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="402" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="396" class="label">Student/*</text>
+    <text x="170" y="412" class="label-sm">9 pages</text>
+    <rect x="80" y="450" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="464" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="482" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="476" class="label">Lecturer/*</text>
+    <text x="170" y="492" class="label-sm">4 pages</text>
+    <rect x="80" y="530" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="74" y="544" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="74" y="562" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="170" y="556" class="label">Admin/*</text>
+    <text x="170" y="572" class="label-sm">7 pages</text><text x="320" y="115" class="group-label">LAYOUT</text>
+    <rect x="320" y="130" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="314" y="144" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="314" y="162" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="410" y="156" class="label">DashboardLayout</text>
+    <text x="410" y="172" class="label-sm">Outlet wrapper</text>
+    <rect x="320" y="210" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="314" y="224" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="314" y="242" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="410" y="236" class="label">Sidebar</text>
+    <text x="410" y="252" class="label-sm">Role-aware nav</text>
+    <rect x="320" y="290" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="314" y="304" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="314" y="322" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="410" y="316" class="label">Navbar</text>
+    <text x="410" y="332" class="label-sm">Search + notif</text>
+    <rect x="320" y="370" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="314" y="384" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="314" y="402" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="410" y="396" class="label">Logo</text>
+    <text x="410" y="412" class="label-sm">IUGET branding</text>
+    <rect x="320" y="450" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="314" y="464" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="314" y="482" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="410" y="476" class="label">ProtectedRoute</text>
+    <text x="410" y="492" class="label-sm">RBAC guard</text><text x="560" y="115" class="group-label">UI ATOMS</text>
+    <rect x="560" y="130" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="554" y="144" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="554" y="162" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="650" y="156" class="label">StatCard</text>
+    <text x="650" y="172" class="label-sm">KPI display</text>
+    <rect x="560" y="210" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="554" y="224" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="554" y="242" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="650" y="236" class="label">PageHeader</text>
+    <text x="650" y="252" class="label-sm">Title + actions</text>
+    <rect x="560" y="290" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="554" y="304" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="554" y="322" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="650" y="316" class="label">EmptyState</text>
+    <text x="650" y="332" class="label-sm">Zero data</text>
+    <rect x="560" y="370" width="180" height="60" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="554" y="384" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="554" y="402" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="650" y="396" class="label">Toast</text>
+    <text x="650" y="412" class="label-sm">Notifications</text><text x="800" y="115" class="group-label">CONTEXT</text>
+    <rect x="800" y="130" width="200" height="80" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="144" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="162" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="166" class="label">AuthContext</text>
+    <text x="900" y="182" class="label-sm">login/register/logout</text>
+    <rect x="800" y="230" width="200" height="80" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="244" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="262" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="266" class="label">DataContext</text>
+    <text x="900" y="282" class="label-sm">CRUD + persistence</text><text x="800" y="345" class="group-label">LIBRARIES</text>
+    <rect x="800" y="360" width="200" height="50" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="374" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="392" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="381" class="label">roles.js</text>
+    <text x="900" y="397" class="label-sm">Hierarchy helpers</text>
+    <rect x="800" y="420" width="200" height="50" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="434" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="452" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="441" class="label">firebase.js</text>
+    <text x="900" y="457" class="label-sm">SDK init</text>
+    <rect x="800" y="480" width="200" height="50" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="494" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="512" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="501" class="label">navItems.js</text>
+    <text x="900" y="517" class="label-sm">Sidebar config</text>
+    <rect x="800" y="540" width="200" height="50" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5" rx="6"/>
+    <rect x="794" y="554" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <rect x="794" y="572" width="14" height="8" fill="#ffffff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="900" y="561" class="label">mockData.js</text>
+    <text x="900" y="577" class="label-sm">Demo dataset</text><path d="M260,405 L320,160" stroke="#94a3b8" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/><path d="M260,405 L800,270" stroke="#94a3b8" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/><path d="M500,270 L560,250" stroke="#94a3b8" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/><path d="M500,320 L800,170" stroke="#94a3b8" stroke-width="1.2" fill="none" stroke-dasharray="4,3"/>
+</svg>

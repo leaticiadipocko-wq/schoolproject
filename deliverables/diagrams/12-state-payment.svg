@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 620" font-family="Calibri, Inter, sans-serif">
+  <defs>
+    <linearGradient id="hdrS1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#F59E0B"/>
+      <stop offset="1" stop-color="#E63946"/>
+    </linearGradient>
+    <marker id="aS" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1E3AA0"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="620" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1100" height="56" fill="url(#hdrS1)"/>
+  <text x="550" y="36" fill="white" font-size="22" font-weight="700" text-anchor="middle">Payment State Machine — UML State Diagram</text>
+
+  <!-- Initial pseudo-state -->
+  <circle cx="80" cy="320" r="10" fill="#1E293B"/>
+
+  <!-- States -->
+  <g>
+    <rect x="130" y="270" width="160" height="100" rx="50" fill="#FFFFFF" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="210" y="305" fill="#1E3AA0" font-size="15" font-weight="700" text-anchor="middle">Idle</text>
+    <text x="210" y="330" fill="#475569" font-size="11" text-anchor="middle">User opened</text>
+    <text x="210" y="346" fill="#475569" font-size="11" text-anchor="middle">tuition page</text>
+  </g>
+
+  <g>
+    <rect x="330" y="100" width="170" height="100" rx="50" fill="#FFFFFF" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="415" y="135" fill="#1E3AA0" font-size="15" font-weight="700" text-anchor="middle">Choosing method</text>
+    <text x="415" y="160" fill="#475569" font-size="11" text-anchor="middle">5 cards visible</text>
+    <text x="415" y="176" fill="#475569" font-size="11" text-anchor="middle">Privacy banner shown</text>
+  </g>
+
+  <g>
+    <rect x="540" y="100" width="170" height="100" rx="50" fill="#FFFFFF" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="625" y="135" fill="#1E3AA0" font-size="15" font-weight="700" text-anchor="middle">Entering credentials</text>
+    <text x="625" y="160" fill="#475569" font-size="11" text-anchor="middle">Method-specific</text>
+    <text x="625" y="176" fill="#475569" font-size="11" text-anchor="middle">PIN / OTP / Card</text>
+  </g>
+
+  <g>
+    <rect x="750" y="270" width="170" height="100" rx="50" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+    <text x="835" y="305" fill="#92400E" font-size="15" font-weight="700" text-anchor="middle">Processing</text>
+    <text x="835" y="330" fill="#92400E" font-size="11" text-anchor="middle">Provider call (2.2 s)</text>
+    <text x="835" y="346" fill="#92400E" font-size="11" text-anchor="middle">PIN cleared from RAM</text>
+  </g>
+
+  <g>
+    <rect x="540" y="450" width="170" height="100" rx="50" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+    <text x="625" y="485" fill="#065F46" font-size="15" font-weight="700" text-anchor="middle">Success</text>
+    <text x="625" y="510" fill="#065F46" font-size="11" text-anchor="middle">Reference issued</text>
+    <text x="625" y="526" fill="#065F46" font-size="11" text-anchor="middle">Receipt shown</text>
+  </g>
+
+  <g>
+    <rect x="330" y="450" width="170" height="100" rx="50" fill="#FEF2F2" stroke="#E63946" stroke-width="2"/>
+    <text x="415" y="485" fill="#7F1D1D" font-size="15" font-weight="700" text-anchor="middle">Failure</text>
+    <text x="415" y="510" fill="#7F1D1D" font-size="11" text-anchor="middle">Provider rejected</text>
+    <text x="415" y="526" fill="#7F1D1D" font-size="11" text-anchor="middle">or cancelled</text>
+  </g>
+
+  <!-- Final state (composite) -->
+  <circle cx="950" cy="500" r="14" fill="#FFFFFF" stroke="#1E293B" stroke-width="2"/>
+  <circle cx="950" cy="500" r="8" fill="#1E293B"/>
+
+  <!-- Transitions -->
+  <line x1="90" y1="320" x2="130" y2="320" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="100" y="310" fill="#1E3AA0" font-size="10">open()</text>
+
+  <line x1="260" y1="270" x2="370" y2="200" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="280" y="240" fill="#1E3AA0" font-size="10">Pay now</text>
+
+  <line x1="500" y1="150" x2="540" y2="150" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="510" y="140" fill="#1E3AA0" font-size="10">selectMethod()</text>
+
+  <line x1="710" y1="170" x2="800" y2="270" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="740" y="220" fill="#1E3AA0" font-size="10">submit()</text>
+
+  <line x1="800" y1="370" x2="700" y2="450" stroke="#10B981" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="730" y="420" fill="#10B981" font-size="10">resolved [ok]</text>
+
+  <line x1="780" y1="370" x2="500" y2="450" stroke="#E63946" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="610" y="420" fill="#E63946" font-size="10">resolved [error]</text>
+
+  <line x1="500" y1="450" x2="290" y2="370" stroke="#475569" stroke-width="1" stroke-dasharray="3 3" marker-end="url(#aS)"/>
+  <text x="370" y="410" fill="#475569" font-size="10">retry()</text>
+
+  <line x1="710" y1="500" x2="940" y2="500" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aS)"/>
+  <text x="800" y="490" fill="#1E3AA0" font-size="10">printReceipt()</text>
+
+  <!-- Privacy invariant -->
+  <g>
+    <rect x="60" y="500" width="240" height="70" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+    <text x="180" y="525" fill="#065F46" font-size="13" font-weight="700" text-anchor="middle">⚑ Invariant</text>
+    <text x="180" y="545" fill="#065F46" font-size="11" text-anchor="middle">PIN / OTP not persisted</text>
+    <text x="180" y="560" fill="#065F46" font-size="11" text-anchor="middle">at any state.</text>
+  </g>
+
+  <text x="550" y="600" fill="#64748B" font-size="12" text-anchor="middle">UML state diagram — initial → terminal pseudo-states · privacy invariant preserved across every transition.</text>
+</svg>

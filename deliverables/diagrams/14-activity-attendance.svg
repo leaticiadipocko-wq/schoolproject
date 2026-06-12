@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 720" font-family="Calibri, Inter, sans-serif">
+  <defs>
+    <linearGradient id="hdrA" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#1E3AA0"/>
+      <stop offset="1" stop-color="#3B6DF5"/>
+    </linearGradient>
+    <marker id="aA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#1E3AA0"/>
+    </marker>
+  </defs>
+  <rect width="1100" height="720" fill="#F8FAFC"/>
+  <rect x="0" y="0" width="1100" height="56" fill="url(#hdrA)"/>
+  <text x="550" y="36" fill="white" font-size="22" font-weight="700" text-anchor="middle">Attendance Marking — UML Activity Diagram</text>
+
+  <!-- Swim lanes -->
+  <line x1="280" y1="80" x2="280" y2="700" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4 4"/>
+  <line x1="650" y1="80" x2="650" y2="700" stroke="#94A3B8" stroke-width="1" stroke-dasharray="4 4"/>
+  <text x="140"  y="100" fill="#1E3AA0" font-size="14" font-weight="700" text-anchor="middle">Lecturer</text>
+  <text x="465"  y="100" fill="#1E3AA0" font-size="14" font-weight="700" text-anchor="middle">SIARM</text>
+  <text x="875"  y="100" fill="#1E3AA0" font-size="14" font-weight="700" text-anchor="middle">Student</text>
+
+  <!-- Initial -->
+  <circle cx="140" cy="140" r="10" fill="#1E293B"/>
+
+  <!-- Activities (Lecturer) -->
+  <g>
+    <rect x="40" y="180" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="140" y="210" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Sign in</text>
+  </g>
+  <g>
+    <rect x="40" y="260" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="140" y="290" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Open class roster</text>
+  </g>
+  <g>
+    <rect x="40" y="340" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="140" y="370" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Tap students present</text>
+  </g>
+  <g>
+    <rect x="40" y="420" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="140" y="450" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Submit</text>
+  </g>
+
+  <!-- Activities (SIARM) -->
+  <g>
+    <rect x="365" y="180" width="200" height="50" rx="25" fill="#EFF4FF" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="465" y="210" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Verify role + course</text>
+  </g>
+  <g>
+    <rect x="365" y="260" width="200" height="50" rx="25" fill="#EFF4FF" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="465" y="290" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Fetch enrolled list</text>
+  </g>
+
+  <!-- Decision -->
+  <polygon points="465,340 540,390 465,440 390,390" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+  <text x="465" y="385" fill="#92400E" font-size="11" font-weight="700" text-anchor="middle">Quorum</text>
+  <text x="465" y="400" fill="#92400E" font-size="11" font-weight="700" text-anchor="middle">≥ 50% ?</text>
+
+  <g>
+    <rect x="365" y="460" width="200" height="50" rx="25" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+    <text x="465" y="490" fill="#065F46" font-size="13" font-weight="700" text-anchor="middle">Persist attendance</text>
+  </g>
+  <g>
+    <rect x="365" y="540" width="200" height="50" rx="25" fill="#ECFDF5" stroke="#10B981" stroke-width="2"/>
+    <text x="465" y="570" fill="#065F46" font-size="13" font-weight="700" text-anchor="middle">Update rates</text>
+  </g>
+  <g>
+    <rect x="365" y="620" width="200" height="50" rx="25" fill="#FFFBEB" stroke="#F59E0B" stroke-width="2"/>
+    <text x="465" y="650" fill="#92400E" font-size="13" font-weight="700" text-anchor="middle">Push notification</text>
+  </g>
+
+  <!-- Cancelled branch -->
+  <g>
+    <rect x="365" y="320" width="20" height="20" fill="#E63946"/>
+    <text x="375" y="335" fill="white" font-size="11" font-weight="700" text-anchor="middle">×</text>
+  </g>
+
+  <!-- Activities (Student) -->
+  <g>
+    <rect x="780" y="620" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="880" y="650" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Receive notification</text>
+  </g>
+  <g>
+    <rect x="780" y="540" width="200" height="50" rx="25" fill="white" stroke="#1E3AA0" stroke-width="2"/>
+    <text x="880" y="570" fill="#1E3AA0" font-size="13" font-weight="700" text-anchor="middle">Updated rate visible</text>
+  </g>
+
+  <!-- Final state -->
+  <circle cx="880" cy="450" r="14" fill="white" stroke="#1E293B" stroke-width="2"/>
+  <circle cx="880" cy="450" r="8" fill="#1E293B"/>
+
+  <!-- Arrows -->
+  <line x1="140" y1="150" x2="140" y2="180" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="140" y1="230" x2="140" y2="260" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="140" y1="310" x2="140" y2="340" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="140" y1="390" x2="140" y2="420" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="240" y1="445" x2="365" y2="205" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="240" y1="285" x2="365" y2="285" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <text x="280" y="275" fill="#1E3AA0" font-size="10">classCode</text>
+  <line x1="465" y1="230" x2="465" y2="260" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="465" y1="310" x2="465" y2="340" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+
+  <line x1="465" y1="440" x2="465" y2="460" stroke="#10B981" stroke-width="1.5" marker-end="url(#aA)"/>
+  <text x="470" y="450" fill="#10B981" font-size="10">[yes]</text>
+  <line x1="390" y1="390" x2="380" y2="335" stroke="#E63946" stroke-width="1.5" marker-end="url(#aA)"/>
+  <text x="320" y="370" fill="#E63946" font-size="10">[no — cancel]</text>
+
+  <line x1="465" y1="510" x2="465" y2="540" stroke="#10B981" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="465" y1="590" x2="465" y2="620" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="565" y1="645" x2="780" y2="645" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="880" y1="620" x2="880" y2="590" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+  <line x1="880" y1="540" x2="880" y2="464" stroke="#1E3AA0" stroke-width="1.5" marker-end="url(#aA)"/>
+
+  <text x="550" y="710" fill="#64748B" font-size="11" text-anchor="middle">Activity diagram with three swim-lanes · decision diamond enforces the 50% quorum rule.</text>
+</svg>

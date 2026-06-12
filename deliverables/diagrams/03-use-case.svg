@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 760" width="1100" height="760">
+
+<style>
+  .bg { fill: #ffffff; }
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  .title { font-size: 22px; font-weight: 700; fill: #0f172a; }
+  .subtitle { font-size: 12px; fill: #64748b; }
+  .box { fill: #ffffff; stroke: #cbd5e1; stroke-width: 1.5; rx: 10; ry: 10; }
+  .box-brand { fill: #eff4ff; stroke: #1e3aa0; stroke-width: 2; rx: 10; ry: 10; }
+  .box-accent { fill: #fef2f2; stroke: #e63946; stroke-width: 2; rx: 10; ry: 10; }
+  .box-ink { fill: #1e3aa0; stroke: #172250; rx: 10; ry: 10; }
+  .label { font-size: 13px; font-weight: 600; fill: #1e293b; text-anchor: middle; }
+  .label-white { font-size: 13px; font-weight: 600; fill: #ffffff; text-anchor: middle; }
+  .label-sm { font-size: 11px; fill: #64748b; text-anchor: middle; }
+  .label-sm-white { font-size: 11px; fill: #c7d2fe; text-anchor: middle; }
+  .arrow { stroke: #475569; stroke-width: 1.8; fill: none; marker-end: url(#arrow); }
+  .arrow-brand { stroke: #1e3aa0; stroke-width: 2; fill: none; marker-end: url(#arrow-brand); }
+  .arrow-red { stroke: #e63946; stroke-width: 1.8; fill: none; marker-end: url(#arrow-red); stroke-dasharray: 5,3; }
+  .group-label { font-size: 11px; font-weight: 700; fill: #1e3aa0; text-anchor: start; letter-spacing: 1px; }
+  .group-box { fill: rgba(30,58,160,0.04); stroke: #1e3aa0; stroke-width: 1; stroke-dasharray: 4,3; rx: 14; ry: 14; }
+  .er-attr { font-size: 11px; fill: #334155; }
+  .er-key { font-size: 11px; font-weight: 700; fill: #1e3aa0; }
+</style>
+<defs>
+  <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#475569"/></marker>
+  <marker id="arrow-brand" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#1e3aa0"/></marker>
+  <marker id="arrow-red" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#e63946"/></marker>
+</defs>
+
+<rect class="bg" width="1100" height="760"/>
+<text x="40" y="38" class="title">SIARM — Use Case Diagram</text>
+<text x="40" y="58" class="subtitle">Four actors and 17 use cases grouped by SIARM module boundaries</text>
+<rect x="280" y="80" width="540" height="640" fill="rgba(30,58,160,0.04)" stroke="#1e3aa0" stroke-width="2" stroke-dasharray="6,4" rx="20" ry="20"/>
+  <text x="550" y="110" class="label" font-size="14">SIARM System Boundary</text>
+    <circle cx="80" cy="200" r="14" fill="none" stroke="#1e3aa0" stroke-width="2"/>
+    <path d="M80,214 L80,240 M66,222 L94,222 M80,240 L68,260 M80,240 L92,260" stroke="#1e3aa0" stroke-width="2" fill="none"/>
+    <text x="80" y="278" class="label">Student</text>
+    <circle cx="80" cy="380" r="14" fill="none" stroke="#1e3aa0" stroke-width="2"/>
+    <path d="M80,394 L80,420 M66,402 L94,402 M80,420 L68,440 M80,420 L92,440" stroke="#1e3aa0" stroke-width="2" fill="none"/>
+    <text x="80" y="458" class="label">Lecturer</text>
+    <circle cx="1020" cy="280" r="14" fill="none" stroke="#1e3aa0" stroke-width="2"/>
+    <path d="M1020,294 L1020,320 M1006,302 L1034,302 M1020,320 L1008,340 M1020,320 L1032,340" stroke="#1e3aa0" stroke-width="2" fill="none"/>
+    <text x="1020" y="358" class="label">Staff</text>
+    <circle cx="1020" cy="460" r="14" fill="none" stroke="#1e3aa0" stroke-width="2"/>
+    <path d="M1020,474 L1020,500 M1006,482 L1034,482 M1020,500 L1008,520 M1020,500 L1032,520" stroke="#1e3aa0" stroke-width="2" fill="none"/>
+    <text x="1020" y="538" class="label">Admin</text>
+    <ellipse cx="420" cy="150" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="154" class="label" font-size="12">Login / Register</text>
+    <ellipse cx="420" cy="210" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="214" class="label" font-size="12">View Timetable</text>
+    <ellipse cx="420" cy="270" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="274" class="label" font-size="12">View Results</text>
+    <ellipse cx="420" cy="330" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="334" class="label" font-size="12">View Attendance</text>
+    <ellipse cx="680" cy="150" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="680" y="154" class="label" font-size="12">Read Announcements</text>
+    <ellipse cx="680" cy="210" rx="100" ry="22" fill="#fef2f2" stroke="#e63946" stroke-width="1.5"/>
+    <text x="680" y="214" class="label" font-size="12">Ask AI Chatbot</text>
+    <ellipse cx="680" cy="270" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="680" y="274" class="label" font-size="12">Enroll in Course</text>
+    <ellipse cx="680" cy="330" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="680" y="334" class="label" font-size="12">Download Transcript</text>
+    <ellipse cx="420" cy="410" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="414" class="label" font-size="12">Mark Attendance</text>
+    <ellipse cx="420" cy="470" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="474" class="label" font-size="12">Enter Grades</text>
+    <ellipse cx="680" cy="410" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="680" y="414" class="label" font-size="12">Manage Class</text>
+    <ellipse cx="680" cy="470" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="680" y="474" class="label" font-size="12">Publish Announcement</text>
+    <ellipse cx="420" cy="540" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="544" class="label" font-size="12">Manage Users</text>
+    <ellipse cx="420" cy="600" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="420" y="604" class="label" font-size="12">Build Timetable</text>
+    <ellipse cx="680" cy="540" rx="100" ry="22" fill="#fef2f2" stroke="#e63946" stroke-width="1.5"/>
+    <text x="680" y="544" class="label" font-size="12">View AI Analytics</text>
+    <ellipse cx="680" cy="600" rx="100" ry="22" fill="#fef2f2" stroke="#e63946" stroke-width="1.5"/>
+    <text x="680" y="604" class="label" font-size="12">Predict Enrollment</text>
+    <ellipse cx="550" cy="660" rx="100" ry="22" fill="#eff4ff" stroke="#1e3aa0" stroke-width="1.5"/>
+    <text x="550" y="664" class="label" font-size="12">Configure Institution Settings</text><path d="M100,210 L320,210" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,230 L320,270" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,250 L320,330" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,270 L580,210" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,290 L580,270" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,310 L580,330" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,200 L320,150" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,390 L320,410" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,410 L320,470" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,430 L580,410" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,450 L580,470" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M100,380 L320,150" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,290 L780,470" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,310 L780,540" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,280 L520,540" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,470 L780,540" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,490 L780,600" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,460 L520,600" stroke="#64748b" stroke-width="1.3" fill="none"/><path d="M1000,450 L650,660" stroke="#64748b" stroke-width="1.3" fill="none"/>
+</svg>
