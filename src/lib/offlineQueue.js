@@ -19,9 +19,9 @@ function readQ() {
   try { return JSON.parse(localStorage.getItem(KEY) || '[]') } catch { return [] }
 }
 function writeQ(q) {
-  try { localStorage.setItem(KEY, JSON.stringify(q)) } catch {}
+  try { localStorage.setItem(KEY, JSON.stringify(q)) } catch { /* quota exceeded */ }
   // Fire a custom event so listeners can re-render their badges
-  try { window.dispatchEvent(new CustomEvent('siarm:queueChanged', { detail: { length: q.length } })) } catch {}
+  try { window.dispatchEvent(new CustomEvent('siarm:queueChanged', { detail: { length: q.length } })) } catch { /* SSR */ }
 }
 
 /* ─── public API ──────────────────────────────────────────── */

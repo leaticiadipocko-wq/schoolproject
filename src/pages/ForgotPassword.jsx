@@ -16,7 +16,7 @@ import { useLang } from '@/context/LanguageContext'
  *   3. Success — return to login
  */
 export default function ForgotPassword() {
-  const { requestPasswordReset } = useData()
+  const { requestPasswordReset, confirmPasswordReset } = useData()
   const { lang } = useLang()
   const [step, setStep] = useState(1)
   const [email, setEmail] = useState('')
@@ -61,7 +61,12 @@ export default function ForgotPassword() {
     }
     if (pwd.length < 6) return toast.error(lang === 'en' ? 'Password must be at least 6 characters' : 'Mot de passe trop court (6 caractères min.)')
     if (pwd !== pwd2)  return toast.error(lang === 'en' ? 'Passwords do not match' : 'Les mots de passe ne correspondent pas')
-    setStep(3)
+    try {
+      confirmPasswordReset(issuedToken, email, pwd)
+      setStep(3)
+    } catch (err) {
+      toast.error(err.message || (lang === 'en' ? 'Reset failed' : 'Échec de la réinitialisation'))
+    }
   }
 
   return (

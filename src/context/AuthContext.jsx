@@ -55,8 +55,11 @@ export function AuthProvider({ children }) {
 
   const login = async (email, password) => {
     if (DEMO_MODE) {
+      const storeRaw = localStorage.getItem('siarm.store.v2')
+      const overrides = storeRaw ? JSON.parse(storeRaw).passwordOverrides || {} : {}
+      const overridePwd = overrides[email.toLowerCase()]
       const found = MOCK_USERS.find(
-        (u) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
+        (u) => u.email.toLowerCase() === email.toLowerCase() && (u.password === password || (overridePwd && overridePwd === password))
       )
       if (!found) throw new Error('Invalid email or password')
       const { password: _pw, ...safe } = found

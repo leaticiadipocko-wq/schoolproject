@@ -2,7 +2,7 @@ import {
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
-  WifiOff, MapPin, Sparkles, ClipboardList, MessageSquare, Activity,
+  WifiOff, Sparkles, ClipboardList, MessageSquare, Activity,
   Archive, Globe,
 } from 'lucide-react'
 
@@ -75,7 +75,7 @@ export const STAFF_NAV = [
       { to: '/staff',               label: 'Dashboard',       icon: LayoutDashboard },
       { to: '/staff/users',         label: 'Users',           icon: Users },
       { to: '/staff/enrollment',    label: 'Enrolment',       icon: UserPlus},
-      { to: '/staff/assignments',   label: 'Assignments',     icon: MapPin },
+      { to: '/staff/assignments',   label: 'Course Scheduling', icon: CalendarClock },
       { to: '/staff/timetable',     label: 'Timetable',       icon: CalendarClock },
       { to: '/staff/announcements', label: 'Announcements',   icon: Megaphone },
     ],
@@ -113,7 +113,7 @@ export const ADMIN_NAV = [
     title: 'Manage',
     links: [
       { to: '/admin/enrollment',    label: 'Enrolment',     icon: UserPlus},
-      { to: '/admin/assignments',   label: 'Assignments',   icon: MapPin },
+      { to: '/admin/assignments',   label: 'Course Scheduling', icon: CalendarClock },
       { to: '/admin/users',         label: 'Users',         icon: UserCog },
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },

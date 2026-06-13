@@ -133,9 +133,9 @@ export default function Enrollment() {
 
   const exportEnrolledCSV = () => {
     if (!enrolled.length) return toast.error('No new enrolments yet')
-    const header = ['Matricule', 'Name', 'Email', 'Specialty', 'Level', 'Enrolled On', 'Initial password']
+    const header = ['Matricule', 'Name', 'Email', 'Specialty', 'Level', 'Enrolled On']
     const csv = [header.join(',')].concat(
-      enrolled.map((s) => [s.matricule, s.fullName, s.email, s.specialty, s.level, s.enrolledOn, s.account.password].join(','))
+      enrolled.map((s) => [s.matricule, s.fullName, s.email, s.specialty, s.level, s.enrolledOn].join(','))
     ).join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const a = document.createElement('a')

@@ -30,4 +30,4 @@ if (!DEMO_MODE) {
   storage = getStorage(app)
 }
 
-export { app, auth, db, storage }
+export { auth, db, storage }

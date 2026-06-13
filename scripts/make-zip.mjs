@@ -13,7 +13,7 @@ function makeZip(name, addEntries) {
   return new Promise((resolve, reject) => {
     const file = path.join(outDir, name)
     const output = fs.createWriteStream(file)
-    const archive = new archiver.ZipArchive({ zlib: { level: 9 } })
+    const archive = archiver('zip', { zlib: { level: 9 } })
     output.on('close', () => resolve({ file, bytes: archive.pointer() }))
     archive.on('error', reject)
     archive.pipe(output)

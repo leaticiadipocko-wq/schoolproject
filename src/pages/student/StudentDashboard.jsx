@@ -9,7 +9,7 @@ const formatFCFA = (n) => new Intl.NumberFormat('fr-CM').format(n) + ' FCFA'
 
 export default function StudentDashboard() {
   const { user } = useAuth()
-  const { attendance, announcements: allAnnouncements, timetable, enrolledCourses, recommendedCourses, fees } = useData()
+  const { attendance, announcements: allAnnouncements, timetable, enrolledCourses, fees } = useData()
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' })
   // Show only the student's specialty + Bachelor (Level 3) evening schedule
   const todayClasses = timetable.filter(

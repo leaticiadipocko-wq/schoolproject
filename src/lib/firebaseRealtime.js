@@ -36,8 +36,8 @@ export function useCollection(name, opts = {}, demoFallback = []) {
 
   useEffect(() => {
     if (DEMO_MODE || !db) {
-      setData(demoFallback)
-      setLoading(false)
+      setData(demoFallback) // eslint-disable-line react-hooks/set-state-in-effect
+      setLoading(false)     // eslint-disable-line react-hooks/set-state-in-effect
       return
     }
     ensurePersistence()
@@ -69,7 +69,7 @@ export function useDoc(path, demoFallback = null) {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    if (DEMO_MODE || !db) { setData(demoFallback); setLoading(false); return }
+    if (DEMO_MODE || !db) { setData(demoFallback); setLoading(false); return } // eslint-disable-line react-hooks/set-state-in-effect
     ensurePersistence()
 
     const ref = doc(db, ...path.split('/'))

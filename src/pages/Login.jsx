@@ -23,11 +23,12 @@ export default function Login() {
   const navigate = useNavigate()
   const location = useLocation()
 
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState(() => localStorage.getItem('siarm.rememberEmail') || '')
   const [password, setPassword] = useState('')
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
+  const [remember, setRemember] = useState(() => !!localStorage.getItem('siarm.rememberEmail'))
 
   const from = location.state?.from?.pathname
 
@@ -37,6 +38,11 @@ export default function Login() {
     setLoading(true)
     try {
       const u = await login(email, password)
+      if (remember) {
+        localStorage.setItem('siarm.rememberEmail', email)
+      } else {
+        localStorage.removeItem('siarm.rememberEmail')
+      }
       toast.success(t('login.success', { name: u.name?.split(' ')[0] || '' }))
       navigate(from || roleHome(u.role), { replace: true })
     } catch (err) {
@@ -155,7 +161,7 @@ export default function Login() {
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 text-ink-600">
-                <input type="checkbox" className="rounded border-ink-300" />
+                <input type="checkbox" className="rounded border-ink-300" checked={remember} onChange={(e) => setRemember(e.target.checked)} />
                 {t('login.rememberMe')}
               </label>
               <button type="button" onClick={() => setShowForgot(true)} className="text-brand-600 hover:underline">{t('login.forgot')}</button>

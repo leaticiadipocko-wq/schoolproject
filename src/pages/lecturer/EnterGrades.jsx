@@ -3,6 +3,7 @@ import toast from 'react-hot-toast'
 import { Save, Upload } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { useData } from '@/context/DataContext'
+import { gradeFor } from '@/lib/grades'
 
 const seedStudents = () => Array.from({ length: 12 }, (_, i) => ({
   id: `IUGET/2023/CS/${String(140 + i).padStart(4, '0')}`,
@@ -12,16 +13,6 @@ const seedStudents = () => Array.from({ length: 12 }, (_, i) => ({
   ca: Math.floor(15 + Math.random() * 15),
   exam: Math.floor(30 + Math.random() * 35),
 }))
-
-const getGrade = (total) => {
-  if (total >= 80) return 'A'
-  if (total >= 70) return 'B+'
-  if (total >= 60) return 'B'
-  if (total >= 55) return 'C+'
-  if (total >= 50) return 'C'
-  if (total >= 40) return 'D'
-  return 'F'
-}
 
 export default function EnterGrades() {
   const { submitGrades } = useData()
@@ -150,7 +141,7 @@ export default function EnterGrades() {
                       total >= 50 ? 'bg-brand-100 text-brand-800' :
                       total >= 40 ? 'bg-amber-100 text-amber-700' :
                       'bg-red-100 text-red-700'
-                    }`}>{getGrade(total)}</span>
+                    }`}>{gradeFor(total)}</span>
                   </td>
                 </tr>
               )

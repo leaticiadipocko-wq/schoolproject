@@ -4,6 +4,7 @@ import {
   MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
   MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
+import { gradeFor } from '@/lib/grades'
 
 /**
  * Global persisted application store.
@@ -20,7 +21,7 @@ const initialState = {
   attendance: MOCK_ATTENDANCE,
   attendanceLog: [],
   results: MOCK_RESULTS,
-  enrolledCourses: ['CS501', 'CS503', 'CS505', 'CS507', 'CS509', 'CS511'],
+  enrolledCourses: MOCK_COURSES.filter((c) => ['CS501', 'CS503', 'CS505', 'CS507', 'CS509', 'CS511'].includes(c.code)),
   timetable: MOCK_TIMETABLE,
   users: MOCK_USERS.map(({ password, ...u }) => u),
   notifications: [
@@ -176,16 +177,17 @@ export function DataProvider({ children }) {
 
   // ---- Courses / Enrollment ----
   const enrollCourse = useCallback((code) => {
-    setStore((s) => ({
-      ...s,
-      enrolledCourses: s.enrolledCourses.includes(code) ? s.enrolledCourses : [...s.enrolledCourses, code],
-    }))
+    setStore((s) => {
+      if (s.enrolledCourses.some((c) => c.code === code)) return s
+      const course = MOCK_COURSES.find((c) => c.code === code)
+      return course ? { ...s, enrolledCourses: [...s.enrolledCourses, course] } : s
+    })
   }, [])
 
   const unenrollCourse = useCallback((code) => {
     setStore((s) => ({
       ...s,
-      enrolledCourses: s.enrolledCourses.filter((c) => c !== code),
+      enrolledCourses: s.enrolledCourses.filter((c) => c.code !== code),
     }))
   }, [])
 
@@ -260,8 +262,7 @@ export function DataProvider({ children }) {
     await new Promise((r) => setTimeout(r, 1800))
 
     // Simulate 95% success rate (always success in demo for predictability)
-    const ok = true
-    if (!ok) throw new Error('Payment provider declined')
+    if (Math.random() > 0.95) throw new Error('Payment provider declined')
 
     const ref = reference || `${method.toUpperCase()}-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
     const date = new Date().toISOString()
@@ -375,6 +376,18 @@ export function DataProvider({ children }) {
     return { token, expiresAt }
   }, [])
 
+  const confirmPasswordReset = useCallback((token, email, newPassword) => {
+    const resets = store.passwordResets || []
+    const found = resets.find((r) => r.token === token && r.email.toLowerCase() === email.toLowerCase() && !r.used)
+    if (!found) throw new Error('Invalid or expired reset code')
+    if (new Date(found.expiresAt) < new Date()) throw new Error('Reset code has expired')
+    setStore((s) => ({
+      ...s,
+      passwordResets: s.passwordResets.map((r) => r.token === token ? { ...r, used: true } : r),
+      passwordOverrides: { ...(s.passwordOverrides || {}), [email.toLowerCase()]: newPassword },
+    }))
+  }, [store.passwordResets])
+
   // ---- Reset ----
   const resetStore = useCallback(() => {
     localStorage.removeItem(STORE_KEY)
@@ -391,7 +404,7 @@ export function DataProvider({ children }) {
     logAction,
     createAssignment, submitAssignment, gradeSubmission,
     postDiscussion, replyToDiscussion,
-    requestPasswordReset,
+    requestPasswordReset, confirmPasswordReset,
     enrollCourse, unenrollCourse,
     addUser, updateUser, deleteUser,
     markNotificationRead, markAllNotificationsRead,
@@ -410,12 +423,4 @@ export const useData = () => {
   return ctx
 }
 
-function gradeFor(total) {
-  if (total >= 80) return 'A'
-  if (total >= 70) return 'B+'
-  if (total >= 60) return 'B'
-  if (total >= 55) return 'C+'
-  if (total >= 50) return 'C'
-  if (total >= 40) return 'D'
-  return 'F'
-}
+
