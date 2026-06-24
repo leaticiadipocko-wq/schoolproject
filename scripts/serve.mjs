@@ -43,7 +43,9 @@ function serveFile(res, fp, attachment = false) {
 }
 
 function downloadsPage() {
-  const files = fs.existsSync(DELIVERABLES) ? fs.readdirSync(DELIVERABLES).sort() : []
+  const files = (fs.existsSync(DELIVERABLES) ? fs.readdirSync(DELIVERABLES) : [])
+    .filter((f) => fs.statSync(path.join(DELIVERABLES, f)).isFile())
+    .sort()
   const list = files.map((f) => {
     const stat = fs.statSync(path.join(DELIVERABLES, f))
     const size = (stat.size / 1024 / 1024).toFixed(2)
@@ -77,7 +79,13 @@ function downloadsPage() {
   </div>
 
   <div class="card">
-    <h2>📁 Download files</h2>
+    <h2>⬇️ Get everything in one file</h2>
+    <p>The complete package — report, slides, speech notes, all markdown docs, every diagram, and the source &amp; production builds — bundled into a single zip.</p>
+    <a class="btn" href="/downloads/SIARM-Complete-Package.zip" download>Download Complete Package (.zip) →</a>
+  </div>
+
+  <div class="card">
+    <h2>📁 Or download files individually</h2>
     <ul>${list}</ul>
   </div>
 </body></html>`

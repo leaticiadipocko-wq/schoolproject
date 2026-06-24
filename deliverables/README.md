@@ -8,6 +8,7 @@ This folder contains everything you need for your defense.
 
 | File | Purpose | Open with |
 |---|---|---|
+| `SIARM-Complete-Package.zip` | **Everything in one download** — report, slides, speech notes, all docs, every diagram, and the source & build zips. | Any zip tool |
 | `SIARM-Report.docx` | Full academic report — cover, abstract, 8 chapters, references, appendices with diagrams. | Microsoft Word, Google Docs, LibreOffice |
 | `SIARM-Defense.pptx` | 22-slide defense presentation with IUGET branding and embedded diagrams. | PowerPoint, Google Slides, Keynote |
 | `Defense-Speech-Notes.md` | Speaker notes for every slide + anticipated Q&A with model answers. | Any text editor or Markdown viewer |
