@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// SIARM — Cloud Firestore security rules.
+//
+// These rules enforce role-based access control on the SERVER side, so that the
+// client-side ProtectedRoute guard cannot be bypassed by a crafted request.
+// They take effect when the app is switched from DEMO_MODE to a live Firebase
+// backend (set VITE_FIREBASE_* and VITE_DEMO_MODE=false).
+//
+// Model: a user's role is stored on their own users/{uid} document. Helper
+// functions read that role to authorise reads and writes.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function myRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    function hasRole(required) {
+      // Hierarchy: admin(4) > staff(3) > lecturer(2) > student(1)
+      let levels = { 'student': 1, 'lecturer': 2, 'staff': 3, 'admin': 4 };
+      return isSignedIn() && levels[myRole()] >= levels[required];
+    }
+
+    // Users: a user can read/update their own profile; staff and admin manage all.
+    match /users/{uid} {
+      allow read:   if isSignedIn() && (request.auth.uid == uid || hasRole('staff'));
+      allow create: if hasRole('staff');
+      allow update: if request.auth.uid == uid || hasRole('staff');
+      allow delete: if hasRole('admin');
+    }
+
+    // Attendance & results: students read their own; lecturers and above write.
+    match /attendance/{id} {
+      allow read:  if isSignedIn() && (resource.data.studentId == request.auth.uid || hasRole('lecturer'));
+      allow write: if hasRole('lecturer');
+    }
+    match /results/{id} {
+      allow read:  if isSignedIn() && (resource.data.studentId == request.auth.uid || hasRole('lecturer'));
+      allow write: if hasRole('lecturer');
+    }
+
+    // Fees & payments: the owning student reads; staff and admin manage.
+    match /fees/{id} {
+      allow read:  if isSignedIn() && (resource.data.studentId == request.auth.uid || hasRole('staff'));
+      allow write: if hasRole('staff');
+    }
+    match /payments/{id} {
+      allow read:   if isSignedIn() && (resource.data.studentId == request.auth.uid || hasRole('staff'));
+      allow create: if isSignedIn();          // a student/parent may record their own payment
+      allow update, delete: if hasRole('staff');
+    }
+
+    // Enrolments created by staff/admin (or the public parent flow via a server function).
+    match /enrolments/{id} {
+      allow read:  if hasRole('staff');
+      allow write: if hasRole('staff');
+    }
+
+    // Courses & timetable: everyone signed-in reads; staff/admin maintain.
+    match /courses/{id} {
+      allow read:  if isSignedIn();
+      allow write: if hasRole('staff');
+    }
+    match /timetable/{id} {
+      allow read:  if isSignedIn();
+      allow write: if hasRole('staff');
+    }
+
+    // Announcements: everyone signed-in reads; staff/admin publish.
+    match /announcements/{id} {
+      allow read:  if isSignedIn();
+      allow write: if hasRole('staff');
+    }
+
+    // Deny everything not explicitly matched above.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

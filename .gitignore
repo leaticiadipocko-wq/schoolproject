@@ -30,3 +30,6 @@ npm-debug.log*
 # Keep deliverables tracked but ignore log files
 *.log
 /tmp/logs/
+
+# Runtime shared store (server-side)
+/data/

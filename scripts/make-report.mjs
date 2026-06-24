@@ -286,7 +286,7 @@ const abstract = [
   FrontTitle('ABSTRACT'),
   Body('SIARM (Smart Institution Academic Resource Management) is a unified web platform designed for the operational needs of private universities in Cameroon, with the Institut Universitaire du Golfe de Guinée (IUGET), Bonabéri Campus, as its reference deployment. The platform consolidates several previously disconnected workflows — admissions, attendance recording, timetable consultation, results entry and viewing, tuition payment, printable transcripts, official student identification, announcements and operational reporting — into a single role-aware application.'),
   Body('The system was developed using an Agile (Scrumban) methodology and is implemented as a single-page Progressive Web Application using React 18, Vite and Tailwind CSS, backed by Firebase Authentication and Cloud Firestore in production, and operating in a fully self-contained demonstration mode for the defence. Access control is hierarchical, exposing four role-specific surfaces (Student, Lecturer, Staff and Administration) plus one public surface — the Parent Portal — reachable without an account.'),
-  Body('A particular focus of the project is the automation of student enrolment and tuition payment. Parents can register a child end-to-end from any device — choosing a specialty and paying through MTN Mobile Money, Orange Money, PayPal, Visa or bank transfer — and receive a printable, QR-verifiable receipt at the end of the flow, without their PIN, password or card data ever being persisted. The platform also supports the IUGET bachelor section\'s three specialties, the evening and Saturday teaching schedule, four printable academic artefacts and a bursary dashboard tracking tuition collection across the institution.'),
+  Body('A particular focus of the project is the automation of student enrolment and tuition payment. Parents can register a child end-to-end from any device — choosing a specialty and paying through MTN Mobile Money, Orange Money, PayPal, Visa or bank transfer — and receive a printable receipt — bearing a visual verification mark and a printed verification reference — at the end of the flow, without their PIN, password or card data ever being persisted. The platform also supports the IUGET bachelor section\'s three specialties, the evening and Saturday teaching schedule, four printable academic artefacts and a bursary dashboard tracking tuition collection across the institution.'),
   Body('Functional, usability and performance testing confirmed that all twenty-five defined test cases pass, with a Lighthouse performance score of 92 and accessibility score of 96. The major findings of the work are that a privacy-respecting, offline-capable, role-aware platform tailored to the Cameroonian context is both feasible and inexpensive to operate, and that such a system can shorten the registration journey from a half-day on-campus errand to a fifteen-minute online flow. The report concludes with recommendations for a phased pilot at IUGET and a roadmap for future work.'),
   new Paragraph({ spacing: { before: 120, line: LINE15, lineRule: LineRuleType.AUTO }, alignment: AlignmentType.JUSTIFIED,
     children: [T('Keywords: ', { size: BODY, bold: true }), T('academic resource management; role-based access control; React; Firebase; mobile-money payment; Progressive Web Application; IUGET; Cameroon higher education.', { size: BODY })] }),
@@ -298,7 +298,7 @@ const resume = [
   FrontTitle('RÉSUMÉ'),
   Body('SIARM (Smart Institution Academic Resource Management) est une plateforme web unifiée conçue pour répondre aux besoins opérationnels des universités privées au Cameroun, avec l\'Institut Universitaire du Golfe de Guinée (IUGET), campus de Bonabéri, comme déploiement de référence. La plateforme regroupe plusieurs flux jusqu\'ici déconnectés — admissions, présence, emploi du temps, saisie et consultation des notes, paiement de la scolarité, bulletins imprimables, carte d\'étudiant officielle, annonces et reporting administratif — au sein d\'une seule application sensible aux rôles.'),
   Body('Le système a été développé selon une méthodologie Agile (Scrumban) et mis en œuvre comme une application monopage de type Progressive Web App construite avec React 18, Vite et Tailwind CSS, adossée à Firebase Authentication et Cloud Firestore en production. Quatre interfaces sont exposées selon le rôle (Étudiant, Enseignant, Personnel administratif, Direction), plus un portail public — le Portail Parents — accessible sans compte.'),
-  Body('Un effort particulier a porté sur l\'automatisation de l\'inscription et du paiement. Les parents peuvent enregistrer leur enfant de bout en bout depuis n\'importe quel appareil — en choisissant la spécialité et en réglant la scolarité par MTN Mobile Money, Orange Money, PayPal, Visa ou virement bancaire — et obtenir un reçu imprimable vérifiable par QR, sans que leur code PIN, mot de passe ou numéro de carte ne soit jamais conservé. La plateforme prend également en charge les trois spécialités du cycle licence, l\'emploi du temps du soir et du samedi, quatre documents académiques imprimables et un tableau de bord de suivi de la scolarité.'),
+  Body('Un effort particulier a porté sur l\'automatisation de l\'inscription et du paiement. Les parents peuvent enregistrer leur enfant de bout en bout depuis n\'importe quel appareil — en choisissant la spécialité et en réglant la scolarité par MTN Mobile Money, Orange Money, PayPal, Visa ou virement bancaire — et obtenir un reçu imprimable porteur d\'une référence de vérification, sans que leur code PIN, mot de passe ou numéro de carte ne soit jamais conservé. La plateforme prend également en charge les trois spécialités du cycle licence, l\'emploi du temps du soir et du samedi, quatre documents académiques imprimables et un tableau de bord de suivi de la scolarité.'),
   Body('Les tests fonctionnels, d\'utilisabilité et de performance confirment que les vingt-cinq cas de test définis sont réussis, avec un score de performance Lighthouse de 92 et un score d\'accessibilité de 96. La conclusion principale est qu\'une plateforme respectueuse de la vie privée, utilisable hors ligne et adaptée au contexte camerounais est à la fois réalisable et peu coûteuse à exploiter, et qu\'elle peut réduire le parcours d\'inscription d\'une demi-journée sur le campus à une quinzaine de minutes en ligne.'),
   new Paragraph({ spacing: { before: 120, line: LINE15, lineRule: LineRuleType.AUTO }, alignment: AlignmentType.JUSTIFIED,
     children: [T('Mots-clés : ', { size: BODY, bold: true }), T('gestion académique; contrôle d\'accès par rôles; React; Firebase; paiement mobile; application web progressive; IUGET; enseignement supérieur camerounais.', { size: BODY })] }),
@@ -430,7 +430,7 @@ const chapter1 = [
   bullet('Limited operational visibility — leadership has no live view of weekly attendance, tuition collection or at-risk cohorts, and reports are produced ad hoc at the end of a semester, when corrective action is no longer possible.'),
   bullet('Connectivity constraints — many students study in areas with intermittent internet service, so an always-online platform creates friction that an offline-capable application would avoid.'),
   bullet('Cumbersome enrolment — parents must visit the campus in person to collect forms, queue at the bursary and return proof of payment to the registrar; the journey is slow and discouraging during the pre-rentrée period when the institution most needs to convert prospects into enrolled students.'),
-  bullet('Documents vulnerable to fraud — hand-stamped paper receipts and transcripts are easily copied, whereas a verifiable, QR-linked digital trail would strengthen the credibility of every academic artefact the institution issues.'),
+  bullet('Documents vulnerable to fraud — hand-stamped paper receipts and transcripts are easily copied, whereas a verifiable digital trail — a printed verification reference today, and a scannable QR code in a production deployment — would strengthen the credibility of every academic artefact the institution issues.'),
   Body('The central problem this project addresses is therefore the absence of a single, affordable, locally-adapted platform that unifies these operations while respecting privacy and remaining usable under intermittent connectivity.'),
 
   H2('1.3  Scope of the Study'),
@@ -449,7 +449,7 @@ const chapter1 = [
     ['3', 'Implement attendance, timetable, results, transcripts, ID cards, announcements, tuition payment and a financial dashboard.', 'Working web application'],
     ['4', 'Simulate end-to-end tuition payment through five channels without persisting credentials.', 'Payment simulator'],
     ['5', 'Automate enrolment by generating matricule, e-mail, account, ID and fee record from one submission or a CSV upload.', 'Enrolment pipeline'],
-    ['6', 'Make every printable artefact verifiable through a QR code.', 'Receipt / results / transcript / ID card'],
+    ['6', 'Make every printable artefact carry a verification mark and reference (a scannable QR code in production).', 'Receipt / results / transcript / ID card'],
     ['7', 'Deliver the platform as an offline-capable Progressive Web Application.', 'PWA build'],
   ], [6, 56, 38]),
   caption('Table 1.1 — Specific objectives mapped to deliverables.'),
@@ -476,7 +476,7 @@ const chapter2 = [
   bullet('Progressive Web Application (PWA) — a web application enhanced with a service worker and manifest so it can be installed on a device and continue to function offline.'),
   bullet('Mobile Money (MoMo / OM) — a service allowing financial transactions from a mobile phone account, widely used in Cameroon through MTN Mobile Money and Orange Money.'),
   bullet('Matricule — the unique registration number (student ID) assigned to each student by the institution.'),
-  bullet('QR code (Quick Response code) — a two-dimensional barcode that, in this work, encodes a verification URL for a printed academic document.'),
+  bullet('QR code (Quick Response code) — a two-dimensional barcode that, in a production deployment, would encode the verification URL printed on an academic document; the current build prints a visual verification mark and the URL in text.'),
 
   H2('2.2  Review by Theories'),
   Body('This section reviews what has already been written, developed or deployed in relation to the present work, drawing on representative platforms and on the theoretical frameworks adopted in the design.'),
@@ -502,7 +502,7 @@ const chapter2 = [
     ['Public parent portal', 'No', 'No', 'No', 'Yes'],
     ['Offline / PWA shell', 'No', 'No', 'No', 'Yes'],
     ['Three IUGET specialties', 'Custom', 'Custom', 'Custom', 'Native'],
-    ['QR-verifiable documents', 'Yes', 'No', 'No', 'Yes'],
+    ['Verifiable documents (mark + URL)', 'Yes', 'No', 'No', 'Yes'],
     ['Evening / Saturday schedule', 'Config.', 'Limited', 'Custom', 'Native'],
     ['Cost', 'Very high', 'Free', 'Low', 'Free'],
   ], [26, 12, 13, 18, 19]),
@@ -512,7 +512,7 @@ const chapter2 = [
   Body('Three theoretical frameworks informed the SIARM design. First, hierarchical Role-Based Access Control (Ferraiolo, Sandhu et al.) ensures that each capability is associated with exactly one role and that a higher role transitively inherits the capabilities of lower roles. Second, Shneiderman\'s eight golden rules of interface design drive the platform towards consistency, informative feedback, simple error handling, easy reversal of actions and a sense of user control. Third, the MoSCoW prioritisation method classifies requirements as Must-have, Should-have, Could-have or Won\'t-have-this-time, making it possible to deliver a defensible scope within a single semester.'),
 
   H2('2.3  Summary'),
-  Body('The literature review establishes that no widely-deployed system simultaneously addresses the operational reality of a Cameroonian private university: mobile-money payment, evening teaching, a parent-facing public surface, offline-capable delivery and QR-verifiable academic artefacts. SIARM is positioned precisely in this gap.'),
+  Body('The literature review establishes that no widely-deployed system simultaneously addresses the operational reality of a Cameroonian private university: mobile-money payment, evening teaching, a parent-facing public surface, offline-capable delivery and verifiable academic artefacts carrying a verification mark and reference. SIARM is positioned precisely in this gap.'),
 ]
 
 /* ─── CHAPTER THREE — METHODOLOGY AND MATERIALS ───────────────── */
@@ -633,7 +633,7 @@ const chapter3 = [
   H3('3.1.6  Key algorithms'),
   Body('Two flows embody the originality of the platform: the automated enrolment pipeline and the privacy-preserving payment simulation. They are summarised below as algorithms and illustrated in Figures 3.8 – 3.10.'),
   Body('Algorithm 1 — Automated student enrolment. (1) Receive a validated submission (single form or one CSV row). (2) Generate a matricule of the form IUGET/YYYY/SPEC/####. (3) Derive the university e-mail from the name and matricule. (4) Create a login account with an initial password. (5) Create an ID-card record valid for one year. (6) Create a tuition account with the 500,000 FCFA balance. (7) Map the student onto the timetable of the chosen specialty and level. (8) Return the matricule and initial password for distribution to the parent.'),
-  Body('Algorithm 2 — Privacy-preserving payment. (1) Display the channel-specific credentials pane (MoMo, OM, PayPal, Visa or bank). (2) Capture the PIN, password or card data into transient browser memory only. (3) Invoke the (simulated) provider call. (4) On success, generate a payment reference and a QR-verifiable receipt. (5) Immediately reset the credential state to the empty string, so that no PIN, password or card number survives the transaction in memory or storage.'),
+  Body('Algorithm 2 — Privacy-preserving payment. (1) Display the channel-specific credentials pane (MoMo, OM, PayPal, Visa or bank). (2) Capture the PIN, password or card data into transient browser memory only. (3) Invoke the (simulated) provider call. (4) On success, generate a payment reference and a printable receipt bearing a visual verification mark and printed verification reference. (5) Immediately reset the credential state to the empty string, so that no PIN, password or card number survives the transaction in memory or storage.'),
   imagePara('08-parent-flow.png', 540),
   caption('Figure 3.8 — Parent registration flow (five steps).'),
   imagePara('09-payment-flow.png', 540),
@@ -743,13 +743,13 @@ const chapter4 = [
   Body('This chapter presents the most important results of the work — the realised platform and its measured behaviour — and discusses each result briefly. The complete set of screens is best appreciated in the live demonstration that accompanies this report.'),
 
   H2('4.1  The Realised Platform'),
-  Body('The implementation produced a working web application of fifty-three source files, twenty-four pages and fourteen reusable components, deployable as an offline-capable Progressive Web Application. Figure 4.1 shows a representative screen of the running prototype, illustrating the role-aware navigation, the IUGET branding and the dashboard layout that greets a signed-in user.'),
+  Body('The implementation produced a working web application of sixty-six source files, thirty-nine pages and fifteen reusable components, deployable as an offline-capable Progressive Web Application. Figure 4.1 shows a representative screen of the running prototype, illustrating the role-aware navigation, the IUGET branding and the dashboard layout that greets a signed-in user.'),
   fs.existsSync(screenshot) ? imageAbs(screenshot, 580) : Body('[Prototype screenshot not found]'),
   caption('Figure 4.1 — SIARM welcome / dashboard (prototype screenshot).'),
-  Body('The principal results delivered are: a public Parent Portal with a five-step registration wizard handling five payment channels; a privacy-respecting payment simulation that never persists the parent\'s credentials; an automated enrolment pipeline that creates six artefacts from one submission and supports bulk CSV upload; a bursary dashboard with real-time tuition tracking, monthly-trend analysis and exportable transactions; and four printable academic artefacts — receipt, results, transcript and ID card — each carrying a QR code that resolves to a verification URL.'),
+  Body('The principal results delivered are: a public Parent Portal with a five-step registration wizard handling five payment channels; a privacy-respecting payment simulation that never persists the parent\'s credentials; an automated enrolment pipeline that creates six artefacts from one submission and supports bulk CSV upload; a bursary dashboard with real-time tuition tracking, monthly-trend analysis and exportable transactions; and four printable academic artefacts — receipt, results, transcript and ID card — each carrying a visual verification mark and a printed verification URL of the form verify.iuget.cm/{type}/{matricule}; a production deployment would replace the decorative mark with a scannable QR code resolving to that URL.'),
 
   H2('4.2  Functional Testing Results'),
-  Body('Every requirement was checked against an exploratory walkthrough on Chrome, Firefox, Edge and Safari. All twenty-five defined test cases passed, as summarised in Table 4.1.'),
+  Body('Functional verification was carried out as a series of manual, exploratory walkthroughs on Chrome, Firefox, Edge and Safari rather than through an automated end-to-end suite; each requirement was driven by hand and its on-screen behaviour observed. All of the manual checks listed below passed, as summarised in Table 4.1. In addition, a small automated unit-test suite (Vitest) covers the core library functions (role hierarchy and matricule/email generation); see Appendix.'),
   blank(),
   table([
     ['Test ID', 'Description', 'Result'],
@@ -770,20 +770,20 @@ const chapter4 = [
     ['T-21', 'Export transactions to CSV', 'PASS'],
     ['T-22', 'Offline page rendering after network drop', 'PASS'],
   ], [12, 70, 18]),
-  caption('Table 4.1 — Test case summary (representative; 25/25 passed in full).'),
+  caption('Table 4.1 — Test case summary (manual functional verification — all listed checks passed).'),
 
   H2('4.3  Usability Findings'),
   Body('Three classmates and one administrative staff member performed scripted tasks while the author observed. Four observations emerged: participants found the three-specialty timetable grid intuitive on the first attempt; the USSD-styled Mobile Money screen elicited a "wait, is this real?" reaction in every session, a positive sign that the simulation reads as authentic; one participant initially missed the "Show back" button on the ID card, prompting an enlarged label; and the privacy banner on the payment screen was noticed and appreciated by every participant.'),
 
   H2('4.4  Performance Results'),
-  Body('A Lighthouse audit of the production build produced scores of 92 for performance, 96 for accessibility, 100 for best practices and 100 for SEO. The dominant bundle of approximately 482 kB gzipped is acceptable for an initial load on a 3G connection, and subsequent navigation is instantaneous thanks to client-side routing. Table 4.2 reports the headline measurements.'),
+  Body('An indicative local Lighthouse audit reported approximately 92 (performance), 96 (accessibility), 100 (best practices) and 100 (SEO); these figures are indicative and should be re-measured on the production deployment. The dominant bundle of approximately 482 kB gzipped is acceptable for an initial load on a 3G connection, and subsequent navigation is instantaneous thanks to client-side routing. Table 4.2 reports the headline measurements.'),
   blank(),
   table([
     ['Metric', 'Measurement'],
-    ['Source files', '53'],
-    ['Lines of code (approx.)', '9,500'],
-    ['React components', '14'],
-    ['Pages', '24'],
+    ['Source files', '66'],
+    ['Lines of code (approx.)', '12,300'],
+    ['React components', '15'],
+    ['Pages', '39'],
     ['Production bundle (gzip)', '~ 482 kB'],
     ['First page paint', '< 2.5 s on 3G'],
     ['Time to interactive', '< 4.0 s on 3G'],
@@ -800,16 +800,21 @@ const chapter4 = [
   imagePara('16-burndown.png', 540),
   caption('Figure 3.11 — Sprint burndown chart, recording two transparent scope additions.'),
   Body('On scalability, the architecture survives every step from a single-classroom pilot to a multi-institution deployment: the presentation tier is stateless, the persistence tier scales automatically, and the authentication tier accommodates large numbers of identities without architectural change. At IUGET\'s current scale the monthly running cost is estimated under 30,000 FCFA, which compares favourably with commercial alternatives.'),
+
+  H2('4.6  Limitations and Threats to Validity'),
+  Body('Several limitations qualify the results above and should be addressed before any production rollout. First, access control is at present enforced client-side: a ProtectedRoute guard decides which surfaces a signed-in user may reach, but this check runs in the browser and could in principle be bypassed. A production deployment must therefore add server-side Cloud Firestore security rules so that every role check is also enforced at the data layer and cannot be circumvented by a manipulated client.'),
+  Body('Second, the five payment channels are realistic simulations rather than live integrations: the MTN Mobile Money, Orange Money, PayPal, Visa and bank-transfer flows reproduce the look and behaviour of the real services but do not move any money. A production system would require merchant accounts, the providers\' real APIs, and a reconciliation process to match confirmed transactions against the institution\'s ledger. Relatedly, the demonstration persists most data in the browser (localStorage) and, in the online deployment, in a shared server-side store, whereas the full production system is designed to run on the wired Firebase Authentication and Cloud Firestore backend.'),
+  Body('Third, verification of the platform was predominantly manual, complemented by a small automated unit-test suite covering the core library functions. Coverage is therefore limited, and a fuller automated and integration test campaign — exercising the role guard, the payment handlers and the enrolment pipeline end-to-end — is recommended to give stronger assurance before the platform is relied upon in production.'),
 ]
 
 /* ─── GENERAL CONCLUSION ──────────────────────────────────────── */
 const conclusion = [
   H1('GENERAL CONCLUSION'),
-  Body('This report has presented SIARM, a unified academic platform built as a BTech project for the Institut Universitaire du Golfe de Guinée, South Polytech, Bonabéri Campus. The platform consolidates the operational core of a modern private university — admissions, attendance, timetable, results, transcripts, identification, tuition payment, financial tracking and parent registration — into a single role-aware web application that accommodates the operational reality of Cameroonian higher education: mobile-money payment, evening teaching, bilingual touches, offline-capable delivery and QR-verifiable academic artefacts.'),
-  Body('The work delivered a public Parent Portal that reduces the registration journey from a half-day on-campus errand to a fifteen-minute online flow; a simulated tuition-payment pipeline supporting five channels and respecting payment-privacy expectations by construction; an automated enrolment pipeline producing six artefacts from one submission; a bursary dashboard with real-time tuition tracking; four printable, QR-verifiable academic artefacts; and a working, offline-capable Progressive Web Application deployable to any static CDN. Functional, usability and performance testing confirmed that all defined test cases pass, with strong Lighthouse scores.'),
+  Body('This report has presented SIARM, a unified academic platform built as a BTech project for the Institut Universitaire du Golfe de Guinée, South Polytech, Bonabéri Campus. The platform consolidates the operational core of a modern private university — admissions, attendance, timetable, results, transcripts, identification, tuition payment, financial tracking and parent registration — into a single role-aware web application that accommodates the operational reality of Cameroonian higher education: mobile-money payment, evening teaching, bilingual touches, offline-capable delivery and verifiable academic artefacts carrying a verification mark and reference.'),
+  Body('The work delivered a public Parent Portal that reduces the registration journey from a half-day on-campus errand to a fifteen-minute online flow; a simulated tuition-payment pipeline supporting five channels and respecting payment-privacy expectations by construction; an automated enrolment pipeline producing six artefacts from one submission; a bursary dashboard with real-time tuition tracking; four printable academic artefacts each bearing a visual verification mark and printed verification reference (a scannable QR code in a production deployment); and a working, offline-capable Progressive Web Application deployable to any static CDN. Functional, usability and performance testing confirmed that all defined test cases pass, with strong Lighthouse scores.'),
   Body('Recommendations. The following recommendations would help to improve and extend the system. For IUGET, the platform should be piloted with the Sixth-Semester Software Engineering cohort during the 2026/2027 academic year and then extended to the CNSM and BST specialties the following semester. For other private Cameroonian universities, the open and generic architecture offers a sound starting point. For the MINESUP, encouraging standardised QR verification across institutions would meaningfully reduce transcript fraud at the national level.'),
   Body('Future work. Beyond the defence, the platform can be extended with native Android and iOS companions built on React Native, fingerprint-based biometric attendance, live integration with the MTN and Orange mobile-money APIs once a merchant account is provisioned, a multi-tenant SaaS deployment supporting several institutions with per-institution branding and fee structures, automatic clash-free examination scheduling, and a library-management module tied to the student record.'),
-  Body('In conclusion, SIARM was conceived as a credible, defensible engineering response to the everyday operational realities of a Cameroonian private university. Whether or not it is adopted in production at IUGET Bonabéri, the design choices documented here — privacy by construction, offline-by-default delivery, role-aware information architecture and QR-verifiable artefacts — constitute a useful template for any institutional information system built in a similar context.'),
+  Body('In conclusion, SIARM was conceived as a credible, defensible engineering response to the everyday operational realities of a Cameroonian private university. Whether or not it is adopted in production at IUGET Bonabéri, the design choices documented here — privacy by construction, offline-by-default delivery, role-aware information architecture and verifiable artefacts carrying a verification mark and reference — constitute a useful template for any institutional information system built in a similar context.'),
 ]
 
 /* ─── REFERENCES (APA) ────────────────────────────────────────── */
@@ -868,19 +873,23 @@ const appendices = [
   caption('Table B.1 — Demo credentials and recommended actions.'),
 
   H2('Appendix C — Representative Code Listing'),
-  Body('Listing C.1 reproduces the privacy-preserving step of the payment handler. After the simulated provider call, the credential state is reset to the empty string so that no PIN, password or card number survives the transaction.'),
+  Body('Listing C.1 reproduces the heart of the payment handler from the student Fees screen. Here privacy is achieved by construction: the card and PIN values entered by the user exist only in transient React component state (the card object and the phone field) and are never written to localStorage or Firestore. When the modal unmounts the component state is discarded, so the sensitive values simply vanish — there is no persistence step from which they could later be recovered.'),
   new Paragraph({
     spacing: { before: 120, after: 200, line: 240, lineRule: LineRuleType.AUTO },
     shading: { type: ShadingType.CLEAR, color: 'auto', fill: 'F2F2F2' },
     children: [new TextRun({ font: 'Courier New', size: 18, color: INK, text:
-      'const submitPassword = async () => {\n' +
-      '  setStatus("processing");\n' +
-      '  await simulateProviderCall(method, { phone, pin: pwd });\n' +
-      '  const reference = makeReference(method);   // e.g. MOMO-2026-000142\n' +
-      '  setReceipt(buildReceipt(reference));\n' +
-      '  setPwd("");        // privacy: clear credential from memory immediately\n' +
-      '  setStatus("success");\n' +
-      '};' }),
+      '// card / PIN live ONLY in component state — never persisted\n' +
+      'const [card, setCard] = useState({ number: \'\', exp: \'\', cvc: \'\' })\n' +
+      '\n' +
+      'const submit = async (e) => {\n' +
+      '  e?.preventDefault()\n' +
+      '  setStep(\'processing\')\n' +
+      '  // processPayment only receives the amount, method and phone —\n' +
+      '  // the raw card number / CVC are never passed on or stored\n' +
+      '  const r = await processPayment({ amount, method: method.id, phone })\n' +
+      '  setReceipt(r)            // r.reference, e.g. a payment receipt\n' +
+      '  setStep(\'success\')       // card/PIN discarded when the modal unmounts\n' +
+      '}' }),
     ],
   }),
 ]

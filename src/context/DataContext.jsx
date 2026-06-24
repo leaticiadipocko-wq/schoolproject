@@ -1,9 +1,10 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react'
 import {
   MOCK_ANNOUNCEMENTS, MOCK_ATTENDANCE, MOCK_RESULTS,
   MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
   MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
+import { loadCloud, saveCloud } from '@/lib/cloudStore'
 
 /**
  * Global persisted application store.
@@ -93,9 +94,27 @@ function load() {
 
 export function DataProvider({ children }) {
   const [store, setStore] = useState(() => load())
+  // Becomes true once we've attempted to load the shared server store, after
+  // which local changes are pushed back to the server. Guarding on this avoids
+  // overwriting good server data with local defaults during the first paint.
+  const cloudReady = useRef(false)
 
+  // On mount: hydrate from the shared cloud store (if the API is reachable),
+  // so every device that opens the app sees the same live data.
+  useEffect(() => {
+    let alive = true
+    loadCloud().then((remote) => {
+      if (alive && remote) setStore((s) => ({ ...initialState, ...remote }))
+      cloudReady.current = true
+    })
+    return () => { alive = false }
+  }, [])
+
+  // Persist every change locally (offline resilience) and, once hydrated,
+  // to the shared server store so other devices receive it.
   useEffect(() => {
     localStorage.setItem(STORE_KEY, JSON.stringify(store))
+    if (cloudReady.current) saveCloud(store)
   }, [store])
 
   // ---- Announcements ----

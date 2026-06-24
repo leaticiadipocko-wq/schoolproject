@@ -8,6 +8,13 @@ const ROOT = path.resolve(process.cwd())
 const DIST = path.join(ROOT, 'dist')
 const DELIVERABLES = path.join(ROOT, 'deliverables')
 
+// Shared application store: a single JSON document that every connected device
+// reads and writes through /api/store. This is what makes SIARM a real online
+// system (shared data across all devices) rather than per-browser localStorage.
+const DATA_DIR = path.join(ROOT, 'data')
+const STORE_FILE = path.join(DATA_DIR, 'store.json')
+const MAX_BODY = 8 * 1024 * 1024 // 8 MB cap on the store payload
+
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js':   'application/javascript',
@@ -94,6 +101,46 @@ function downloadsPage() {
 const server = http.createServer((req, res) => {
   try {
     let url = decodeURIComponent(req.url.split('?')[0])
+
+    // ── Shared application store API ───────────────────────────────
+    if (url === '/api/store') {
+      // CORS / preflight so the app works from any device/origin.
+      const cors = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, PUT, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      }
+      if (req.method === 'OPTIONS') return send(res, 204, '', cors)
+
+      if (req.method === 'GET') {
+        if (!fs.existsSync(STORE_FILE)) return send(res, 204, '', cors)
+        const body = fs.readFileSync(STORE_FILE)
+        return send(res, 200, body, { ...cors, 'Content-Type': 'application/json' })
+      }
+
+      if (req.method === 'PUT') {
+        let size = 0
+        const chunks = []
+        req.on('data', (c) => {
+          size += c.length
+          if (size > MAX_BODY) { req.destroy(); }
+          else chunks.push(c)
+        })
+        req.on('end', () => {
+          try {
+            const raw = Buffer.concat(chunks).toString('utf8')
+            JSON.parse(raw) // validate
+            fs.mkdirSync(DATA_DIR, { recursive: true })
+            fs.writeFileSync(STORE_FILE, raw)
+            send(res, 200, JSON.stringify({ ok: true }), { ...cors, 'Content-Type': 'application/json' })
+          } catch {
+            send(res, 400, JSON.stringify({ ok: false, error: 'invalid JSON' }), { ...cors, 'Content-Type': 'application/json' })
+          }
+        })
+        return
+      }
+      return send(res, 405, 'Method not allowed', cors)
+    }
 
     // Deliverables index page
     if (url === '/deliverables' || url === '/deliverables/') {

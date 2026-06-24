@@ -5,22 +5,13 @@ import {
   Wallet, Mail, Info, FileText, Loader2,
 } from 'lucide-react'
 import { SPECIALTIES, MOCK_FEE_STRUCTURE } from '@/lib/mockData'
+import { makeMatricule, makeEmail } from '@/lib/enrolment'
 
 // Automated student enrollment:
 //  - One-by-one form with auto-generated matricule (IUGET/YYYY/SPEC/NNNN)
 //  - Bulk CSV upload
 //  - For each new student we auto-create: account, ID card record, fee balance
 const YEAR = new Date().getFullYear()
-
-function makeMatricule(specialty, count) {
-  return `IUGET/${YEAR}/${specialty}/${String(140 + count).padStart(4, '0')}`
-}
-
-function makeEmail(name, matricule) {
-  const last = name.trim().split(/\s+/).pop().toLowerCase().replace(/[^a-z]/g, '')
-  const num = matricule.split('/').pop()
-  return `${last}.${num}@iuget.cm`
-}
 
 const SPEC_OPTIONS = Object.values(SPECIALTIES)
 const LEVEL_OPTIONS = [1, 2, 3]
