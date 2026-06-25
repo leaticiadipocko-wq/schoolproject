@@ -11,6 +11,7 @@
 // localStorage — so the app keeps working everywhere.
 
 const API = '/api/store'
+const POLL_INTERVAL = 5000 // 5 seconds
 
 // Fetch the shared store from the server. Returns the parsed object, or null
 // when there is nothing stored yet or the endpoint is unreachable.
@@ -41,5 +42,58 @@ export function saveCloud(store) {
     }, 600)
   } catch {
     /* ignore — falls back to localStorage */
+  }
+}
+
+// ─── Polling for cross-device sync ─────────────────────────
+// Polls the server for changes and calls onUpdate when new data arrives.
+// Returns a stop function. Polling pauses when the browser goes offline
+// and resumes when it comes back online.
+
+let pollTimer = null
+let lastHash = null
+
+function hashData(data) {
+  // Simple fast hash for change detection (not cryptographic)
+  const str = JSON.stringify(data)
+  let hash = 0
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash + str.charCodeAt(i)) | 0
+  }
+  return hash
+}
+
+export function startPolling(onUpdate) {
+  if (pollTimer) return stopPolling
+
+  const poll = async () => {
+    // Skip if browser is offline
+    if (typeof navigator !== 'undefined' && !navigator.onLine) return
+
+    const data = await loadCloud()
+    if (!data) return // unreachable or empty
+
+    const h = hashData(data)
+    if (lastHash !== null && h !== lastHash) {
+      onUpdate(data)
+    }
+    lastHash = h
+  }
+
+  // Initial poll after a short delay (let mount finish)
+  setTimeout(poll, 1000)
+  pollTimer = setInterval(poll, POLL_INTERVAL)
+
+  // Pause/resume on browser online/offline events
+  const handleOnline = () => poll()
+  window.addEventListener('online', handleOnline)
+
+  return function stopPolling() {
+    if (pollTimer) {
+      clearInterval(pollTimer)
+      pollTimer = null
+    }
+    lastHash = null
+    window.removeEventListener('online', handleOnline)
   }
 }

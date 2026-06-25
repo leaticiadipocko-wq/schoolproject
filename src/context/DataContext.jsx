@@ -4,7 +4,7 @@ import {
   MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
   MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
-import { loadCloud, saveCloud } from '@/lib/cloudStore'
+import { loadCloud, saveCloud, startPolling } from '@/lib/cloudStore'
 
 /**
  * Global persisted application store.
@@ -103,11 +103,24 @@ export function DataProvider({ children }) {
   // so every device that opens the app sees the same live data.
   useEffect(() => {
     let alive = true
+    let stopPoll = null
+
     loadCloud().then((remote) => {
       if (alive && remote) setStore((s) => ({ ...initialState, ...remote }))
       cloudReady.current = true
+
+      // Start polling for cross-device sync after initial load
+      if (alive) {
+        stopPoll = startPolling((remoteData) => {
+          setStore((s) => ({ ...s, ...remoteData }))
+        })
+      }
     })
-    return () => { alive = false }
+
+    return () => {
+      alive = false
+      if (stopPoll) stopPoll()
+    }
   }, [])
 
   // Persist every change locally (offline resilience) and, once hydrated,
