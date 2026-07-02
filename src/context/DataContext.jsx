@@ -85,7 +85,9 @@ function load() {
   try {
     const stored = localStorage.getItem(STORE_KEY)
     if (!stored) return initialState
-    return { ...initialState, ...JSON.parse(stored) }
+    // Always force the light (day) theme, even when restoring a store that
+    // may have persisted `theme: 'dark'` from an older session.
+    return { ...initialState, ...JSON.parse(stored), theme: 'light' }
   } catch {
     return initialState
   }
@@ -242,12 +244,15 @@ export function DataProvider({ children }) {
   }, [])
 
   // ---- Theme ----
+  // Dark theme has been removed from the application. The app is always in the
+  // light (day) theme, so toggleTheme is a no-op kept only for API compatibility.
   const toggleTheme = useCallback(() => {
-    setStore((s) => ({ ...s, theme: s.theme === 'dark' ? 'light' : 'dark' }))
+    setStore((s) => (s.theme === 'light' ? s : { ...s, theme: 'light' }))
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', store.theme === 'dark')
+    // Guarantee the `dark` class is never present on any page load.
+    document.documentElement.classList.remove('dark')
   }, [store.theme])
 
   // ---- Fees / Payments ----

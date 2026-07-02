@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
 import {
-  User as UserIcon, Camera, Mail, Phone, Lock, Languages, Moon, Sun, Save,
+  User as UserIcon, Camera, Mail, Phone, Lock, Languages, Save,
   ShieldCheck, Bell, CheckCircle2, AlertTriangle, PenLine, Trash2,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
@@ -13,7 +13,7 @@ import SignaturePad  from '@/components/SignaturePad'
 
 export default function Profile() {
   const { user } = useAuth()
-  const { theme, toggleTheme, photos = {}, signatures = {}, savePhoto, saveSignature } = useData()
+  const { photos = {}, signatures = {}, savePhoto, saveSignature } = useData()
   const { lang, setLang, t } = useLang()
 
   const [form, setForm] = useState({
@@ -133,22 +133,6 @@ export default function Profile() {
                 <button onClick={() => setLang('en')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${lang === 'en' ? 'bg-brand-700 text-white' : 'bg-ink-50 text-ink-600 hover:bg-ink-100'}`}>EN</button>
                 <button onClick={() => setLang('fr')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${lang === 'fr' ? 'bg-brand-700 text-white' : 'bg-ink-50 text-ink-600 hover:bg-ink-100'}`}>FR</button>
               </div>
-            </div>
-          </div>
-
-          {/* Theme */}
-          <div className="rounded-xl border border-ink-100 dark:border-ink-800 p-4">
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex items-start gap-3">
-                {theme === 'dark' ? <Moon size={20} className="text-brand-600 mt-0.5" /> : <Sun size={20} className="text-brand-600 mt-0.5" />}
-                <div>
-                  <div className="font-medium">{lang === 'en' ? 'Theme' : 'Thème'}</div>
-                  <div className="text-xs text-ink-500 mt-0.5">{theme === 'dark' ? t('common.theme.dark') : t('common.theme.light')}</div>
-                </div>
-              </div>
-              <button onClick={toggleTheme} className="btn-secondary text-xs">
-                {lang === 'en' ? 'Switch' : 'Changer'}
-              </button>
             </div>
           </div>
 

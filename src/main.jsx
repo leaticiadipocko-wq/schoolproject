@@ -7,7 +7,6 @@ import App from './App.jsx'
 import { AuthProvider } from './context/AuthContext.jsx'
 import { DataProvider } from './context/DataContext.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
-import { ThemeProvider } from './context/ThemeContext.jsx'
 import { CampusProvider } from './context/CampusContext.jsx'
 import { ExamBoardProvider } from './context/ExamBoardContext.jsx'
 import AIAssistant from './components/chatbot/AIAssistant.jsx'
@@ -31,11 +30,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <LanguageProvider>
-        <ThemeProvider>
-          <CampusProvider>
-            <AuthProvider>
-              <ExamBoardProvider>
-                <DataProvider>
+        <CampusProvider>
+          <AuthProvider>
+            <ExamBoardProvider>
+              <DataProvider>
                   <App />
                   <AIAssistant />
                   <CommandPalette />
@@ -52,7 +50,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               </ExamBoardProvider>
             </AuthProvider>
           </CampusProvider>
-        </ThemeProvider>
       </LanguageProvider>
     </BrowserRouter>
   </React.StrictMode>,

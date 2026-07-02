@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Menu, Bell, Search, LogOut, Settings, User as UserIcon, ChevronDown,
-  Moon, Sun, Check, Languages, HelpCircle,
+  Check, Languages, HelpCircle,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
@@ -12,7 +12,7 @@ import LangToggle from '@/components/LangToggle'
 
 export default function Navbar({ onMenu, title }) {
   const { user, logout } = useAuth()
-  const { notifications, markNotificationRead, markAllNotificationsRead, theme, toggleTheme } = useData()
+  const { notifications, markNotificationRead, markAllNotificationsRead } = useData()
   const { lang, toggle: toggleLang, t } = useLang()
   const navigate = useNavigate()
   const [profileOpen, setProfileOpen] = useState(false)
@@ -67,12 +67,6 @@ export default function Navbar({ onMenu, title }) {
 
         {/* Language toggle */}
         <LangToggle compact />
-
-
-        {/* Theme toggle */}
-        <button onClick={toggleTheme} className="p-2 rounded-xl hover:bg-ink-100 text-ink-600" title={t(theme === 'dark' ? 'common.theme.light' : 'common.theme.dark')}>
-          {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-        </button>
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
