@@ -217,6 +217,13 @@ export const TRANSLATIONS = {
     /* footer */
     'footer.copyright':      '© {year} SIARM · Bachelor project — IUGET Bonabéri',
     'footer.author':         'By James Murdza · Level 3 SWE',
+
+    /* chatbot */
+    'chatbot.title':         'SIARM AI Assistant',
+    'chatbot.subtitle':      'How can I help you?',
+    'chatbot.placeholder':   'Type your question...',
+    'chatbot.suggestions':   'Suggested questions:',
+    'chatbot.welcome':       'Hello! I\'m the SIARM AI Assistant. How can I help you today? I can assist with navigating the platform, understanding features, or answering questions about IUGET.',
   },
 
   fr: {
@@ -383,5 +390,12 @@ export const TRANSLATIONS = {
     /* footer */
     'footer.copyright':      '© {year} SIARM · Projet de licence — IUGET Bonabéri',
     'footer.author':         'Par James Murdza · Licence 3 Génie Logiciel',
+
+    /* chatbot */
+    'chatbot.title':         'Assistant IA SIARM',
+    'chatbot.subtitle':      'Comment puis-je vous aider ?',
+    'chatbot.placeholder':   'Tapez votre question...',
+    'chatbot.suggestions':   'Questions suggérées :',
+    'chatbot.welcome':       'Bonjour ! Je suis l\'assistant IA de SIARM. Comment puis-je vous aider aujourd\'hui ? Je peux vous aider à naviguer sur la plateforme, comprendre les fonctionnalités ou répondre à vos questions sur l\'IUGET.',
   },
 }

@@ -10,6 +10,7 @@ import { LanguageProvider } from './context/LanguageContext.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import SessionGuard from './components/SessionGuard.jsx'
+import Chatbot from './components/Chatbot.jsx'
 import './index.css'
 
 // Auto-update the service worker when a new version ships
@@ -30,6 +31,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <AuthProvider>
           <DataProvider>
             <App />
+            <Chatbot />
             <CommandPalette />
             <OfflineIndicator />
             <SessionGuard />

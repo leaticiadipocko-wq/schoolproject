@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Info, X, KeyRound, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Info, X, KeyRound, CheckCircle2, Moon, Sun } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { roleHome } from '@/lib/roles'
@@ -18,7 +18,7 @@ const DEMO_ACCOUNTS = [
 
 export default function Login() {
   const { login, demoMode } = useAuth()
-  const { requestPasswordReset } = useData()
+  const { requestPasswordReset, theme, toggleTheme } = useData()
   const { t, lang, toggle } = useLang()
   const navigate = useNavigate()
   const location = useLocation()
@@ -87,7 +87,16 @@ export default function Login() {
 
           <div className="flex items-center justify-between">
             <h1 className="text-3xl font-display font-bold">{t('login.title')}</h1>
-            <LangToggle compact />
+            <div className="flex items-center gap-2">
+              <LangToggle compact />
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl hover:bg-ink-100 text-ink-600 transition"
+                title={t(theme === 'dark' ? 'common.theme.light' : 'common.theme.dark')}
+              >
+                {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+              </button>
+            </div>
           </div>
           <p className="text-ink-500 mt-1.5">{t('login.subtitle')}</p>
 
