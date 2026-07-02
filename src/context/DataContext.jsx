@@ -85,7 +85,9 @@ function load() {
   try {
     const stored = localStorage.getItem(STORE_KEY)
     if (!stored) return initialState
-    return { ...initialState, ...JSON.parse(stored) }
+    const parsed = JSON.parse(stored)
+    // Force light theme always — dark mode permanently disabled
+    return { ...initialState, ...parsed, theme: 'light' }
   } catch {
     return initialState
   }
@@ -241,14 +243,14 @@ export function DataProvider({ children }) {
     }))
   }, [])
 
-  // ---- Theme ----
+  // ---- Theme (forced light — dark mode permanently disabled) ----
   const toggleTheme = useCallback(() => {
-    setStore((s) => ({ ...s, theme: s.theme === 'dark' ? 'light' : 'dark' }))
+    // No-op: dark mode permanently disabled
   }, [])
 
   useEffect(() => {
-    document.documentElement.classList.toggle('dark', store.theme === 'dark')
-  }, [store.theme])
+    document.documentElement.classList.remove('dark')
+  }, [])
 
   // ---- Fees / Payments ----
   /**

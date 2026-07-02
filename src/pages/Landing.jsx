@@ -3,11 +3,10 @@ import { motion } from 'framer-motion'
 import {
   GraduationCap, ClipboardCheck, CalendarClock, Megaphone,
   Wallet, IdCard, TrendingUp, LineChart, FileText, BookOpen,
-  UserPlus, ShieldCheck, ArrowRight, Banknote, Moon, Sun,
+  UserPlus, ShieldCheck, ArrowRight, Banknote,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
-import { useData } from '@/context/DataContext'
 import LangToggle from '@/components/LangToggle'
 
 const features = [
@@ -27,7 +26,6 @@ const features = [
 
 export default function Landing() {
   const { t, lang, toggle } = useLang()
-  const { theme, toggleTheme } = useData()
   return (
     <div className="min-h-screen bg-ink-50">
       {/* Nav */}
@@ -41,13 +39,6 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-2">
             <LangToggle compact />
-            <button
-              onClick={toggleTheme}
-              className="p-2 rounded-xl hover:bg-ink-100 text-ink-600 transition"
-              title={t(theme === 'dark' ? 'common.theme.light' : 'common.theme.dark')}
-            >
-              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
             <Link to="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</Link>
             <Link to="/login"  className="btn-ghost">{t('common.signIn')}</Link>
             <Link to="/register" className="btn-primary">
