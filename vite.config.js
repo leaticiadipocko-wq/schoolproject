@@ -9,7 +9,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'brand/iuget-logo.png', 'brand/iuget-logo-white.png'],
+      includeAssets: ['favicon.svg', 'brand/iuget-logo.png', 'brand/iuget-logo-white.png', 'brand/pwa-192x192.png', 'brand/pwa-512x512.png', 'brand/pwa-maskable-512x512.png'],
       manifest: {
         name: 'SIARM · Academic Resource Management — IUGET Bonabéri',
         short_name: 'SIARM',
@@ -23,9 +23,9 @@ export default defineConfig({
         lang: 'en',
         categories: ['education', 'productivity'],
         icons: [
-          { src: '/brand/iuget-logo.png',       sizes: '192x192', type: 'image/png', purpose: 'any' },
-          { src: '/brand/iuget-logo.png',       sizes: '512x512', type: 'image/png', purpose: 'any' },
-          { src: '/brand/iuget-logo-white.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+          { src: '/brand/pwa-192x192.png',          sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: '/brand/pwa-512x512.png',          sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: '/brand/pwa-maskable-512x512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
         shortcuts: [
           { name: 'Pay tuition',  short_name: 'Pay',     description: 'Open the tuition payment page', url: '/student/fees',  icons: [{ src: '/brand/iuget-logo.png', sizes: '192x192' }] },

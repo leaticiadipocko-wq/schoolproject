@@ -13,6 +13,7 @@ import AIAssistant from './components/chatbot/AIAssistant.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import SessionGuard from './components/SessionGuard.jsx'
+import InstallApp from './components/InstallApp.jsx'
 import './index.css'
 
 // Auto-update the service worker when a new version ships
@@ -39,6 +40,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                   <CommandPalette />
                   <OfflineIndicator />
                   <SessionGuard />
+                  <InstallApp />
                   <Toaster
                     position="top-right"
                     toastOptions={{
