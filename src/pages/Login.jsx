@@ -10,7 +10,7 @@ import { useLang } from '@/context/LanguageContext'
 import LangToggle from '@/components/LangToggle'
 
 export default function Login() {
-  const { login } = useAuth()
+  const { login, resetPassword } = useAuth()
   const { requestPasswordReset } = useData()
   const { t, lang, toggle } = useLang()
   const navigate = useNavigate()
@@ -150,13 +150,14 @@ export default function Login() {
           initialEmail={email}
           onClose={() => setShowForgot(false)}
           onRequest={(addr) => requestPasswordReset(addr)}
+          onReset={(addr, newPwd) => resetPassword(addr, newPwd)}
         />
       )}
     </div>
   )
 }
 
-function ForgotPasswordModal({ lang, initialEmail, onClose, onRequest }) {
+function ForgotPasswordModal({ lang, initialEmail, onClose, onRequest, onReset }) {
   const [step, setStep] = useState(1)        // 1: email, 2: confirm, 3: new password
   const [addr, setAddr] = useState(initialEmail || '')
   const [token, setToken] = useState(null)
@@ -256,11 +257,16 @@ function ForgotPasswordModal({ lang, initialEmail, onClose, onRequest }) {
                 </div>
               </div>
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (pwd.length < 8)  return toast.error(T.weak)
                   if (pwd !== confirm) return toast.error(T.mismatch)
-                  toast.success(T.success)
-                  onClose()
+                  try {
+                    await onReset(addr, pwd)
+                    toast.success(T.success)
+                    onClose()
+                  } catch (err) {
+                    toast.error(err.message || (lang === 'en' ? 'Reset failed' : 'Échec de la réinitialisation'))
+                  }
                 }}
                 className="btn-primary w-full"
               >
