@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Info, X, KeyRound, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowRight, X, KeyRound, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { roleHome } from '@/lib/roles'
@@ -9,15 +9,8 @@ import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
 import LangToggle from '@/components/LangToggle'
 
-const DEMO_ACCOUNTS = [
-  { label: 'Student',   email: 'student@iuget.cm',   color: 'bg-brand-100 text-brand-800' },
-  { label: 'Lecturer',  email: 'lecturer@iuget.cm',  color: 'bg-accent-100 text-accent-700' },
-  { label: 'Staff',     email: 'staff@iuget.cm',     color: 'bg-amber-100 text-amber-700' },
-  { label: 'Admin',     email: 'admin@iuget.cm',     color: 'bg-emerald-100 text-emerald-700' },
-]
-
 export default function Login() {
-  const { login, demoMode } = useAuth()
+  const { login } = useAuth()
   const { requestPasswordReset } = useData()
   const { t, lang, toggle } = useLang()
   const navigate = useNavigate()
@@ -44,11 +37,6 @@ export default function Login() {
     } finally {
       setLoading(false)
     }
-  }
-
-  const fillDemo = (acc) => {
-    setEmail(acc.email)
-    setPassword('password')
   }
 
   return (
@@ -90,30 +78,6 @@ export default function Login() {
             <LangToggle compact />
           </div>
           <p className="text-ink-500 mt-1.5">{t('login.subtitle')}</p>
-
-          {demoMode && (
-            <div className="mt-6 p-4 rounded-xl bg-brand-50 border border-brand-100 text-sm">
-              <div className="flex items-start gap-2">
-                <Info size={16} className="text-brand-600 mt-0.5 shrink-0" />
-                <div>
-                  <div className="font-medium text-brand-900">{t('login.demoMode')}</div>
-                  <div className="text-brand-700 mt-0.5">{t('login.demoMode.sub')}</div>
-                  <div className="mt-3 flex flex-wrap gap-1.5">
-                    {DEMO_ACCOUNTS.map((a) => (
-                      <button
-                        key={a.email}
-                        type="button"
-                        onClick={() => fillDemo(a)}
-                        className={`px-2.5 py-1 rounded-full text-xs font-medium hover:opacity-80 transition ${a.color}`}
-                      >
-                        {a.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
 
           <form onSubmit={handleSubmit} className="mt-6 space-y-4">
             <div>

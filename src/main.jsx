@@ -9,7 +9,6 @@ import { DataProvider } from './context/DataContext.jsx'
 import { LanguageProvider } from './context/LanguageContext.jsx'
 import { CampusProvider } from './context/CampusContext.jsx'
 import { ExamBoardProvider } from './context/ExamBoardContext.jsx'
-import AIAssistant from './components/chatbot/AIAssistant.jsx'
 import OfflineIndicator from './components/OfflineIndicator.jsx'
 import CommandPalette from './components/CommandPalette.jsx'
 import SessionGuard from './components/SessionGuard.jsx'
@@ -36,7 +35,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <ExamBoardProvider>
               <DataProvider>
                   <App />
-                  <AIAssistant />
                   <CommandPalette />
                   <OfflineIndicator />
                   <SessionGuard />
