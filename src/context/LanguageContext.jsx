@@ -107,7 +107,6 @@ export const TRANSLATIONS = {
     'landing.hero.motto':    '« Bien choisir c\'est déjà réussir » — IUGET',
     'landing.hero.cta.parent':'Register your child',
     'landing.hero.cta.demo': 'Explore demo',
-    'landing.hero.demo':     'Demo credentials → student@iuget.cm / password',
 
     'landing.stats.students':'Active Students',
     'landing.stats.attendance':'Avg. Attendance',
@@ -145,8 +144,6 @@ export const TRANSLATIONS = {
     /* login */
     'login.title':           'Sign in',
     'login.subtitle':        'Continue to your SIARM dashboard.',
-    'login.demoMode':        'Demo mode is on',
-    'login.demoMode.sub':    'Click a role below to fill in demo credentials.',
     'login.email':           'Email address',
     'login.password':        'Password',
     'login.rememberMe':      'Remember me',
@@ -273,7 +270,6 @@ export const TRANSLATIONS = {
     'landing.hero.motto':    '« Bien choisir c\'est déjà réussir » — IUGET',
     'landing.hero.cta.parent':'Inscrire votre enfant',
     'landing.hero.cta.demo': 'Découvrir la démo',
-    'landing.hero.demo':     'Identifiants démo → student@iuget.cm / password',
 
     'landing.stats.students':'Étudiants actifs',
     'landing.stats.attendance':'Présence moyenne',
@@ -311,8 +307,6 @@ export const TRANSLATIONS = {
     /* login */
     'login.title':           'Connexion',
     'login.subtitle':        'Accédez à votre tableau de bord SIARM.',
-    'login.demoMode':        'Mode démo activé',
-    'login.demoMode.sub':    'Cliquez sur un rôle ci-dessous pour pré-remplir les identifiants.',
     'login.email':           'Adresse e-mail',
     'login.password':        'Mot de passe',
     'login.rememberMe':      'Se souvenir de moi',

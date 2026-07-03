@@ -77,9 +77,6 @@ export default function Landing() {
                 {t('landing.hero.cta.demo')}
               </Link>
             </div>
-            <p className="mt-4 text-xs text-ink-500">
-              {t('landing.hero.demo')}
-            </p>
           </motion.div>
 
           {/* Hero stats card */}
