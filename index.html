@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="SIARM - Smart Institution Academic Resource Management. A unified AI-powered educational platform for private universities." />
+    <meta name="description" content="SIARM - Smart Institution Academic Resource Management. A unified educational platform for private universities." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
@@ -12,6 +12,38 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      // Self-heal guard: if the app fails to mount within a few seconds
+      // (e.g. a stale service worker cached a broken build), clear caches +
+      // service workers ONCE and reload to fetch a fresh copy. A sessionStorage
+      // flag prevents reload loops; a successful mount clears the flag.
+      (function () {
+        var KEY = 'siarm-selfheal';
+        window.addEventListener('load', function () {
+          setTimeout(function () {
+            var root = document.getElementById('root');
+            if (root && root.childElementCount > 0) { sessionStorage.removeItem(KEY); return; }
+            if (sessionStorage.getItem(KEY)) return; // already retried once
+            sessionStorage.setItem(KEY, '1');
+            var reload = function () { location.reload(); };
+            try {
+              var tasks = [];
+              if (window.caches && caches.keys) {
+                tasks.push(caches.keys().then(function (ks) {
+                  return Promise.all(ks.map(function (k) { return caches.delete(k); }));
+                }));
+              }
+              if (navigator.serviceWorker && navigator.serviceWorker.getRegistrations) {
+                tasks.push(navigator.serviceWorker.getRegistrations().then(function (rs) {
+                  return Promise.all(rs.map(function (r) { return r.unregister(); }));
+                }));
+              }
+              Promise.all(tasks).then(reload, reload);
+            } catch (e) { reload(); }
+          }, 8000);
+        });
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
