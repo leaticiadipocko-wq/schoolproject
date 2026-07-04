@@ -26,7 +26,7 @@ export default function AdminDashboard() {
           <div>
             <div className="text-white/70 text-sm">Executive overview</div>
             <h2 className="text-3xl font-display font-bold mt-1">Welcome, {user?.title || user?.name}</h2>
-            <p className="text-white/70 mt-1.5">Here is what's happening across SIARM University today.</p>
+            <p className="text-white/70 mt-1.5">Here is what's happening across IUGET today.</p>
           </div>
           <Link to="/admin/analytics" className="bg-white/10 hover:bg-white/20 transition rounded-xl px-4 py-2.5 text-sm font-medium inline-flex items-center gap-2">
             <LineChartIcon size={16} /> Open analytics

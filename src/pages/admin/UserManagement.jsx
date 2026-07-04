@@ -12,7 +12,7 @@ export default function UserManagement() {
   const [showForm, setShowForm] = useState(false)
   const [editingUser, setEditingUser] = useState(null)
   const [openMenu, setOpenMenu] = useState(null)
-  const [form, setForm] = useState({ name: '', email: '', role: 'student' })
+  const [form, setForm] = useState({ name: '', email: '', role: 'student', password: '' })
 
   const filtered = users.filter((u) =>
     (filter === 'all' || u.role === filter) &&
@@ -21,13 +21,13 @@ export default function UserManagement() {
 
   const openAdd = () => {
     setEditingUser(null)
-    setForm({ name: '', email: '', role: 'student' })
+    setForm({ name: '', email: '', role: 'student', password: '' })
     setShowForm(true)
   }
 
   const openEdit = (u) => {
     setEditingUser(u)
-    setForm({ name: u.name || '', email: u.email || '', role: u.role || 'student' })
+    setForm({ name: u.name || '', email: u.email || '', role: u.role || 'student', password: '' })
     setShowForm(true)
     setOpenMenu(null)
   }
@@ -35,6 +35,7 @@ export default function UserManagement() {
   const onSave = (e) => {
     e.preventDefault()
     if (!form.name || !form.email) return toast.error('Name and email are required')
+    if (!editingUser && !form.password) return toast.error('Password is required for new users')
     if (editingUser) {
       updateUser(editingUser.uid, form)
       toast.success('User updated')
@@ -174,6 +175,12 @@ export default function UserManagement() {
                 <label className="label">Email</label>
                 <input type="email" className="input" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
               </div>
+              {!editingUser && (
+                <div>
+                  <label className="label">Password</label>
+                  <input type="password" className="input" value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} placeholder="Set login password" />
+                </div>
+              )}
               <div>
                 <label className="label">Role</label>
                 <select className="input" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>

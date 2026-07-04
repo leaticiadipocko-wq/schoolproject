@@ -132,27 +132,28 @@ export function DataProvider({ children }) {
   }, [])
 
   // ---- Attendance ----
-  const submitAttendance = useCallback(({ course, date, presentIds, totalStudents, lecturerId }) => {
+  const submitAttendance = useCallback(({ course, date, period, presentIds, totalStudents, lecturerId }) => {
     setStore((s) => {
-      const existing = s.attendance.find((a) => a.course === course)
+      const key = `${course}|${period || 'default'}`
+      const existing = s.attendance.find((a) => a.course === course && (a.period || 'default') === (period || 'default'))
       let next
       if (existing) {
         const newAttended = existing.attended + presentIds.length
         const newTotal = existing.total + totalStudents
         next = s.attendance.map((a) =>
-          a.course === course
+          (a.course === course && (a.period || 'default') === (period || 'default'))
             ? { ...a, attended: newAttended, total: newTotal, percent: Math.round((newAttended / newTotal) * 100) }
             : a
         )
       } else {
         const percent = Math.round((presentIds.length / totalStudents) * 100)
-        next = [...s.attendance, { course, attended: presentIds.length, total: totalStudents, percent }]
+        next = [...s.attendance, { course, period: period || '', attended: presentIds.length, total: totalStudents, percent }]
       }
       return {
         ...s,
         attendance: next,
         attendanceLog: [
-          { id: `att-${Date.now()}`, course, date, present: presentIds, lecturerId, createdAt: new Date().toISOString() },
+          { id: `att-${Date.now()}`, course, date, period: period || '', present: presentIds, lecturerId, createdAt: new Date().toISOString() },
           ...s.attendanceLog,
         ],
       }
@@ -193,10 +194,19 @@ export function DataProvider({ children }) {
 
   // ---- Users (admin) ----
   const addUser = useCallback((user) => {
+    const uid = `usr-${Date.now()}`
     setStore((s) => ({
       ...s,
-      users: [{ uid: `usr-${Date.now()}`, status: 'active', ...user }, ...s.users],
+      users: [{ uid, status: 'active', ...user }, ...s.users],
     }))
+    // Persist to accounts store so the user can log in with their password
+    if (user.password) {
+      try {
+        const accounts = JSON.parse(localStorage.getItem('siarm.accounts') || '{}')
+        accounts[user.email] = { uid, name: user.name, email: user.email, role: user.role, password: user.password }
+        localStorage.setItem('siarm.accounts', JSON.stringify(accounts))
+      } catch {}
+    }
   }, [])
 
   const updateUser = useCallback((uid, patch) => {
@@ -207,7 +217,18 @@ export function DataProvider({ children }) {
   }, [])
 
   const deleteUser = useCallback((uid) => {
-    setStore((s) => ({ ...s, users: s.users.filter((u) => u.uid !== uid) }))
+    setStore((s) => {
+      const user = s.users.find((u) => u.uid === uid)
+      // Remove from accounts store
+      if (user?.email) {
+        try {
+          const accounts = JSON.parse(localStorage.getItem('siarm.accounts') || '{}')
+          delete accounts[user.email]
+          localStorage.setItem('siarm.accounts', JSON.stringify(accounts))
+        } catch {}
+      }
+      return { ...s, users: s.users.filter((u) => u.uid !== uid) }
+    })
   }, [])
 
   // ---- Notifications ----

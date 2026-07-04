@@ -824,7 +824,7 @@ function SuccessStep({ enrolment, paid }) {
           <div className="flex items-start gap-4">
             <Logo size={56} withText={false} />
             <div>
-              <div className="font-display font-bold text-lg text-ink-900">Institut Universitaire du Golfe de Guinée</div>
+              <div className="font-display font-bold text-lg text-ink-900">Institut Universitaire des Grandes Écoles des Tropiques</div>
               <div className="text-xs text-ink-600">Bonabéri Campus · Douala, Cameroon · www.iuget.cm</div>
               <div className="text-xs text-ink-500 italic mt-0.5">« Bien choisir c'est déjà réussir »</div>
             </div>

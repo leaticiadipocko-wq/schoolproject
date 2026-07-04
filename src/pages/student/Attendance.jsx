@@ -10,7 +10,7 @@ export default function Attendance() {
     : 0
 
   const exportCsv = () => {
-    const csv = ['Course,Attended,Total,Percent', ...attendance.map((a) => `${a.course},${a.attended},${a.total},${a.percent}`)].join('\n')
+    const csv = ['Course,Period,Attended,Total,Percent', ...attendance.map((a) => `${a.course},${a.period || '-'},${a.attended},${a.total},${a.percent}`)].join('\n')
     const blob = new Blob([csv], { type: 'text/csv' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
@@ -23,7 +23,7 @@ export default function Attendance() {
     <div className="space-y-6">
       <PageHeader
         title="Attendance"
-        subtitle="Track your presence across all enrolled courses"
+        subtitle="Track your presence across all enrolled courses and time periods"
         actions={
           <button onClick={exportCsv} className="btn-secondary"><Download size={16} /> Export</button>
         }
@@ -49,6 +49,7 @@ export default function Attendance() {
           <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wider text-ink-500">
             <tr>
               <th className="text-left p-4">Course</th>
+              <th className="text-left p-4">Period</th>
               <th className="text-left p-4">Attended</th>
               <th className="text-left p-4">Total</th>
               <th className="text-left p-4">Percentage</th>
@@ -57,8 +58,9 @@ export default function Attendance() {
           </thead>
           <tbody className="divide-y divide-ink-100">
             {attendance.map((a) => (
-              <tr key={a.course} className="hover:bg-ink-50/50 transition">
+              <tr key={`${a.course}-${a.period || ''}`} className="hover:bg-ink-50/50 transition">
                 <td className="p-4 font-medium">{a.course}</td>
+                <td className="p-4 text-ink-600 font-mono text-xs">{a.period || '—'}</td>
                 <td className="p-4 text-ink-600">{a.attended}</td>
                 <td className="p-4 text-ink-600">{a.total}</td>
                 <td className="p-4">

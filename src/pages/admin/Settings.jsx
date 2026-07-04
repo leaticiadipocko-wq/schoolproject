@@ -15,7 +15,7 @@ export default function Settings() {
         <h3 className="font-display font-bold">Institution</h3>
         <div>
           <label className="label">Name</label>
-          <input className="input" defaultValue="SIARM University" />
+          <input className="input" defaultValue="IUGET - Institut Universitaire des Grandes Écoles des Tropiques" />
         </div>
         <div>
           <label className="label">Address</label>

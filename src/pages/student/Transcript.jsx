@@ -56,7 +56,7 @@ export default function Transcript() {
         <div className="flex items-start justify-between pb-6 border-b-2 border-ink-900">
           <Logo size={48} />
           <div className="text-right text-xs text-ink-500">
-            <div className="font-semibold text-ink-900 text-base">IUGET — Institut Universitaire du Golfe de Guinée</div>
+            <div className="font-semibold text-ink-900 text-base">IUGET — Institut Universitaire des Grandes Écoles des Tropiques</div>
             <div>Bonabéri Campus · BP 3000, Douala, Cameroon</div>
             <div>www.iuget.cm</div>
           </div>

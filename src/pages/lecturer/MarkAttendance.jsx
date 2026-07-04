@@ -1,10 +1,19 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Save, UserCheck, UserX, Search } from 'lucide-react'
+import { Save, UserCheck, UserX, Search, Clock } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
-import { MOCK_STUDENTS } from '@/lib/mockData'
+import { MOCK_STUDENTS, TIMETABLE_TRACKS } from '@/lib/mockData'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
+
+const TIME_PERIODS = [
+  '08:00 - 10:00',
+  '10:00 - 12:00',
+  '13:00 - 15:00',
+  '15:00 - 17:00',
+  '18:00 - 20:00',
+  '20:00 - 22:00',
+]
 
 export default function MarkAttendance() {
   const { user } = useAuth()
@@ -12,6 +21,7 @@ export default function MarkAttendance() {
   const [present, setPresent] = useState(new Set(MOCK_STUDENTS.slice(0, 14).map((s) => s.id)))
   const [course, setCourse] = useState('CS501')
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
+  const [period, setPeriod] = useState('10:00 - 12:00')
   const [query, setQuery] = useState('')
   const [saving, setSaving] = useState(false)
 
@@ -34,11 +44,12 @@ export default function MarkAttendance() {
     submitAttendance({
       course,
       date,
+      period,
       presentIds: Array.from(present),
       totalStudents: MOCK_STUDENTS.length,
       lecturerId: user?.uid,
     })
-    toast.success(`Attendance saved · ${present.size} / ${MOCK_STUDENTS.length} present`)
+    toast.success(`Attendance saved · ${period} · ${present.size} / ${MOCK_STUDENTS.length} present`)
     setSaving(false)
   }
 
@@ -65,6 +76,12 @@ export default function MarkAttendance() {
               <option value="CS507">CS507 — Mobile Development</option>
               <option value="CS509">CS509 — Design Project</option>
               <option value="CS511">CS511 — Object Oriented Programming</option>
+            </select>
+          </div>
+          <div>
+            <label className="label"><Clock size={12} className="inline mr-1" />Time Period</label>
+            <select value={period} onChange={(e) => setPeriod(e.target.value)} className="input py-2 text-sm">
+              {TIME_PERIODS.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
           <div>

@@ -198,12 +198,12 @@ export const MOCK_TIMETABLE = [
 ]
 
 export const MOCK_ATTENDANCE = [
-  { course: 'CS501', total: 24, attended: 22, percent: 92 },
-  { course: 'CS503', total: 18, attended: 17, percent: 94 },
-  { course: 'CS505', total: 22, attended: 19, percent: 86 },
-  { course: 'CS507', total: 22, attended: 21, percent: 95 },
-  { course: 'CS509', total: 14, attended: 13, percent: 93 },
-  { course: 'CS511', total: 24, attended: 20, percent: 83 },
+  { course: 'CS501', period: '10:00 - 12:00', total: 24, attended: 22, percent: 92 },
+  { course: 'CS503', period: '08:00 - 10:00', total: 18, attended: 17, percent: 94 },
+  { course: 'CS505', period: '10:00 - 12:00', total: 22, attended: 19, percent: 86 },
+  { course: 'CS507', period: '13:00 - 15:00', total: 22, attended: 21, percent: 95 },
+  { course: 'CS509', period: '15:00 - 17:00', total: 14, attended: 13, percent: 93 },
+  { course: 'CS511', period: '10:00 - 12:00', total: 24, attended: 20, percent: 83 },
 ]
 
 export const MOCK_RESULTS = [

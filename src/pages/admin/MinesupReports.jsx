@@ -125,7 +125,7 @@ export default function Minesup() {
             <div>
               <div className="font-display font-bold text-lg text-ink-900">RÉPUBLIQUE DU CAMEROUN</div>
               <div className="text-xs text-ink-600">Ministère de l'Enseignement Supérieur · MINESUP</div>
-              <div className="text-xs text-ink-500 mt-1">Institut Universitaire du Golfe de Guinée · Campus de Bonabéri</div>
+              <div className="text-xs text-ink-500 mt-1">Institut Universitaire des Grandes Écoles des Tropiques · Campus de Bonabéri</div>
             </div>
           </div>
           <div className="text-right text-xs text-ink-600">
