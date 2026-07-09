@@ -9,6 +9,7 @@ import {
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { auth, db, DEMO_MODE } from '@/lib/firebase'
 import { MOCK_USERS } from '@/lib/mockData'
+import { api } from '@/lib/api'
 
 const AuthContext = createContext(null)
 
@@ -60,9 +61,20 @@ export function AuthProvider({ children }) {
       )
       if (!found) throw new Error('Invalid email or password')
       const { password: _pw, ...safe } = found
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(safe))
-      setUser(safe)
-      return safe
+
+      // Sync user to database
+      try {
+        const dbUser = await api.syncUser(safe)
+        const merged = { ...safe, ...dbUser }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged))
+        setUser(merged)
+        return merged
+      } catch {
+        // Database unavailable, continue with local user
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(safe))
+        setUser(safe)
+        return safe
+      }
     }
     const cred = await signInWithEmailAndPassword(auth, email, password)
     const snap = await getDoc(doc(db, 'users', cred.user.uid))
@@ -81,9 +93,20 @@ export function AuthProvider({ children }) {
         role,
         avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`,
       }
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
-      setUser(newUser)
-      return newUser
+
+      // Insert new user into database
+      try {
+        const dbUser = await api.register({ email, password, name, role })
+        const merged = { ...newUser, ...dbUser }
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged))
+        setUser(merged)
+        return merged
+      } catch {
+        // Database unavailable, continue with local user
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser))
+        setUser(newUser)
+        return newUser
+      }
     }
     const cred = await createUserWithEmailAndPassword(auth, email, password)
     await updateProfile(cred.user, { displayName: name })

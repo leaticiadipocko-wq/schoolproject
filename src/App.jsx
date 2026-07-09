@@ -94,6 +94,7 @@ export default function App() {
         <Route path="idcard"        element={<IDCard />} />
         <Route path="assignments"   element={<StudentAssignments />} />
         <Route path="discussions"   element={<Discussions />} />
+        <Route path="users"         element={<UserManagement />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />
@@ -116,6 +117,7 @@ export default function App() {
         <Route path="assignments"   element={<LecturerAssignments />} />
         <Route path="discussions"   element={<Discussions />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
+        <Route path="users"         element={<UserManagement />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />

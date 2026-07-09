@@ -22,6 +22,7 @@ export const STUDENT_NAV = [
   {
     title: 'Records',
     links: [
+      { to: '/student/users',         label: 'User Management', icon: Users },
       { to: '/student/idcard',        label: 'ID Card',        icon: IdCard },
       { to: '/student/fees',          label: 'Tuition & Fees', icon: Wallet },
       { to: '/student/transcript',    label: 'Transcript',     icon: FileSpreadsheet },
@@ -52,6 +53,12 @@ export const LECTURER_NAV = [
       { to: '/lecturer/assignments',label: 'Assignments',     icon: ClipboardList },
       { to: '/lecturer/lessons',    label: 'Publish Lesson',  icon: Sparkles },
       { to: '/lecturer/discussions',label: 'Discussions',     icon: MessageSquare },
+    ],
+  },
+  {
+    title: 'Manage',
+    links: [
+      { to: '/lecturer/users',         label: 'User Management', icon: Users },
     ],
   },
   {

@@ -4,6 +4,7 @@ import {
   MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
   MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
 } from '@/lib/mockData'
+import { api } from '@/lib/api'
 
 /**
  * Global persisted application store.
@@ -98,6 +99,15 @@ export function DataProvider({ children }) {
     localStorage.setItem(STORE_KEY, JSON.stringify(store))
   }, [store])
 
+  // Load users from database on mount
+  useEffect(() => {
+    api.getUsers().then((dbUsers) => {
+      if (dbUsers && dbUsers.length > 0) {
+        setStore((s) => ({ ...s, users: dbUsers }))
+      }
+    }).catch(() => {})
+  }, [])
+
   // ---- Announcements ----
   const addAnnouncement = useCallback((data) => {
     setStore((s) => ({
@@ -190,22 +200,30 @@ export function DataProvider({ children }) {
   }, [])
 
   // ---- Users (admin) ----
-  const addUser = useCallback((user) => {
-    setStore((s) => ({
-      ...s,
-      users: [{ uid: `usr-${Date.now()}`, status: 'active', ...user }, ...s.users],
-    }))
+  const addUser = useCallback(async (user) => {
+    const localUser = { uid: `usr-${Date.now()}`, status: 'active', ...user }
+    setStore((s) => ({ ...s, users: [localUser, ...s.users] }))
+    try {
+      const dbUser = await api.createUser(user)
+      setStore((s) => ({
+        ...s,
+        users: s.users.map((u) => u.uid === localUser.uid ? { ...u, ...dbUser } : u),
+      }))
+    } catch {}
+    return localUser
   }, [])
 
-  const updateUser = useCallback((uid, patch) => {
+  const updateUser = useCallback(async (uid, patch) => {
     setStore((s) => ({
       ...s,
       users: s.users.map((u) => u.uid === uid ? { ...u, ...patch } : u),
     }))
+    try { await api.updateUser(uid, patch) } catch {}
   }, [])
 
-  const deleteUser = useCallback((uid) => {
+  const deleteUser = useCallback(async (uid) => {
     setStore((s) => ({ ...s, users: s.users.filter((u) => u.uid !== uid) }))
+    try { await api.deleteUser(uid) } catch {}
   }, [])
 
   // ---- Notifications ----
