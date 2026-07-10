@@ -4,7 +4,7 @@ import {
   Search, ArrowRight, CornerDownLeft, ArrowUp, ArrowDown,
   LayoutDashboard, ClipboardCheck, CalendarClock, FileText, Megaphone,
   BookOpen, GraduationCap, FileSpreadsheet, Wallet, IdCard,
-  Users, TrendingUp, UserCog, Settings, Moon, Sun, LogOut,
+  Users, TrendingUp, UserCog, Settings, LogOut,
   Banknote, UserPlus,
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
@@ -21,7 +21,7 @@ export default function CommandPalette() {
   const [cursor, setCursor] = useState(0)
   const navigate = useNavigate()
   const { user, logout } = useAuth()
-  const { theme, toggleTheme, resetStore } = useData()
+  const { resetStore } = useData()
   const inputRef = useRef()
 
   // Build commands list dynamically per role
@@ -75,7 +75,6 @@ export default function CommandPalette() {
 
     // Universal
     base.push(
-      { id: 'theme', group: 'Preferences', icon: theme === 'dark' ? Sun : Moon, label: `Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`, do: toggleTheme },
       { id: 'reset', group: 'Preferences', icon: Settings, label: 'Reset demo data',
         do: () => { if (confirm('Reset all demo data to defaults?')) resetStore() } },
       { id: 'logout', group: 'Account', icon: LogOut, label: 'Sign out',
@@ -83,7 +82,7 @@ export default function CommandPalette() {
     )
 
     return base
-  }, [user, theme, navigate, toggleTheme, logout, resetStore])
+  }, [user, navigate, logout, resetStore])
 
   // Filter by query (fuzzy-ish: every word in query must appear)
   const filtered = useMemo(() => {
