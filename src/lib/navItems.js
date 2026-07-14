@@ -12,6 +12,7 @@ export const STUDENT_NAV = [
     links: [
       { to: '/student',               label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/student/attendance',    label: 'Attendance',    icon: ClipboardCheck },
+      { to: '/student/checkin',       label: 'Check In',      icon: ClipboardCheck },
       { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
       { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },

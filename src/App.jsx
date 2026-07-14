@@ -23,6 +23,7 @@ import Learning from '@/pages/student/Learning'
 import Transcript from '@/pages/student/Transcript'
 import Fees from '@/pages/student/Fees'
 import IDCard from '@/pages/student/IDCard'
+import CheckIn from '@/pages/student/CheckIn'
 
 // Lecturer pages
 import LecturerDashboard from '@/pages/lecturer/LecturerDashboard'
@@ -93,6 +94,7 @@ export default function App() {
         <Route path="fees"          element={<Fees />} />
         <Route path="idcard"        element={<IDCard />} />
         <Route path="assignments"   element={<StudentAssignments />} />
+        <Route path="checkin"       element={<CheckIn />} />
         <Route path="discussions"   element={<Discussions />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />

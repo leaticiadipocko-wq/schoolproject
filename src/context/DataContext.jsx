@@ -1,291 +1,425 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react'
-import {
-  MOCK_ANNOUNCEMENTS, MOCK_ATTENDANCE, MOCK_RESULTS,
-  MOCK_COURSES, MOCK_TIMETABLE, MOCK_USERS,
-  MOCK_FEE_STRUCTURE, MOCK_PAYMENT_HISTORY,
-} from '@/lib/mockData'
-
 /**
- * Global persisted application store.
- * Every CRUD button across the app reads/writes through this context,
- * giving full end-to-end functionality with localStorage persistence
- * (no Firebase required for the defense demo).
+ * SIARM Data Context - API Version
+ * Connects to PHP backend for data persistence
  */
+
+import { createContext, useContext, useEffect, useState, useCallback } from 'react'
+import { userApi, lecturerApi, studentApi, api } from '@/lib/api'
+import { useAuth } from '@/context/AuthContext'
+import toast from 'react-hot-toast'
+
 const DataContext = createContext(null)
 
-const STORE_KEY = 'siarm.store.v2'
-
-const initialState = {
-  announcements: MOCK_ANNOUNCEMENTS,
-  attendance: MOCK_ATTENDANCE,
-  attendanceLog: [],
-  results: MOCK_RESULTS,
-  enrolledCourses: ['CS501', 'CS503', 'CS505', 'CS507', 'CS509', 'CS511'],
-  timetable: MOCK_TIMETABLE,
-  users: MOCK_USERS.map(({ password, ...u }) => u),
-  notifications: [
-    { id: 'n1', text: 'New announcement from Registrar', read: false, time: '2 hours ago' },
-    { id: 'n2', text: 'CS505 grades published', read: false, time: '1 day ago' },
-    { id: 'n3', text: 'Library hours extended', read: true, time: '2 days ago' },
-  ],
-  theme: 'light',
-  fees: MOCK_FEE_STRUCTURE,
-  payments: MOCK_PAYMENT_HISTORY,
-  lessons: [
-    {
-      id: 'lesson-1',
-      course: 'CS501',
-      title: 'Introduction to Compiler Phases',
-      body: 'Lexical analysis breaks the source into tokens. Syntax analysis verifies grammar. Semantic analysis checks types and scopes. Code generation finally produces the target.',
-      lecturer: 'Mr Nkoma Ngouloure',
-      attachmentName: null,
-      publishedAt: '2026-05-26T10:00:00Z',
-      duration: '12 min read',
-    },
-    {
-      id: 'lesson-2',
-      course: 'CS507',
-      title: 'React Native — First App',
-      body: 'Set up Expo CLI, scaffold a project, render your first component, and handle navigation with React Navigation.',
-      lecturer: 'Mr Smith Wills',
-      attachmentName: null,
-      publishedAt: '2026-05-24T09:00:00Z',
-      duration: '15 min read',
-    },
-  ],
-  signatures: {},        // map of userId -> dataUrl
-  photos:     {},        // map of userId -> dataUrl
-  auditLog: [
-    { id: 'al-1', actor: 'Mrs Linda Foncha', role: 'staff', action: 'student.enrol',     target: 'IUGET/2026/SWE/0237', at: new Date(Date.now() - 2 * 3600_000).toISOString() },
-    { id: 'al-2', actor: 'Prof. James Murdza', role: 'admin', action: 'announcement.publish', target: 'Mid-semester closure',  at: new Date(Date.now() - 5 * 3600_000).toISOString() },
-    { id: 'al-3', actor: 'Mr Nkoma Ngouloure', role: 'lecturer', action: 'grades.submit', target: 'CS501 — 38 students', at: new Date(Date.now() - 24 * 3600_000).toISOString() },
-  ],
-  assignments: [
-    {
-      id: 'as-1', course: 'CS501', title: 'Lexical Analyser Implementation', dueAt: new Date(Date.now() + 7 * 24 * 3600_000).toISOString(),
-      description: 'Build a hand-written lexer for the toy language defined in lecture 3. Submit your source files as a ZIP.',
-      lecturer: 'Mr Nkoma Ngouloure', maxPoints: 20, createdAt: new Date().toISOString(),
-    },
-    {
-      id: 'as-2', course: 'CS507', title: 'Mobile App MVP', dueAt: new Date(Date.now() + 14 * 24 * 3600_000).toISOString(),
-      description: 'Ship a 3-screen Expo app with navigation and one persisted state slice. Submit the GitHub URL.',
-      lecturer: 'Mr Smith Wills', maxPoints: 30, createdAt: new Date().toISOString(),
-    },
-  ],
-  submissions: [],       // { id, assignmentId, studentId, body, fileName, submittedAt, grade?, feedback? }
-  discussions: [
-    { id: 'd-1', course: 'CS501', author: 'Mr Nkoma Ngouloure', role: 'lecturer',
-      body: 'Welcome to Compiler Design. Drop your questions about lexical analysis here this week.',
-      createdAt: new Date(Date.now() - 24 * 3600_000).toISOString(), replies: [] },
-  ],
-  passwordResets: [],    // { token, email, expiresAt }
-}
-
-function load() {
-  try {
-    const stored = localStorage.getItem(STORE_KEY)
-    if (!stored) return initialState
-    // Always force the light (day) theme, even when restoring a store that
-    // may have persisted `theme: 'dark'` from an older session.
-    return { ...initialState, ...JSON.parse(stored), theme: 'light' }
-  } catch {
-    return initialState
-  }
-}
-
 export function DataProvider({ children }) {
-  const [store, setStore] = useState(() => load())
+  const { user, isAuthenticated } = useAuth()
+  const [store, setStore] = useState({
+    announcements: [],
+    attendance: [],
+    attendanceLog: [],
+    results: [],
+    enrolledCourses: [],
+    timetable: [],
+    users: [],
+    notifications: [],
+    theme: 'light',
+    fees: {},
+    payments: [],
+    lessons: [],
+    signatures: {},
+    photos: {},
+    auditLog: [],
+    assignments: [],
+    submissions: [],
+    discussions: [],
+    passwordResets: [],
+  })
+  const [loading, setLoading] = useState(false)
 
+  // Load initial data
   useEffect(() => {
-    localStorage.setItem(STORE_KEY, JSON.stringify(store))
-  }, [store])
+    if (isAuthenticated) {
+      loadData()
+    }
+  }, [isAuthenticated, user])
 
-  // ---- Announcements ----
-  const addAnnouncement = useCallback((data) => {
-    setStore((s) => ({
-      ...s,
-      announcements: [
-        {
-          id: `a-${Date.now()}`,
-          author: data.author || 'Admin',
-          createdAt: new Date().toISOString(),
-          pinned: false,
-          ...data,
-        },
-        ...s.announcements,
-      ],
-    }))
-  }, [])
+  const loadData = async () => {
+    if (!isAuthenticated) return
+    
+    setLoading(true)
+    try {
+      // Load data based on user role
+      const promises = [
+        fetchAnnouncements(),
+        fetchUsers(),
+        fetchTimetable(),
+      ]
 
-  const togglePin = useCallback((id) => {
-    setStore((s) => ({
-      ...s,
-      announcements: s.announcements.map((a) => a.id === id ? { ...a, pinned: !a.pinned } : a),
-    }))
-  }, [])
-
-  const deleteAnnouncement = useCallback((id) => {
-    setStore((s) => ({
-      ...s,
-      announcements: s.announcements.filter((a) => a.id !== id),
-    }))
-  }, [])
-
-  // ---- Attendance ----
-  const submitAttendance = useCallback(({ course, date, period, presentIds, totalStudents, lecturerId }) => {
-    setStore((s) => {
-      const key = `${course}|${period || 'default'}`
-      const existing = s.attendance.find((a) => a.course === course && (a.period || 'default') === (period || 'default'))
-      let next
-      if (existing) {
-        const newAttended = existing.attended + presentIds.length
-        const newTotal = existing.total + totalStudents
-        next = s.attendance.map((a) =>
-          (a.course === course && (a.period || 'default') === (period || 'default'))
-            ? { ...a, attended: newAttended, total: newTotal, percent: Math.round((newAttended / newTotal) * 100) }
-            : a
-        )
-      } else {
-        const percent = Math.round((presentIds.length / totalStudents) * 100)
-        next = [...s.attendance, { course, period: period || '', attended: presentIds.length, total: totalStudents, percent }]
+      if (user.role === 'student') {
+        promises.push(fetchStudentData())
+      } else if (user.role === 'lecturer') {
+        promises.push(fetchLecturerData())
+      } else if (user.role === 'admin' || user.role === 'staff') {
+        promises.push(fetchAdminData())
       }
-      return {
-        ...s,
-        attendance: next,
-        attendanceLog: [
-          { id: `att-${Date.now()}`, course, date, period: period || '', present: presentIds, lecturerId, createdAt: new Date().toISOString() },
-          ...s.attendanceLog,
-        ],
+
+      await Promise.all(promises)
+    } catch (error) {
+      console.error('Failed to load data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const fetchAnnouncements = async () => {
+    try {
+      const response = await api.request('/announcements')
+      if (response.success) {
+        setStore(s => ({ ...s, announcements: response.data }))
       }
-    })
-  }, [])
+    } catch (error) {
+      console.error('Failed to fetch announcements:', error)
+    }
+  }
 
-  // ---- Grades / Results ----
-  const submitGrades = useCallback(({ course, semester, students }) => {
-    setStore((s) => {
-      const newResults = students.map((st) => ({
-        course,
-        semester,
-        ca: st.ca,
-        exam: st.exam,
-        total: st.ca + st.exam,
-        grade: gradeFor(st.ca + st.exam),
-        studentId: st.id,
-      }))
-      const cleaned = s.results.filter((r) => !(r.course === course && r.semester === semester))
-      return { ...s, results: [...cleaned, ...newResults] }
-    })
-  }, [])
+  const fetchUsers = async () => {
+    try {
+      const response = await userApi.getUsers()
+      if (response.success) {
+        setStore(s => ({ ...s, users: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch users:', error)
+    }
+  }
 
-  // ---- Courses / Enrollment ----
-  const enrollCourse = useCallback((code) => {
-    setStore((s) => ({
-      ...s,
-      enrolledCourses: s.enrolledCourses.includes(code) ? s.enrolledCourses : [...s.enrolledCourses, code],
-    }))
-  }, [])
+  const fetchTimetable = async () => {
+    try {
+      const response = await api.request('/timetable')
+      if (response.success) {
+        setStore(s => ({ ...s, timetable: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch timetable:', error)
+    }
+  }
 
-  const unenrollCourse = useCallback((code) => {
-    setStore((s) => ({
-      ...s,
-      enrolledCourses: s.enrolledCourses.filter((c) => c !== code),
-    }))
-  }, [])
+  const fetchStudentData = async () => {
+    if (!user) return
+    
+    try {
+      // Get student profile
+      const profileResponse = await studentApi.getProfile()
+      if (profileResponse.success && profileResponse.data) {
+        const studentId = profileResponse.data.id
+        
+        // Fetch student-specific data
+        const [attendanceRes, resultsRes, feesRes] = await Promise.all([
+          studentApi.getAttendance(studentId),
+          studentApi.getResults(studentId),
+          studentApi.getFees(studentId),
+        ])
 
-  // ---- Users (admin) ----
-  const addUser = useCallback((user) => {
-    const uid = `usr-${Date.now()}`
-    setStore((s) => ({
-      ...s,
-      users: [{ uid, status: 'active', ...user }, ...s.users],
-    }))
-    // Persist to accounts store so the user can log in with their password
-    if (user.password) {
-      try {
-        const accounts = JSON.parse(localStorage.getItem('siarm.accounts') || '{}')
-        accounts[user.email] = { uid, name: user.name, email: user.email, role: user.role, password: user.password }
-        localStorage.setItem('siarm.accounts', JSON.stringify(accounts))
-      } catch {}
+        setStore(s => ({
+          ...s,
+          attendance: attendanceRes.success ? attendanceRes.data.records : [],
+          results: resultsRes.success ? resultsRes.data.results : [],
+          fees: feesRes.success ? feesRes.data.fees : {},
+          payments: feesRes.success ? feesRes.data.payments : [],
+          enrolledCourses: attendanceRes.success 
+            ? [...new Set(attendanceRes.data.records.map(r => r.course_id))] 
+            : [],
+        }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch student data:', error)
+    }
+  }
+
+  const fetchLecturerData = async () => {
+    // Lecturer-specific data loading
+    try {
+      const response = await api.request('/lecturer/courses')
+      if (response.success) {
+        setStore(s => ({ ...s, enrolledCourses: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch lecturer data:', error)
+    }
+  }
+
+  const fetchAdminData = async () => {
+    // Admin-specific data loading
+  }
+
+  // Announcements
+  const addAnnouncement = useCallback(async (data) => {
+    try {
+      const response = await api.request('/announcements', {
+        method: 'POST',
+        body: { ...data, author: user?.full_name },
+      })
+      if (response.success) {
+        setStore(s => ({ ...s, announcements: [response.data, ...s.announcements] }))
+        toast.success('Announcement created')
+        return response.data
+      }
+    } catch (error) {
+      toast.error('Failed to create announcement')
+    }
+  }, [user])
+
+  const togglePin = useCallback(async (id) => {
+    try {
+      const response = await api.request(`/announcements/${id}/pin`, { method: 'POST' })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          announcements: s.announcements.map(a => a.id === id ? { ...a, pinned: !a.pinned } : a)
+        }))
+      }
+    } catch (error) {
+      toast.error('Failed to toggle pin')
     }
   }, [])
 
-  const updateUser = useCallback((uid, patch) => {
-    setStore((s) => ({
-      ...s,
-      users: s.users.map((u) => u.uid === uid ? { ...u, ...patch } : u),
-    }))
+  const deleteAnnouncement = useCallback(async (id) => {
+    try {
+      await api.request(`/announcements/${id}`, { method: 'DELETE' })
+      setStore(s => ({ ...s, announcements: s.announcements.filter(a => a.id !== id) }))
+      toast.success('Announcement deleted')
+    } catch (error) {
+      toast.error('Failed to delete announcement')
+    }
   }, [])
 
-  const deleteUser = useCallback((uid) => {
-    setStore((s) => {
-      const user = s.users.find((u) => u.uid === uid)
-      // Remove from accounts store
-      if (user?.email) {
-        try {
-          const accounts = JSON.parse(localStorage.getItem('siarm.accounts') || '{}')
-          delete accounts[user.email]
-          localStorage.setItem('siarm.accounts', JSON.stringify(accounts))
-        } catch {}
+  // Attendance
+  const submitAttendance = useCallback(async ({ course, date, period, presentIds, totalStudents, lecturerId }) => {
+    try {
+      const response = await lecturerApi.markAttendance({
+        course_id: course,
+        date,
+        slot_id: period,
+        records: presentIds.map(studentId => ({ student_id: studentId, status: 'present' })),
+      })
+
+      if (response.success) {
+        setStore(s => {
+          const key = `${course}|${period || 'default'}`
+          const existing = s.attendance.find(a => a.course === course && (a.period || 'default') === (period || 'default'))
+          let next
+          if (existing) {
+            const newAttended = existing.attended + presentIds.length
+            const newTotal = existing.total + totalStudents
+            next = s.attendance.map(a =>
+              (a.course === course && (a.period || 'default') === (period || 'default'))
+                ? { ...a, attended: newAttended, total: newTotal, percent: Math.round((newAttended / newTotal) * 100) }
+                : a
+            )
+          } else {
+            const percent = Math.round((presentIds.length / totalStudents) * 100)
+            next = [...s.attendance, { course, period: period || '', attended: presentIds.length, total: totalStudents, percent }]
+          }
+          return {
+            ...s,
+            attendance: next,
+            attendanceLog: [
+              { id: `att-${Date.now()}`, course, date, period: period || '', present: presentIds, lecturerId, createdAt: new Date().toISOString() },
+              ...s.attendanceLog,
+            ],
+          }
+        })
+        toast.success(`Attendance saved · ${presentIds.length} / ${totalStudents} present`)
       }
-      return { ...s, users: s.users.filter((u) => u.uid !== uid) }
-    })
+    } catch (error) {
+      toast.error('Failed to save attendance')
+    }
   }, [])
 
-  // ---- Notifications ----
+  // Grades
+  const submitGrades = useCallback(async ({ course, semester, students }) => {
+    try {
+      const response = await lecturerApi.submitGrades({
+        course_id: course,
+        semester_id: semester,
+        grades: students,
+      })
+      if (response.success) {
+        setStore(s => {
+          const newResults = students.map(st => ({
+            course,
+            semester,
+            ca: st.ca,
+            exam: st.exam,
+            total: st.ca + st.exam,
+            grade: gradeFor(st.ca + st.exam),
+            studentId: st.id,
+          }))
+          const cleaned = s.results.filter(r => !(r.course === course && r.semester === semester))
+          return { ...s, results: [...cleaned, ...newResults] }
+        })
+        toast.success('Grades saved as draft')
+      }
+    } catch (error) {
+      toast.error('Failed to save grades')
+    }
+  }, [])
+
+  const publishGrades = useCallback(async (courseId, semesterId) => {
+    try {
+      const response = await lecturerApi.publishGrades(courseId, semesterId)
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          results: s.results.map(r => 
+            r.course === courseId && r.semester === semesterId ? { ...r, is_published: true } : r
+          )
+        }))
+        toast.success(`${response.data.published} grades published`)
+      }
+    } catch (error) {
+      toast.error('Failed to publish grades')
+    }
+  }, [])
+
+  // Courses
+  const enrollCourse = useCallback(async (code) => {
+    try {
+      const response = await api.request('/courses/enroll', {
+        method: 'POST',
+        body: { course_id: code },
+      })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          enrolledCourses: s.enrolledCourses.includes(code) ? s.enrolledCourses : [...s.enrolledCourses, code],
+        }))
+        toast.success('Enrolled successfully')
+      }
+    } catch (error) {
+      toast.error('Enrollment failed')
+    }
+  }, [])
+
+  const unenrollCourse = useCallback(async (code) => {
+    try {
+      const response = await api.request('/courses/unenroll', {
+        method: 'POST',
+        body: { course_id: code },
+      })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          enrolledCourses: s.enrolledCourses.filter(c => c !== code),
+        }))
+        toast.success('Unenrolled successfully')
+      }
+    } catch (error) {
+      toast.error('Unenrollment failed')
+    }
+  }, [])
+
+  // Users
+  const addUser = useCallback(async (userData) => {
+    try {
+      const response = await userApi.createUser(userData)
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          users: [{ id: response.data.id, ...userData }, ...s.users],
+        }))
+        toast.success('User added')
+        return response.data
+      }
+    } catch (error) {
+      toast.error('Failed to add user')
+    }
+  }, [])
+
+  const updateUser = useCallback(async (uid, patch) => {
+    try {
+      const response = await userApi.updateUser(uid, patch)
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          users: s.users.map(u => u.id === uid ? { ...u, ...patch } : u),
+        }))
+        toast.success('User updated')
+      }
+    } catch (error) {
+      toast.error('Failed to update user')
+    }
+  }, [])
+
+  const deleteUser = useCallback(async (uid) => {
+    try {
+      const response = await userApi.deleteUser(uid)
+      if (response.success) {
+        setStore(s => ({ ...s, users: s.users.filter(u => u.id !== uid) }))
+        toast.success('User deleted')
+      }
+    } catch (error) {
+      toast.error('Failed to delete user')
+    }
+  }, [])
+
+  // Notifications
   const markNotificationRead = useCallback((id) => {
-    setStore((s) => ({
+    setStore(s => ({
       ...s,
-      notifications: s.notifications.map((n) => n.id === id ? { ...n, read: true } : n),
+      notifications: s.notifications.map(n => n.id === id ? { ...n, read: true } : n),
     }))
   }, [])
 
   const markAllNotificationsRead = useCallback(() => {
-    setStore((s) => ({
+    setStore(s => ({
       ...s,
-      notifications: s.notifications.map((n) => ({ ...n, read: true })),
+      notifications: s.notifications.map(n => ({ ...n, read: true })),
     }))
   }, [])
 
-  // ---- Timetable ----
-  const setTimetableSlot = useCallback(({ day, time, course, room, lecturer }) => {
-    setStore((s) => ({
-      ...s,
-      timetable: [
-        ...s.timetable.filter((t) => !(t.day === day && t.time === time)),
-        { day, time, course, room, lecturer },
-      ],
-    }))
+  // Timetable
+  const setTimetableSlot = useCallback(async ({ day, time, course, room, lecturer }) => {
+    try {
+      const response = await api.request('/timetable', {
+        method: 'POST',
+        body: { day, time, course, room, lecturer },
+      })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          timetable: [
+            ...s.timetable.filter(t => !(t.day === day && t.time === time)),
+            { day, time, course, room, lecturer },
+          ],
+        }))
+        toast.success('Timetable updated')
+      }
+    } catch (error) {
+      toast.error('Failed to update timetable')
+    }
   }, [])
 
-  const removeTimetableSlot = useCallback((day, time) => {
-    setStore((s) => ({
-      ...s,
-      timetable: s.timetable.filter((t) => !(t.day === day && t.time === time)),
-    }))
+  const removeTimetableSlot = useCallback(async (day, time) => {
+    try {
+      await api.request(`/timetable/${day}/${time}`, { method: 'DELETE' })
+      setStore(s => ({
+        ...s,
+        timetable: s.timetable.filter(t => !(t.day === day && t.time === time)),
+      }))
+      toast.success('Timetable slot removed')
+    } catch (error) {
+      toast.error('Failed to remove timetable slot')
+    }
   }, [])
 
-  // ---- Theme ----
-  // Dark theme has been removed from the application. The app is always in the
-  // light (day) theme, so toggleTheme is a no-op kept only for API compatibility.
+  // Theme
   const toggleTheme = useCallback(() => {
-    setStore((s) => (s.theme === 'light' ? s : { ...s, theme: 'light' }))
+    setStore(s => (s.theme === 'light' ? s : { ...s, theme: 'light' }))
   }, [])
 
-  useEffect(() => {
-    // Guarantee the `dark` class is never present on any page load.
-    document.documentElement.classList.remove('dark')
-  }, [store.theme])
-
-  // ---- Fees / Payments ----
-  /**
-   * Simulate a payment. In production this calls the MoMo / OM API.
-   * Returns { receipt } on success.
-   */
+  // Payments
   const processPayment = useCallback(async ({ amount, method, methodName, phone, reference }) => {
-    // Simulated network round-trip
-    await new Promise((r) => setTimeout(r, 1800))
-
-    // Simulate 95% success rate (always success in demo for predictability)
+    await new Promise(r => setTimeout(r, 1800))
     const ok = true
     if (!ok) throw new Error('Payment provider declined')
 
@@ -302,7 +436,7 @@ export function DataProvider({ children }) {
       status: 'success',
     }
 
-    setStore((s) => ({
+    setStore(s => ({
       ...s,
       payments: [receipt, ...s.payments],
       fees: {
@@ -315,103 +449,158 @@ export function DataProvider({ children }) {
     return receipt
   }, [])
 
-  // ---- Lessons (Mobile Learning) ----
-  const publishLesson = useCallback((lesson) => {
-    setStore((s) => ({
-      ...s,
-      lessons: [{
-        id: `lesson-${Date.now()}`,
-        publishedAt: new Date().toISOString(),
-        duration: lesson.duration || '5 min read',
-        ...lesson,
-      }, ...s.lessons],
-    }))
+  // Lessons
+  const publishLesson = useCallback(async (lesson) => {
+    try {
+      const response = await api.request('/lessons', {
+        method: 'POST',
+        body: { ...lesson, publishedAt: new Date().toISOString() },
+      })
+      if (response.success) {
+        setStore(s => ({ ...s, lessons: [response.data, ...s.lessons] }))
+        toast.success('Lesson published')
+      }
+    } catch (error) {
+      toast.error('Failed to publish lesson')
+    }
   }, [])
 
-  const deleteLesson = useCallback((id) => {
-    setStore((s) => ({ ...s, lessons: s.lessons.filter((l) => l.id !== id) }))
+  const deleteLesson = useCallback(async (id) => {
+    try {
+      await api.request(`/lessons/${id}`, { method: 'DELETE' })
+      setStore(s => ({ ...s, lessons: s.lessons.filter(l => l.id !== id) }))
+      toast.success('Lesson deleted')
+    } catch (error) {
+      toast.error('Failed to delete lesson')
+    }
   }, [])
 
-  // ---- Signatures + Photos ----
+  // Signatures/Photos
   const saveSignature = useCallback((userId, dataUrl) => {
-    setStore((s) => ({ ...s, signatures: { ...s.signatures, [userId]: dataUrl } }))
+    setStore(s => ({ ...s, signatures: { ...s.signatures, [userId]: dataUrl } }))
   }, [])
 
   const savePhoto = useCallback((userId, dataUrl) => {
-    setStore((s) => ({ ...s, photos: { ...s.photos, [userId]: dataUrl } }))
+    setStore(s => ({ ...s, photos: { ...s.photos, [userId]: dataUrl } }))
   }, [])
 
-  // ---- Audit log ----
+  // Audit log
   const logAction = useCallback((entry) => {
-    setStore((s) => ({
+    setStore(s => ({
       ...s,
       auditLog: [{ id: `al-${Date.now()}`, at: new Date().toISOString(), ...entry }, ...(s.auditLog || [])].slice(0, 1000),
     }))
   }, [])
 
-  // ---- Assignments ----
-  const createAssignment = useCallback((data) => {
-    setStore((s) => ({
-      ...s,
-      assignments: [{ id: `as-${Date.now()}`, createdAt: new Date().toISOString(), maxPoints: 20, ...data }, ...(s.assignments || [])],
-    }))
+  // Assignments
+  const createAssignment = useCallback(async (data) => {
+    try {
+      const response = await api.request('/assignments', {
+        method: 'POST',
+        body: { ...data, createdAt: new Date().toISOString() },
+      })
+      if (response.success) {
+        setStore(s => ({ ...s, assignments: [response.data, ...(s.assignments || [])] }))
+        toast.success('Assignment created')
+      }
+    } catch (error) {
+      toast.error('Failed to create assignment')
+    }
   }, [])
 
-  const submitAssignment = useCallback((data) => {
-    setStore((s) => ({
-      ...s,
-      submissions: [{ id: `sub-${Date.now()}`, submittedAt: new Date().toISOString(), ...data }, ...(s.submissions || [])],
-    }))
+  const submitAssignment = useCallback(async (data) => {
+    try {
+      const response = await api.request('/submissions', {
+        method: 'POST',
+        body: { ...data, submittedAt: new Date().toISOString() },
+      })
+      if (response.success) {
+        setStore(s => ({ ...s, submissions: [response.data, ...(s.submissions || [])] }))
+        toast.success('Assignment submitted')
+      }
+    } catch (error) {
+      toast.error('Failed to submit assignment')
+    }
   }, [])
 
-  const gradeSubmission = useCallback((id, payload) => {
-    setStore((s) => ({
-      ...s,
-      submissions: (s.submissions || []).map((sub) => (sub.id === id ? { ...sub, ...payload, gradedAt: new Date().toISOString() } : sub)),
-    }))
+  const gradeSubmission = useCallback(async (id, payload) => {
+    try {
+      const response = await api.request(`/submissions/${id}/grade`, {
+        method: 'POST',
+        body: { ...payload, gradedAt: new Date().toISOString() },
+      })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          submissions: (s.submissions || []).map(sub => sub.id === id ? { ...sub, ...payload, gradedAt: new Date().toISOString() } : sub),
+        }))
+        toast.success('Submission graded')
+      }
+    } catch (error) {
+      toast.error('Failed to grade submission')
+    }
   }, [])
 
-  // ---- Discussions ----
-  const postDiscussion = useCallback((data) => {
-    setStore((s) => ({
-      ...s,
-      discussions: [{ id: `d-${Date.now()}`, createdAt: new Date().toISOString(), replies: [], ...data }, ...(s.discussions || [])],
-    }))
+  // Discussions
+  const postDiscussion = useCallback(async (data) => {
+    try {
+      const response = await api.request('/discussions', {
+        method: 'POST',
+        body: { ...data, createdAt: new Date().toISOString(), replies: [] },
+      })
+      if (response.success) {
+        setStore(s => ({ ...s, discussions: [response.data, ...(s.discussions || [])] }))
+        toast.success('Discussion posted')
+      }
+    } catch (error) {
+      toast.error('Failed to post discussion')
+    }
   }, [])
 
-  const replyToDiscussion = useCallback((discussionId, reply) => {
-    setStore((s) => ({
-      ...s,
-      discussions: (s.discussions || []).map((d) =>
-        d.id === discussionId
-          ? { ...d, replies: [...(d.replies || []), { id: `r-${Date.now()}`, createdAt: new Date().toISOString(), ...reply }] }
-          : d
-      ),
-    }))
+  const replyToDiscussion = useCallback(async (discussionId, reply) => {
+    try {
+      const response = await api.request(`/discussions/${discussionId}/reply`, {
+        method: 'POST',
+        body: { ...reply, createdAt: new Date().toISOString() },
+      })
+      if (response.success) {
+        setStore(s => ({
+          ...s,
+          discussions: (s.discussions || []).map(d =>
+            d.id === discussionId
+              ? { ...d, replies: [...(d.replies || []), response.data] }
+              : d
+          ),
+        }))
+        toast.success('Reply posted')
+      }
+    } catch (error) {
+      toast.error('Failed to post reply')
+    }
   }, [])
 
-  // ---- Password reset (mock) ----
-  const requestPasswordReset = useCallback((email) => {
-    const token = Math.random().toString(36).slice(2, 10).toUpperCase()
-    const expiresAt = new Date(Date.now() + 30 * 60_000).toISOString()
-    setStore((s) => ({
-      ...s,
-      passwordResets: [{ token, email, expiresAt, used: false }, ...(s.passwordResets || []).slice(0, 19)],
-    }))
-    return { token, expiresAt }
+  // Password reset
+  const requestPasswordReset = useCallback(async (email) => {
+    try {
+      const response = await authApi.forgotPassword(email)
+      return response
+    } catch (error) {
+      throw error
+    }
   }, [])
 
-  // ---- Reset ----
   const resetStore = useCallback(() => {
-    localStorage.removeItem(STORE_KEY)
+    localStorage.removeItem('siarm.store.v2')
     setStore(initialState)
   }, [])
 
   const value = {
     ...store,
+    loading,
     addAnnouncement, togglePin, deleteAnnouncement,
     submitAttendance,
     submitGrades,
+    publishGrades,
     publishLesson, deleteLesson,
     saveSignature, savePhoto,
     logAction,
@@ -444,4 +633,26 @@ function gradeFor(total) {
   if (total >= 50) return 'C'
   if (total >= 40) return 'D'
   return 'F'
+}
+
+const initialState = {
+  announcements: [],
+  attendance: [],
+  attendanceLog: [],
+  results: [],
+  enrolledCourses: [],
+  timetable: [],
+  users: [],
+  notifications: [],
+  theme: 'light',
+  fees: {},
+  payments: [],
+  lessons: [],
+  signatures: {},
+  photos: {},
+  auditLog: [],
+  assignments: [],
+  submissions: [],
+  discussions: [],
+  passwordResets: [],
 }
