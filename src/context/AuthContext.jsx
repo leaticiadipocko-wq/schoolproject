@@ -1,42 +1,81 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { authApi } from '@/lib/api'
+import { TokenStorage, JwtUtils, SessionManager } from '@/lib/auth'
 import toast from 'react-hot-toast'
 
 const AuthContext = createContext(null)
 
-const STORAGE_KEY = 'siarm_user'
-const TOKEN_KEY = 'siarm_token'
-
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
-    // Check for stored token and user on app load
-    const token = localStorage.getItem(TOKEN_KEY)
-    const storedUser = localStorage.getItem(STORAGE_KEY)
+    initializeAuth()
     
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser))
-      } catch {
-        localStorage.removeItem(STORAGE_KEY)
-        localStorage.removeItem(TOKEN_KEY)
+    // Set up periodic token refresh check
+    const interval = setInterval(() => {
+      if (TokenStorage.isTokenExpired()) {
+        handleTokenRefresh()
       }
-    }
-    setLoading(false)
+    }, 60000) // Check every minute
+    
+    return () => clearInterval(interval)
   }, [])
 
-  const login = async (email, password) => {
+  const initializeAuth = async () => {
     try {
-      const response = await authApi.login(email, password)
+      const session = await SessionManager.initializeSession()
+      if (session.authenticated) {
+        const userData = TokenStorage.getUserData()
+        if (userData) {
+          setUser(userData)
+        }
+      }
+    } catch (error) {
+      console.error('Auth initialization failed:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleTokenRefresh = async () => {
+    if (refreshing) return
+    setRefreshing(true)
+    
+    try {
+      const refreshed = await SessionManager.extendSession()
+      if (!refreshed) {
+        // Session couldn't be refreshed, clear auth
+        logout()
+      } else {
+        // Refresh user data
+        const userData = await authApi.me()
+        if (userData) {
+          setUser(userData)
+          TokenStorage.setUserData(userData)
+        }
+      }
+    } catch (error) {
+      console.error('Token refresh failed:', error)
+      logout()
+    }
+  }
+
+  const login = async (email, password, rememberMe = false) => {
+    try {
+      const response = await authApi.login(email, password, rememberMe)
       
       if (response.success && response.data) {
-        const { token, user: userData } = response.data
+        const { token, refresh_token, user: userData, remember_me } = response.data
         
-        // Store token and user
-        localStorage.setItem(TOKEN_KEY, token)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
+        // Store tokens and user data
+        TokenStorage.setTokens({
+          accessToken: token,
+          refreshToken: refresh_token,
+          rememberMe: rememberMe || remember_me
+        })
+        TokenStorage.setUserData(userData)
         
         setUser(userData)
         toast.success(`Welcome back, ${userData.full_name}!`)
@@ -57,10 +96,15 @@ export function AuthProvider({ children }) {
       const response = await authApi.register({ email, password, full_name: name, role, phone })
       
       if (response.success && response.data) {
-        const { token, user: userData } = response.data
+        const { token, refresh_token, user: userData } = response.data
         
-        localStorage.setItem(TOKEN_KEY, token)
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(userData))
+        // Store tokens and user data
+        TokenStorage.setTokens({
+          accessToken: token,
+          refreshToken: refresh_token,
+          rememberMe: false // Don't remember on registration
+        })
+        TokenStorage.setUserData(userData)
         
         setUser(userData)
         toast.success(`Welcome to SIARM, ${userData.full_name}!`)
@@ -76,7 +120,7 @@ export function AuthProvider({ children }) {
     }
   }
 
-  const resetPassword = async (email, newPassword) => {
+  const resetPassword = async (email) => {
     try {
       const response = await authApi.forgotPassword(email)
       
@@ -112,12 +156,10 @@ export function AuthProvider({ children }) {
 
   const logout = async () => {
     try {
-      await authApi.logout()
+      await SessionManager.endSession()
     } catch {
       // Ignore logout errors
     } finally {
-      localStorage.removeItem(STORAGE_KEY)
-      localStorage.removeItem(TOKEN_KEY)
       setUser(null)
       toast.success('Logged out successfully')
     }
@@ -126,7 +168,7 @@ export function AuthProvider({ children }) {
   const updateUser = (userData) => {
     const updatedUser = { ...user, ...userData }
     setUser(updatedUser)
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedUser))
+    TokenStorage.setUserData(updatedUser)
   }
 
   return (
@@ -139,7 +181,8 @@ export function AuthProvider({ children }) {
       changePassword,
       logout,
       updateUser,
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
+      refreshing
     }}>
       {children}
     </AuthContext.Provider>

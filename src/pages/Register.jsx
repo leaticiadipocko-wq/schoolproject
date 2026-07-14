@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Mail, Lock, User, ArrowRight, GraduationCap, BookOpen, Briefcase, ShieldCheck } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, GraduationCap, BookOpen, Briefcase, ShieldCheck, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { roleHome, ROLES } from '@/lib/roles'
 import Logo from '@/components/Logo'
+import { validatePassword, getPasswordStrengthColor, getPasswordStrengthLabel } from '@/lib/auth'
 
 const ROLE_CARDS = [
   { id: ROLES.STUDENT,  icon: GraduationCap, title: 'Student',  desc: 'Learn, view results, track attendance.' },
@@ -20,13 +21,19 @@ export default function Register() {
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [role, setRole] = useState(ROLES.STUDENT)
   const [loading, setLoading] = useState(false)
+
+  const passwordValidation = validatePassword(password)
+  const passwordsMatch = password === confirmPassword && confirmPassword.length > 0
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!name || !email || !password) return toast.error('Please fill in all fields')
-    if (password.length < 6) return toast.error('Password must be at least 6 characters')
+    if (!passwordValidation.isValid) return toast.error(passwordValidation.errors[0])
+    if (!passwordsMatch) return toast.error('Passwords do not match')
     setLoading(true)
     try {
       const u = await register({ name, email, password, role })
@@ -102,11 +109,60 @@ export default function Register() {
               <div className="relative">
                 <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
                 <input
-                  type="password" className="input pl-11"
-                  placeholder="At least 6 characters"
-                  value={password} onChange={(e) => setPassword(e.target.value)}
+                  type={showPassword ? 'text' : 'password'}
+                  className="input pl-11 pr-11"
+                  placeholder="At least 8 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  autoComplete="new-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-600"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              <div className="mt-2">
+                <div className="h-1.5 rounded-full bg-ink-100 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${getPasswordStrengthColor(passwordValidation.strength)}`}
+                    style={{ width: `${(passwordValidation.strength / 4) * 100}%` }}
+                  />
+                </div>
+                <div className="flex justify-between mt-1 text-[11px]">
+                  <span className="text-ink-500">{getPasswordStrengthLabel(passwordValidation.strength)}</span>
+                  {passwordValidation.errors.length > 0 && (
+                    <span className="text-red-500">{passwordValidation.errors[0]}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label className="label">Confirm Password</label>
+              <div className="relative">
+                <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-ink-400" />
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  className={`input pl-11 ${!passwordsMatch && confirmPassword.length > 0 ? 'border-red-300 focus:border-red-500 focus:ring-red-200' : ''}`}
+                  placeholder="Confirm your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  autoComplete="new-password"
                 />
               </div>
+              {!passwordsMatch && confirmPassword.length > 0 && (
+                <div className="mt-1 text-[11px] text-red-500 flex items-center gap-1">
+                  <AlertCircle size={10} /> Passwords do not match
+                </div>
+              )}
+              {passwordsMatch && confirmPassword.length > 0 && (
+                <div className="mt-1 text-[11px] text-emerald-600 flex items-center gap-1">
+                  <CheckCircle2 size={10} /> Passwords match
+                </div>
+              )}
             </div>
 
             <button type="submit" disabled={loading} className="btn-primary w-full py-3">

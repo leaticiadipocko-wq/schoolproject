@@ -8,28 +8,138 @@ const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
 class ApiClient {
   constructor() {
     this.baseUrl = API_BASE
-    this.token = localStorage.getItem('siarm_token')
+    this.accessToken = null
+    this.refreshToken = null
+    this.refreshPromise = null
+    this.initTokens()
   }
 
-  setToken(token) {
-    this.token = token
-    if (token) {
-      localStorage.setItem('siarm_token', token)
-    } else {
-      localStorage.removeItem('siarm_token')
+  initTokens() {
+    // Try to get tokens from cookies first (HttpOnly), then localStorage
+    this.accessToken = this.getCookie('siarm_access') || localStorage.getItem('siarm_access_token')
+    this.refreshToken = this.getCookie('siarm_refresh') || localStorage.getItem('siarm_refresh_token')
+  }
+
+  getCookie(name) {
+    if (typeof document === 'undefined') return null
+    const cookies = document.cookie.split('; ')
+    const cookie = cookies.find(c => c.startsWith(`${name}=`))
+    return cookie ? cookie.split('=')[1] : null
+  }
+
+  setTokens({ accessToken, refreshToken, rememberMe = false }) {
+    this.accessToken = accessToken
+    this.refreshToken = refreshToken
+
+    // Store in localStorage
+    localStorage.setItem('siarm_access_token', accessToken)
+    localStorage.setItem('siarm_refresh_token', refreshToken)
+
+    // Also set cookies for HttpOnly support (requires backend to set HttpOnly cookies)
+    if (typeof document !== 'undefined') {
+      const cookieOptions = `Path=/; SameSite=Strict; Secure=${window.location.protocol === 'https:'}`
+      const maxAge = 15 * 60 // 15 minutes for access token
+      const refreshMaxAge = 30 * 24 * 60 * 60 // 30 days for refresh token
+      
+      document.cookie = `siarm_access=${accessToken}; Path=/; SameSite=Strict; Secure=${window.location.protocol === 'https:'}; Max-Age=${maxAge}`
+      document.cookie = `siarm_refresh=${this.refreshToken}; Path=/; SameSite=Strict; Secure=${window.location.protocol === 'https:'}; Max-Age=${refreshMaxAge}`
     }
+  }
+
+  clearTokens() {
+    this.accessToken = null
+    this.refreshToken = null
+    localStorage.removeItem('siarm_access_token')
+    localStorage.removeItem('siarm_refresh_token')
+    
+    // Clear cookies
+    if (typeof document !== 'undefined') {
+      document.cookie = 'siarm_access=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict'
+      document.cookie = 'siarm_refresh=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Strict'
+    }
+  }
+
+  getAccessToken() {
+    return this.accessToken
+  }
+
+  getRefreshToken() {
+    return this.refreshToken
+  }
+
+  isTokenExpired(token) {
+    if (!token) return true
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+      return Date.now() >= payload.exp * 1000
+    } catch {
+      return true
+    }
+  }
+
+  async refreshAccessToken() {
+    // Prevent multiple simultaneous refresh attempts
+    if (this.refreshPromise) {
+      return this.refreshPromise
+    }
+
+    const refreshToken = this.getRefreshToken()
+    if (!refreshToken) {
+      this.clearTokens()
+      return null
+    }
+
+    this.refreshPromise = (async () => {
+      try {
+        const response = await fetch(`${this.baseUrl}/auth/refresh`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: this.refreshToken })
+        })
+
+        if (!response.ok) {
+          this.clearTokens()
+          return null
+        }
+
+        const data = await response.json()
+        this.setTokens({
+          accessToken: data.access_token,
+          refreshToken: data.refresh_token || this.refreshToken,
+          rememberMe: true
+        })
+
+        return this.accessToken
+      } catch (error) {
+        console.error('Token refresh failed:', error)
+        this.clearTokens()
+        return null
+      } finally {
+        this.refreshPromise = null
+      }
+    })()
+
+    return this.refreshPromise
   }
 
   async request(endpoint, options = {}) {
     const url = `${this.baseUrl}${endpoint}`
     
+    // Check if access token is expired and try to refresh
+    if (this.accessToken && this.isTokenExpired(this.accessToken)) {
+      const newToken = await this.refreshAccessToken()
+      if (!newToken) {
+        throw new Error('Session expired. Please log in again.')
+      }
+    }
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
     }
 
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`
+    if (this.accessToken) {
+      headers['Authorization'] = `Bearer ${this.accessToken}`
     }
 
     const config = {
@@ -42,7 +152,32 @@ class ApiClient {
     }
 
     try {
-      const response = await fetch(url, config)
+      const response = await fetch(`${this.baseUrl}${endpoint}`, config)
+      
+      // If 401, try to refresh token once
+      if (response.status === 401) {
+        const newToken = await this.refreshAccessToken()
+        if (newToken) {
+          // Retry original request with new token
+          const headers = {
+            'Content-Type': 'application/json',
+            ...options.headers,
+            'Authorization': `Bearer ${this.accessToken}`
+          }
+          const retryResponse = await fetch(`${this.baseUrl}${endpoint}`, {
+            ...options,
+            headers
+          })
+          const retryData = await retryResponse.json()
+          if (!retryResponse.ok) {
+            throw new Error(retryData.message || `HTTP error! status: ${retryResponse.status}`)
+          }
+          return retryData
+        }
+        this.clearTokens()
+        throw new Error('Session expired. Please log in again.')
+      }
+
       const data = await response.json()
 
       if (!response.ok) {
@@ -57,10 +192,10 @@ class ApiClient {
   }
 
   // Auth endpoints
-  async login(email, password) {
+  async login(email, password, rememberMe = false) {
     return this.request('/auth/login', {
       method: 'POST',
-      body: { email, password },
+      body: { email, password, remember_me: rememberMe },
     })
   }
 
@@ -72,9 +207,11 @@ class ApiClient {
   }
 
   async logout() {
-    return this.request('/auth/logout', {
-      method: 'POST',
-    })
+    try {
+      await this.request('/auth/logout', { method: 'POST' })
+    } finally {
+      this.clearTokens()
+    }
   }
 
   async me() {
@@ -208,7 +345,7 @@ export const api = new ApiClient()
 
 // Convenience exports
 export const authApi = {
-  login: (email, password) => api.login(email, password),
+  login: (email, password, rememberMe) => api.login(email, password, rememberMe),
   register: (data) => api.register(data),
   logout: () => api.logout(),
   me: () => api.me(),
@@ -243,3 +380,5 @@ export const studentApi = {
   registerCourses: (id, courseIds, semesterId, academicYearId) => api.registerCourses(id, courseIds, semesterId, academicYearId),
   getAvailableCourses: (id) => api.getAvailableCourses(id),
 }
+
+export default api

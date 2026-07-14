@@ -8,6 +8,7 @@ import { roleHome } from '@/lib/roles'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
 import LangToggle from '@/components/LangToggle'
+import { validatePassword } from '@/lib/auth'
 
 export default function Login() {
   const { login, resetPassword } = useAuth()
@@ -21,6 +22,7 @@ export default function Login() {
   const [show, setShow] = useState(false)
   const [loading, setLoading] = useState(false)
   const [showForgot, setShowForgot] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
 
   const from = location.state?.from?.pathname
 
@@ -29,7 +31,7 @@ export default function Login() {
     if (!email || !password) return toast.error(t('login.error.empty'))
     setLoading(true)
     try {
-      const u = await login(email, password)
+      const u = await login(email, password, rememberMe)
       toast.success(t('login.success', { name: u.name?.split(' ')[0] || '' }))
       navigate(from || roleHome(u.role), { replace: true })
     } catch (err) {
@@ -119,8 +121,13 @@ export default function Login() {
 
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center gap-2 text-ink-600">
-                <input type="checkbox" className="rounded border-ink-300" />
-                {t('login.rememberMe')}
+                <input
+                  type="checkbox"
+                  className="rounded border-ink-300 text-brand-600 focus:ring-brand-500"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                />
+                <span className="text-sm text-ink-600">{t('login.rememberMe')}</span>
               </label>
               <button type="button" onClick={() => setShowForgot(true)} className="text-brand-600 hover:underline">{t('login.forgot')}</button>
             </div>
