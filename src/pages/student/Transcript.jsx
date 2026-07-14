@@ -8,6 +8,7 @@ import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 import Logo from '@/components/Logo'
 import QRCode from '@/components/QRCode'
+import { getTranscriptVerificationUrl } from '@/lib/verificationUrl'
 
 const gradePoints = { 'A': 4, 'B+': 3.5, 'B': 3, 'C+': 2.5, 'C': 2, 'D': 1, 'F': 0 }
 
@@ -138,11 +139,11 @@ export default function Transcript() {
           </div>
           <div className="flex flex-col items-center">
             <div className="bg-white p-1 rounded-lg border border-ink-200 shadow-soft">
-              <QRCode value={`https://verify.iuget.cm/transcript/${user?.studentId?.split('/').pop() || 'student'}`} size={100} />
+              <QRCode value={getTranscriptVerificationUrl(user?.studentId)} size={100} />
             </div>
             <div className="text-[10px] text-ink-500 mt-1.5 text-center leading-tight">
               Scan to verify<br />
-              <span className="font-mono">verify.iuget.cm</span>
+              <span className="font-mono">{new URL(getTranscriptVerificationUrl(user?.studentId)).origin}</span>
             </div>
           </div>
         </div>

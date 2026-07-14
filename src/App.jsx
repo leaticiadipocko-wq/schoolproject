@@ -8,6 +8,8 @@ import Register from '@/pages/Register'
 import ForgotPassword from '@/pages/ForgotPassword'
 import ParentPortal from '@/pages/parent/ParentPortal'
 import ParentRegister from '@/pages/parent/ParentRegister'
+import TranscriptVerification from '@/pages/TranscriptVerification'
+import Verification from '@/pages/Verification'
 
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -74,6 +76,11 @@ export default function App() {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/parent"   element={<ParentPortal />} />
       <Route path="/parent/register" element={<ParentRegister />} />
+      <Route path="/verify/transcript/:studentId" element={<TranscriptVerification />} />
+      <Route path="/verify/results/:studentId" element={<Verification />} />
+      <Route path="/verify/student/:studentId" element={<Verification />} />
+      <Route path="/verify/receipt/:ref" element={<Verification />} />
+      <Route path="/verify/enrollment/:id/:ref" element={<Verification />} />
 
       {/* Student */}
       <Route

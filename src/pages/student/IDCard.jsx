@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import PageHeader from '@/components/ui/PageHeader'
 import QRCode from '@/components/QRCode'
+import { getStudentVerificationUrl } from '@/lib/verificationUrl'
 
 export default function IDCard() {
   const { user } = useAuth()
@@ -188,14 +189,14 @@ export default function IDCard() {
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center justify-center">
-                  <div className="bg-white p-1.5 rounded-lg shadow border border-ink-200">
-                    <QRCode value={`verify.iuget.cm/${user?.studentId?.split('/').pop() || 'student'}`} size={110} />
-                  </div>
-                  <div className="text-[8px] text-ink-500 mt-1 flex items-center gap-1">
-                    <QrCode size={9} /> verify.iuget.cm
-                  </div>
-                </div>
+<div className="flex flex-col items-center justify-center">
+              <div className="bg-white p-1.5 rounded-lg shadow border border-ink-200">
+                <QRCode value={getStudentVerificationUrl(user?.studentId)} size={110} />
+              </div>
+              <div className="text-[8px] text-ink-500 mt-1 flex items-center gap-1">
+                <QrCode size={9} /> {new URL(getStudentVerificationUrl(user?.studentId)).origin}
+              </div>
+            </div>
               </div>
 
               <div className="absolute bottom-0 left-0 right-0 px-5 py-2 bg-ink-50 border-t border-ink-200 text-[8px] text-ink-500 leading-relaxed">
