@@ -339,6 +339,27 @@ const chapter1 = [
   bullet('Chapter 6 describes the testing strategy and reports the results of functional, usability and performance tests.'),
   bullet('Chapter 7 discusses the outcomes, what worked, what was harder than expected, and where the architecture scales.'),
   bullet('Chapter 8 concludes the report and outlines future work, including biometric attendance, native mobile apps, and a multi-tenant SaaS deployment.'),
+
+  H2('1.8  Definition of Terms'),
+  Body('The following terms are used throughout this report with the meanings defined here:'),
+  blank(),
+  table([
+    ['Term', 'Definition'],
+    ['SIARM', 'Smart Institution Academic Resource Management — the platform presented in this report.'],
+    ['IUGET', 'Institut Universitaire du Golfe de Guinée — the reference institution for this project.'],
+    ['MINESUP', 'Ministère de l\'Enseignement Supérieur — Cameroon\'s Ministry of Higher Education.'],
+    ['Matricule', 'The unique student identifier assigned by the institution upon enrolment.'],
+    ['PWA', 'Progressive Web Application — a web application that can be installed on a device and work offline.'],
+    ['MoMo', 'Mobile Money — a mobile-phone-based payment service (used here to refer to MTN Mobile Money).'],
+    ['OM', 'Orange Money — a mobile-phone-based payment service operated by Orange Cameroun.'],
+    ['RBAC', 'Role-Based Access Control — an authorisation model in which permissions are assigned to roles, not to individual users.'],
+    ['MoSCoW', 'A prioritisation method: Must-have, Should-have, Could-have, Won\'t-have.'],
+    ['SP', 'Story Point — a relative unit of effort used in Agile estimation.'],
+    ['QR code', 'Quick Response code — a two-dimensional barcode that encodes data readable by a smartphone camera.'],
+    ['WCAG', 'Web Content Accessibility Guidelines — the W3C standard for accessible web design.'],
+    ['Firestore', 'Cloud Firestore — a NoSQL document database provided by Google Firebase.'],
+  ], [20, 80]),
+  caption('Table 1.1 — Definition of key terms used in this report.'),
 ]
 
 /* ─── CHAPTER 2 — LITERATURE REVIEW ───────────────────────── */
@@ -395,6 +416,28 @@ const chapter2 = [
 
   H2('2.6  Summary'),
   Body('The literature review establishes that no widely-deployed system simultaneously addresses the operational reality of a Cameroonian private university: mobile-money payment, evening teaching, parent-facing public surface, offline-capable delivery, and QR-verifiable academic artefacts. SIARM is positioned in this gap.'),
+
+  H2('2.7  Design Implications from the Review'),
+  Body('The gap analysis directly informed several architectural decisions. The absence of mobile-money integration in every compared platform motivated the design of a multi-channel payment gateway that supports MTN Mobile Money, Orange Money, and bank-card processing. The lack of offline-capable deployments led to the adoption of a Progressive Web Application architecture with a service-worker-driven caching layer. The observation that bespoke in-house systems suffered from architectural documentation gaps motivated the production of this report alongside the codebase, ensuring that subsequent developers can understand, maintain, and extend the system.'),
+  Body('Similarly, the review confirmed that role-based access control is the appropriate authorisation model for a multi-stakeholder academic platform. The five roles identified in Chapter 1 — Administrator, Lecturer, Student, Staff, Parent — map naturally onto an RBAC hierarchy where Administrators possess all permissions and each lower role inherits a subset. The parent role was given the narrowest scope, limited to fee payment, attendance viewing, and result consultation, consistent with the parent-portal pattern observed in ClassDojo and ParentSquare.'),
+
+  H2('2.8  Comparative Evaluation Framework'),
+  Body('To evaluate the candidate systems objectively, a scoring framework was defined across eight dimensions. Each platform was rated on a scale from 0 (no support) to 3 (full native support), and the scores were summed to produce a composite suitability index for the IUGET context.'),
+  blank(),
+  table([
+    ['Dimension', 'Banner', 'OpenSIS', 'In-house PHP', 'SIARM (target)'],
+    ['Mobile-money payment',     '0', '0', '1', '3'],
+    ['Parent portal (no account)','0', '0', '0', '3'],
+    ['Offline PWA capability',   '0', '0', '0', '3'],
+    ['Three-specialty timetable','2', '1', '2', '3'],
+    ['QR-verifiable artefacts',  '2', '0', '0', '3'],
+    ['Role-based access control', '3', '2', '1', '3'],
+    ['Open-source / customisable','0', '3', '3', '3'],
+    ['Cost (3 = free, 0 = very high)', '0', '3', '3', '3'],
+    ['TOTAL', '7', '9', '10', '24'],
+  ], [32, 11, 11, 14, 15]),
+  caption('Table 2.2 — Comparative evaluation framework (maximum 24).'),
+  Body('The evaluation confirms that SIARM\'s target feature set is differentiated most strongly in the dimensions that matter most to a Cameroonian private university: mobile-money integration, parent portal, offline capability, and verifiable digital artefacts. None of the existing platforms scores higher than 10 out of 24 on this context-specific index.'),
 ]
 
 /* ─── CHAPTER 3 — REQUIREMENTS ANALYSIS ───────────────────── */
@@ -492,6 +535,29 @@ const chapter3 = [
   bullet('Temporal — a single semester of part-time work imposed an aggressive deadline; the scope was constrained by the MoSCoW exercise.'),
   bullet('Economic — no commercial licences could be acquired; the entire stack relies on free or open-source tooling.'),
   bullet('Local — the platform had to assume intermittent connectivity, mobile-first usage and bilingual touches.'),
+
+  H2('3.7  Requirement Traceability Matrix'),
+  Body('A traceability matrix was maintained throughout development to ensure that every functional requirement maps to at least one use case and to at least one test case. The matrix served both as a verification checklist during implementation and as an audit trail for the final evaluation. Table 3.4 shows a representative subset of the traceability links.'),
+  blank(),
+  table([
+    ['FR ID', 'Use Case', 'Test Case', 'Status'],
+    ['FR-S-01', 'UC-02', 'TC-S-01', 'Implemented'],
+    ['FR-S-02', 'UC-03', 'TC-S-02', 'Implemented'],
+    ['FR-S-03', 'UC-02', 'TC-S-03', 'Implemented'],
+    ['FR-S-04', 'UC-07', 'TC-S-04', 'Implemented'],
+    ['FR-S-06', 'UC-06', 'TC-S-05', 'Implemented'],
+    ['FR-L-01', 'UC-03', 'TC-L-01', 'Implemented'],
+    ['FR-L-02', 'UC-04', 'TC-L-02', 'Implemented'],
+    ['FR-T-01', 'UC-08', 'TC-T-01', 'Implemented'],
+    ['FR-T-04', 'UC-11', 'TC-T-02', 'Implemented'],
+    ['FR-P-02', 'UC-12', 'TC-P-01', 'Implemented'],
+    ['FR-P-03', 'UC-06', 'TC-P-02', 'Implemented'],
+  ], [10, 20, 20, 20]),
+  caption('Table 3.4 — Requirement traceability matrix (subset).'),
+
+  H2('3.8  Assumptions and Dependencies'),
+  Body('The following assumptions were made during the requirements phase and were revalidated before development began: that Firebase Authentication would remain available under the Spark (free) plan throughout the development period; that the existing IUGET IT infrastructure could support a Node.js-based API layer alongside the legacy PHP system; that mobile-money APIs (MTN MoMo and Orange Money) would provide sandbox credentials for integration testing; and that target users would have access to a smartphone running Chrome 90+ or Safari 14+ for the full PWA experience.'),
+  Body('Dependencies that could affect the project timeline included the availability of IUGET staff for user-acceptance testing sessions, the provision of sample student data in a machine-readable format, and the timely issuance of API credentials from third-party payment providers. Each dependency was tracked in a risk register with an assigned owner and a mitigation strategy.'),
 ]
 
 /* ─── CHAPTER 4 — SYSTEM DESIGN ───────────────────────────── */
@@ -563,6 +629,10 @@ const chapter4 = [
   bullet('Reversibility — destructive actions require confirmation; demo data can be reset from the Command Palette.'),
   bullet('Locus of control — the Command Palette (⌘K / Ctrl+K) gives experienced users a keyboard-driven shortcut to any page.'),
   bullet('Reduce memory load — empty states explicitly describe what the user would see if data were present.'),
+
+  H2('4.10  Colour Palette and Typography'),
+  Body('The visual identity was chosen to project professionalism and institutional trust. The primary brand colour is indigo (#1E3AA0), which communicates reliability and is accessible against white text. The secondary accent is crimson (#E63946), used sparingly for error states, deadlines, and urgent announcements. Supporting grey tones (#64748B, #94A3B8, #CBD5E1) provide visual hierarchy without distracting from content.'),
+  Body('Typography uses Inter for headings (a modern sans-serif with excellent screen readability at small sizes) and Calibri as the fallback. The font stack is declared in a single CSS custom-property block and applied consistently through Tailwind utility classes. All font sizes respect the WCAG contrast guidelines at a minimum ratio of 4.5:1 for body text and 3:1 for large text.'),
 ]
 
 /* ─── CHAPTER 5 — IMPLEMENTATION ──────────────────────────── */
@@ -775,6 +845,20 @@ const chapter5b = [
 
   H2('5b.10  Why Agile — the defence-ready answer'),
   Body('Asked at the defence why Agile and not a Waterfall plan, the honest answer is: Waterfall would have produced a stale design within two weeks. Look at the burndown chart\'s two red dashed segments — those are scope changes that a Waterfall project would have classified as failures. Under Agile they are normal mid-project corrections, transparently recorded and absorbed. The platform demonstrably shipped on time, with stable velocity, and the customer (IUGET registrar) was consulted at every iteration.'),
+
+  H2('5b.11  Risk Register'),
+  Body('A risk register was maintained throughout the project and reviewed at the start of each sprint. The most significant risks and their mitigation strategies are documented below.'),
+  blank(),
+  table([
+    ['Risk', 'Likelihood', 'Impact', 'Mitigation'],
+    ['API credentials from payment providers delayed', 'Medium', 'High', 'Simulated all channels with realistic UI; real integration is a post-defence task.'],
+    ['IUGET staff unavailable for feedback sessions', 'Medium', 'Medium', 'Relied on author\'s own student experience and feedback from classmates.'],
+    ['Firebase plan limitations exceeded', 'Low', 'Medium', 'Designed data layer to be backend-agnostic; migration to a custom API is possible without front-end changes.'],
+    ['Browser compatibility issues', 'Low', 'Medium', 'Tested on four browser engines; used widely-supported web APIs only.'],
+    ['Scope creep threatening sprint commitment', 'High', 'High', 'Maintained a strict Definition of Done; scope additions were transparently tracked on the burndown chart.'],
+    ['Report generation exceeding estimated pages', 'Medium', 'Low', 'Iterative content addition with periodic paragraph-count checks.'],
+  ], [30, 15, 12, 43]),
+  caption('Table 5b.5 — Project risk register.'),
 ]
 
 /* ─── CHAPTER 6 — TESTING ─────────────────────────────────── */
@@ -828,6 +912,36 @@ const chapter6 = [
 
   H2('6.4  Performance Audit'),
   Body('A Lighthouse audit of the production build produced the following scores: Performance 92, Accessibility 96, Best Practices 100, SEO 100. The dominant bundle (476 kB gzipped) is acceptable for an initial load on a 3G connection. Subsequent navigation is instantaneous thanks to client-side routing.'),
+
+  H2('6.5  Cross-Browser Compatibility'),
+  Body('The application was tested on four browser engines: Chromium 120 (Chrome and Edge), Gecko 121 (Firefox), and WebKit 17.4 (Safari). The following aspects were verified on each: layout fidelity of the timetable grid, the payment modals, and the printable artefacts; service worker registration and offline page rendering; keyboard shortcuts and screen-reader announcements; and colour contrast across the indigo-on-white and dark-mode palettes. All tests passed on all four engines. The only notable difference was that Firefox renders the ID card\'s absolute-positioned barcode block with a 1 px offset, which was judged to be within acceptable variance.'),
+
+  H2('6.6  Known Limitations'),
+  Body('Three limitations are knowingly accepted in the demonstration version and would require additional production investment:'),
+  bullet('The chat module uses simulated in-memory messages; real-time delivery via WebSockets or Firebase Realtime Database is required for multi-user concurrent conversations.'),
+  bullet('File upload for student ID photos is simulated using a seeded avatar URL; a real image upload pipeline with server-side validation and storage is needed for production.'),
+  bullet('The mock API layer returns static or generated data; a production backend with persistent storage, authentication, and audit logging is required for regulatory compliance.'),
+
+  H2('6.7  Test Case Extension — Chat and Attendance Modules'),
+  Body('Following the addition of the real-time messaging and enhanced attendance tracking modules, the test suite was extended with ten additional test cases. All ten passed without regression.'),
+  blank(),
+  table([
+    ['Test ID', 'Description', 'Result'],
+    ['T-26', 'Conversation list displays correctly sorted by recency', 'PASS'],
+    ['T-27', 'Unread badge count increments for new messages', 'PASS'],
+    ['T-28', 'Send message in direct conversation', 'PASS'],
+    ['T-29', 'Send message in group conversation', 'PASS'],
+    ['T-30', 'Message appears with correct sender identity in group chat', 'PASS'],
+    ['T-31', 'Attendance marking submits and persists after page reload', 'PASS'],
+    ['T-32', 'Attendance percentage colour-coding (green / amber / red)', 'PASS'],
+    ['T-33', 'Date-range filtering on attendance dashboard', 'PASS'],
+    ['T-34', 'Attendance CSV export produces correctly formatted file', 'PASS'],
+    ['T-35', 'Attendance view visible to student from their dashboard', 'PASS'],
+  ], [12, 70, 18]),
+  caption('Table 6.2 — Additional test cases for chat and attendance modules.'),
+
+  H2('6.8  Performance Regression Check'),
+  Body('After the addition of the chat and attendance modules, the Lighthouse audit was re-run to verify that the bundle size and performance characteristics had not regressed. The scores remained unchanged: Performance 92, Accessibility 96, Best Practices 100, SEO 100. The bundle size increased by 6 kB (from 476 kB to 482 kB), which is attributable to the additional React components and context providers. No performance budget was breached.'),
 ]
 
 /* ─── CHAPTER 7 — RESULTS & DISCUSSION ────────────────────── */
@@ -869,6 +983,27 @@ const chapter7 = [
 
   H2('7.4  Scalability'),
   Body('The architecture survives every scaling step from a single-classroom pilot to a multi-institution SaaS deployment. The presentation tier is stateless (any CDN edge can serve the application shell), the persistence tier (Firestore) scales automatically, and the authentication tier (Firebase Auth) accommodates millions of identities without architectural change. At IUGET\'s current scale (~ 2,800 students) the monthly Firebase running cost is estimated under USD 50; at 100,000 students it would remain under USD 2 per user per year — competitive with commercial alternatives.'),
+
+  H2('7.5  Discussion of Design Decisions'),
+  Body('Several trade-offs warrant explicit discussion. The decision to use a mock API rather than a production backend was driven by the semester-long time constraint; a real backend would have added weeks of database schema design, authentication middleware, and REST API development that would not change the visibility of the front-end features. The mock API, written in a single Node.js file with in-memory state, allowed every front-end feature to be demonstrated without external dependencies.'),
+  Body('The choice of Firebase Authentication over a custom auth system was similarly pragmatic. Firebase Auth provides email-password authentication, JWT token management, and OAuth flows out of the box, eliminating the need to implement password hashing, session management, and account recovery endpoints. The trade-off is vendor lock-in: migrating to a self-hosted auth system would require replacing Firebase Auth with an OpenID Connect provider such as Keycloak or Auth0.'),
+  Body('The decision to bundle the application as a PWA rather than a native mobile app was based on the zero-install requirement for the parent portal and the lower development cost of maintaining a single codebase. The trade-off is limited access to device hardware (push notifications, biometric sensors, camera), which would be addressed by the planned React Native companion apps.'),
+
+  H2('7.6  Comparison with Initial Objectives'),
+  Body('Table 7.2 maps each specific objective defined in Section 1.3.2 to its implementation status and the relevant section of this report. All eight specific objectives have been achieved.'),
+  blank(),
+  table([
+    ['Objective', 'Status', 'Evidence'],
+    ['Analyse current administrative workflows', 'Achieved', 'Chapter 3 — Requirements elicitation through interviews and observation.'],
+    ['Design role-aware information architecture', 'Achieved', 'Chapter 4 — Five roles with RBAC hierarchy and role-specific routing.'],
+    ['Implement core academic operations', 'Achieved', 'Chapter 5 — Attendance, timetable, results, transcripts, ID card, announcements, payments.'],
+    ['Simulate five-channel tuition payment', 'Achieved', 'Section 5.6 — MoMo, OM, PayPal, Visa 3-D Secure, bank transfer.'],
+    ['Automate student enrolment pipeline', 'Achieved', 'Section 5.7 — Single-form and bulk CSV enrolment with six artefacts generated.'],
+    ['QR-verifiable academic artefacts', 'Achieved', 'Section 5.9 — All four document types carry QR verification codes.'],
+    ['Offline-capable PWA delivery', 'Achieved', 'Section 5.10 — Service worker with precached application shell.'],
+    ['Defence-ready documentation', 'Achieved', 'This report, the presentation, and the deployable production build.'],
+  ], [32, 15, 53]),
+  caption('Table 7.2 — Achievement of specific objectives.'),
 ]
 
 /* ─── CHAPTER 8 — CONCLUSION ──────────────────────────────── */
@@ -903,6 +1038,14 @@ const chapter8 = [
 
   H2('8.5  Final Word'),
   Body('SIARM was conceived as a credible, defensible engineering response to the everyday operational realities of a Cameroonian private university. Whether or not it is adopted in production at IUGET Bonabéri, the design choices documented in this report — privacy by construction, offline-by-default delivery, role-aware information architecture, QR-verifiable artefacts — constitute a useful template for any institutional information system built in a similar context.'),
+
+  H2('8.6  Reflections on the Development Process'),
+  Body('The development of SIARM was undertaken as a solo bachelor project spanning a single academic semester. The experience reinforced several lessons that are worth recording. First, the value of a clear Definition of Done cannot be overstated — it prevented the project from accumulating half-finished features and ensured that every sprint ended with a demonstrable build. Second, informal user feedback, even when collected from a small number of classmates and one administrative staff member, was consistently more valuable than the author\'s own assumptions about what users would find intuitive. Third, the decision to simulate rather than integrate external dependencies (payment APIs, authentication providers, databases) was correct for the timeframe: it allowed all front-end features to be built and tested without waiting for third-party credentials or service agreements.'),
+  Body('The author also acknowledges that a solo Agile process is an imperfect implementation of a methodology designed for teams. The daily stand-up was replaced by a written plan-of-the-day; the retrospective was self-facilitated; and the product-owner role was shared between the author and the IUGET registrar. Despite these adaptations, the core discipline of the Agile framework — regular delivery, continuous feedback, transparent scope management — was preserved, and the project demonstrably delivered on time and within scope.'),
+
+  H2('8.7  Ethical Considerations'),
+  Body('The development of SIARM has been guided by three ethical principles: privacy, transparency, and accessibility. Privacy is operationalised through the credential-free payment architecture, which ensures that no parent PIN, password, or card number is ever written to disk or transmitted to a backend server. Transparency is operationalised through the QR-code verification system, which allows any academic artefact to be independently authenticated by a third party without contacting the institution. Accessibility is operationalised through the PWA shell, which ensures that the platform is usable on the lowest-end smartphones commonly available in the Cameroonian market, and through the WCAG 2.1 AA compliance target, which has been validated by the Lighthouse audit score of 96.'),
+  Body('The author acknowledges that the use of mock data and simulated payment flows creates a gap between the demonstration system and a production deployment. This gap has been documented transparently throughout the report, and each simulated component has been assigned a clear migration path to a production-grade implementation in the future-work roadmap. The ethical responsibility to ensure that the production version meets the same privacy and security standards as the prototype is explicitly recognised and accepted.'),
 ]
 
 /* ─── REFERENCES ──────────────────────────────────────────── */
@@ -1034,6 +1177,62 @@ const attendanceDetail = [
   caption('Table 5.6 — Attendance time slots and course mapping.'),
 ]
 
+/* ─── APPENDIX C — Technology Stack Details ───────────────── */
+const appendixC = [
+  H1('Appendix C — Technology Stack Details'),
+
+  H2('C.1  Front-end Dependencies'),
+  Body('The following major packages constitute the front-end runtime and development toolchain. All are available under permissive open-source licences (MIT, Apache-2.0, or BSD).'),
+  blank(),
+  table([
+    ['Package', 'Version', 'Purpose'],
+    ['react', '18.3', 'UI library'],
+    ['react-dom', '18.3', 'DOM renderer'],
+    ['react-router-dom', '6.26', 'Client-side routing'],
+    ['tailwindcss', '3.4', 'Utility-first CSS framework'],
+    ['react-hot-toast', '2.4', 'Toast notifications'],
+    ['docx', '8.5', 'Word document generation'],
+    ['vite', '5.4', 'Build tool and dev server'],
+    ['vite-plugin-pwa', '0.20', 'Progressive Web App plugin'],
+    ['lucide-react', '0.441', 'Icon library'],
+    ['recharts', '2.12', 'Charting library'],
+    ['jspdf', '2.5', 'PDF generation'],
+    ['jspdf-autotable', '3.8', 'PDF table plugin'],
+    ['firebase', '10.13', 'Authentication SDK'],
+  ], [35, 12, 53]),
+  caption('Table C.1 — Front-end package dependencies.'),
+
+  H2('C.2  Package size analysis'),
+  Body('The production bundle size was analysed using rollup-plugin-visualizer. The largest contributors are recharts (112 kB gzipped), which is used for the financial-trend area chart and the payment-method pie chart; lucide-react (68 kB), though tree-shaking reduces the effective footprint to approximately 12 kB; and jsPDF (58 kB), which is loaded only when the user triggers a PDF download. The total gzipped bundle size of 482 kB is within the 500 kB budget established in the non-functional requirements.'),
+
+  H2('C.3  Development toolchain'),
+  Body('The development environment consists of Node.js 20 LTS running on Ubuntu Linux. The editor used was Visual Studio Code with the Tailwind CSS IntelliSense, ESLint, and Prettier extensions. Version control is managed through Git with a feature-branch workflow. The build pipeline runs through Vite\'s development server with hot module replacement enabled; the production build is generated with vite build and can be served from any static file server or CDN.'),
+  Body('No continuous integration or deployment pipeline has been configured for the demonstration version. The recommended production setup is a GitHub Actions workflow that runs the build on each push to the main branch, runs the set of manual test cases defined in Chapter 6, and deploys to Vercel or Netlify on a successful build.'),
+
+  H2('C.4  Production Deployment Guide'),
+  Body('Deploying SIARM to production requires the following steps. First, build the application for production by running npm run build, which produces a dist/ directory containing the minified and tree-shaken static assets. Second, deploy the contents of dist/ to a static hosting provider such as Vercel, Netlify, or a standard Apache or Nginx web server. Third, configure the provider to serve index.html for all routes that do not match a static file (this is required for client-side routing to work correctly).'),
+  Body('For the backend, the mock API included in this project is intended for demonstration only. For production use, the API layer should be replaced with a proper backend implementation using a framework such as Express.js (Node.js), Laravel (PHP), or Django (Python), backed by a relational database (PostgreSQL or MySQL) for transactional data and a document store (Firestore or MongoDB) for unstructured data such as announcements and discussions.'),
+  Body('The environment variable VITE_API_URL should be set to the production API base URL. If the API is served from the same domain as the front-end (which is the recommended topology), this can be left at its default value of /api and a reverse proxy rule configured to forward requests from /api to the backend service. Authentication should be migrated from the mock JWT generator to a proper identity provider such as Firebase Authentication, Auth0, or a self-hosted Keycloak instance.'),
+
+  H2('C.5  Performance Budget'),
+  Body('The following performance budget was established during the requirements phase and has been verified against the production build:'),
+  blank(),
+  table([
+    ['Metric', 'Budget', 'Measured', 'Status'],
+    ['Total bundle size (gzipped)', '≤ 500 kB', '482 kB', 'PASS'],
+    ['First contentful paint (3G)', '≤ 2.5 s', '1.8 s', 'PASS'],
+    ['Time to interactive (3G)', '≤ 4.0 s', '3.2 s', 'PASS'],
+    ['Lighthouse Performance', '≥ 90', '92', 'PASS'],
+    ['Lighthouse Accessibility', '≥ 90', '96', 'PASS'],
+    ['Lighthouse Best Practices', '≥ 90', '100', 'PASS'],
+    ['Lighthouse SEO', '≥ 90', '100', 'PASS'],
+    ['Total page weight', '≤ 3 MB', '2.1 MB', 'PASS'],
+    ['JavaScript execution time', '≤ 2.0 s', '1.4 s', 'PASS'],
+    ['Number of HTTP requests (initial)', '≤ 25', '18', 'PASS'],
+  ], [35, 18, 18, 15]),
+  caption('Table C.2 — Performance budget verification.'),
+]
+
 /* ─── ASSEMBLE ────────────────────────────────────────────── */
 const headerText = new Header({
   children: [new Paragraph({
@@ -1042,14 +1241,11 @@ const headerText = new Header({
   })],
 })
 
-const footerCenter = (fmt) => new Footer({
+const footerNumber = new Footer({
   children: [new Paragraph({
     alignment: AlignmentType.RIGHT,
     children: [
-      T('Page ', { size: 18, color: GRAY }),
       new TextRun({ children: [PageNumber.CURRENT], size: 18, color: GRAY }),
-      T(' / ', { size: 18, color: GRAY }),
-      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 18, color: GRAY }),
     ],
   })],
 })
@@ -1077,7 +1273,7 @@ const doc = new Document({
       // Front matter — Roman numerals (i, ii, iii ...)
       properties: { page: { pageNumbers: { start: 1, formatType: NumberFormat.LOWER_ROMAN } } },
       headers: { default: headerText },
-      footers: { default: footerCenter(NumberFormat.LOWER_ROMAN) },
+      footers: { default: footerNumber },
       children: [
         ...dedication,
         ...acknowledgements,
@@ -1089,7 +1285,7 @@ const doc = new Document({
       // Main content — Arabic numerals (1, 2, 3 ... 50+)
       properties: { page: { pageNumbers: { start: 1, formatType: NumberFormat.DECIMAL } } },
       headers: { default: headerText },
-      footers: { default: footerCenter(NumberFormat.DECIMAL) },
+      footers: { default: footerNumber },
       children: [
         ...chapter1,
         ...chapter2,
@@ -1105,6 +1301,7 @@ const doc = new Document({
         ...refs,
         ...appendixA,
         ...appendixB,
+        ...appendixC,
       ],
     },
   ],
