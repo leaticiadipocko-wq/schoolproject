@@ -11,6 +11,25 @@ const PORT = 8000;
 const users = new Map();
 const tokens = new Map();
 
+// Pre-seed demo users
+const DEMO_USERS = [
+  { email: 'student@iuget.cm', password: 'password', full_name: 'Chituh Innocentia', role: 'student', id: 1, uuid: crypto.randomUUID(), phone: '670000001' },
+  { email: 'lecturer@iuget.cm', password: 'password', full_name: 'Mr Nkoma Ngouloure', role: 'lecturer', id: 2, uuid: crypto.randomUUID(), phone: '670000002' },
+  { email: 'staff@iuget.cm', password: 'password', full_name: 'Mrs. Linda Foncha', role: 'staff', id: 3, uuid: crypto.randomUUID(), phone: '670000003' },
+  { email: 'admin@iuget.cm', password: 'password', full_name: 'Prof. James Murdza', role: 'admin', id: 4, uuid: crypto.randomUUID(), phone: '670000004' },
+]
+DEMO_USERS.forEach(d => {
+  const passwordHash = crypto.createHash('sha256').update(d.password).digest('hex')
+  const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(d.full_name)}`
+  const user = {
+    id: d.id, uuid: d.uuid, email: d.email, password_hash: passwordHash,
+    full_name: d.full_name, role: d.role, avatar_url: avatarUrl, phone: d.phone,
+    status: 'active', created_at: '2025-09-01T08:00:00.000Z', last_login_at: null,
+  }
+  if (d.role === 'student') { user.registration_number = 'REG/2025/00001'; user.matricule = 'IUGET/2025/SWE/0142'; user.programme_id = 1; user.level = 3; user.specialty = 'SWE'; user.studentId = 'IUGET/2025/SWE/0142'; user.program = 'Software Engineering' }
+  users.set(d.email, user)
+})
+
 function generateToken(user) {
   const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
   const payload = Buffer.from(JSON.stringify({
@@ -355,6 +374,26 @@ const server = http.createServer(async (req, res) => {
       { id: 6, day: 'Friday', time: '08:00 - 10:00', course: 'Software Engineering', room: 'F606', lecturer: 'Dr. Wilson', specialty: 'SWE' },
     ];
     return sendJson(res, 200, { success: true, data: timetable });
+  }
+  
+  // Results endpoint
+  if (segments[0] === 'results') {
+    // Sample results data for demo
+    const results = [
+      { id: 1, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Mathematics', semester: 'Semester 1', ca: 28, exam: 65, total: 93, grade: 'A' },
+      { id: 2, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Physics', semester: 'Semester 1', ca: 25, exam: 58, total: 83, grade: 'A' },
+      { id: 3, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Programming', semester: 'Semester 1', ca: 30, exam: 70, total: 100, grade: 'A' },
+      { id: 4, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Database Systems', semester: 'Semester 2', ca: 27, exam: 62, total: 89, grade: 'A' },
+      { id: 5, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Web Development', semester: 'Semester 2', ca: 26, exam: 55, total: 81, grade: 'A' },
+      { id: 6, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Software Engineering', semester: 'Semester 2', ca: 24, exam: 50, total: 74, grade: 'B+' },
+      { id: 7, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Mathematics', semester: 'Semester 1', ca: 22, exam: 45, total: 67, grade: 'B' },
+      { id: 8, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Physics', semester: 'Semester 1', ca: 20, exam: 40, total: 60, grade: 'B' },
+      { id: 9, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Programming', semester: 'Semester 1', ca: 28, exam: 60, total: 88, grade: 'A' },
+    ];
+    
+    if (req.method === 'GET') {
+      return sendJson(res, 200, { success: true, data: results });
+    }
   }
   
   // Default 404

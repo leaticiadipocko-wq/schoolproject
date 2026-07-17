@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Mail, Lock, User, ArrowRight, GraduationCap, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, User, ArrowRight, GraduationCap, BookOpen, Briefcase, ShieldCheck, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { roleHome, ROLES } from '@/lib/roles'
 import Logo from '@/components/Logo'
 import { validatePassword, getPasswordStrengthColor, getPasswordStrengthLabel } from '@/lib/auth'
 
 const ROLE_CARDS = [
-  { id: ROLES.STUDENT, icon: GraduationCap, title: 'Student', desc: 'Learn, view results, track attendance.' },
+  { id: ROLES.STUDENT,  icon: GraduationCap, title: 'Student',  desc: 'Learn, view results, track attendance.' },
+  { id: ROLES.LECTURER, icon: BookOpen,      title: 'Lecturer', desc: 'Teach, grade, manage classes.' },
+  { id: ROLES.STAFF,    icon: Briefcase,     title: 'Staff',    desc: 'Operate the registrar and bursary.' },
+  { id: ROLES.ADMIN,    icon: ShieldCheck,   title: 'Admin',    desc: 'Lead with analytics and insights.' },
 ]
 
 export default function Register() {

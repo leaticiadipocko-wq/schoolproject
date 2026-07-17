@@ -994,7 +994,66 @@ const appendixB = [
   bullet('Close with the Command Palette (⌘K) to demonstrate keyboard-driven navigation.'),
 ]
 
+/* ─── CHAT / MESSAGING SYSTEM ─────────────────────────────── */
+const chatSection = [
+  H2('5.12  Real-Time Messaging & Chat System'),
+  Body('SIARM includes a WhatsApp-style real-time messaging system (Chat) that enables direct communication between lecturers and students, as well as group conversations for course cohorts. The module was designed to replace the informal use of third-party messaging applications (WhatsApp, Telegram) that currently fragment institutional communication.'),
+  Body('The chat interface follows a two-panel layout: a left sidebar lists all active conversations (direct and group), sorted by recency, with unread-message badges; the right panel displays the message history in a bubble-style layout, with a text input and a send button at the bottom. Messages sent by the current user appear right-aligned in brand-indigo bubbles; messages received appear left-aligned in white bubbles with the sender\'s avatar and name above each message block in group conversations.'),
+  Body('The mock data layer pre-populates three illustrative conversations: a direct chat between Mr Nkoma Ngouloure and Chituh Innocentia discussing a Compiler Design assignment featuring LR-parser construction questions and explanatory responses; a direct chat between the lecturer and Nkwenti Deshnic regarding a Saturday-class absence and a request for slides; and a group conversation titled "SWE — Compiler Design Group" that includes the lecturer and three students, with threaded discussion of the parsing-table assignment and the lecturer\'s announcement about a project-group composition deadline.'),
+  Body('Each message carries a timestamp, a read/delivered indicator (double-check icon for read messages, single-check for delivered), and the sender\'s identity. The conversation list shows the last message preview, the sender\'s name, the time elapsed since the last message, and an unread counter badge. Users can search conversations by participant name or conversation title. The module integrates with the existing authentication context so that each user sees only the conversations in which they participate.'),
+  Body('The chat system is designed to be extended with WebSocket-based real-time delivery in production; the current implementation uses React state with optimistic UI updates, so messages appear instantly while a simulated network round-trip completes in the background.'),
+  blank(),
+  table([
+    ['Feature', 'Current status', 'Production upgrade'],
+    ['Direct messaging',     'Working (mock data)',      'WebSocket real-time delivery'],
+    ['Group conversations',  'Working (mock data)',      'Create/rename groups from UI'],
+    ['Unread badges',        'Working',                  'Server-side unread tracking'],
+    ['Message search',       'Working',                  'Full-text search via Firestore'],
+    ['File/image sharing',   'Planned',                  'Firebase Storage integration'],
+    ['Voice notes',          'Future',                   'Web Audio API + Storage'],
+  ], [30, 30, 40]),
+  caption('Table 5.5 — Chat module feature roadmap.'),
+]
+
+/* ─── ATTENDANCE TRACKING DETAIL ──────────────────────────── */
+const attendanceDetail = [
+  H2('5.13  Enhanced Attendance Tracking'),
+  Body('The attendance tracking module in SIARM has been designed for speed and accuracy, supporting time-slot-based roll-call that matches the IUGET teaching schedule. Lecturers can mark attendance for any of their assigned courses during specific time windows (e.g., the 18:00–20:00 evening slot or the 08:00–10:00 morning slot).'),
+  Body('The system records the exact time of each attendance submission, allowing the administration to monitor punctuality patterns across the institution. A lecturer opens the Mark Attendance page, selects the course and time slot from pre-configured options, and sees the class roster. Each student is marked Present or Absent with a single tap. The total count and percentage are updated in real time, and the lecturer receives a toast confirmation.'),
+  Body('Attendance data is stored per course and per period, and is aggregated into a dashboard view accessible to students (who see their personal attendance rate per course) and to staff/administrators (who see attendance trends across the institution). The attendance summary cards display the total number of sessions, the number attended, and the percentage, with colour-coded indicators (green for ≥ 80 %, amber for 50–79 %, red for < 50 %).'),
+  Body('The system also supports date range filtering and export to CSV, enabling staff to produce attendance reports for administrative review or MINESUP compliance submissions.'),
+  blank(),
+  table([
+    ['Time slot', 'Course', 'Level', 'Default action'],
+    ['18:00 - 20:00', 'Compiler Design (CS501)', 'L3 SWE', 'Evening roll-call'],
+    ['20:00 - 22:00', 'Mobile Development (CS507)', 'L3 SWE', 'Evening roll-call'],
+    ['08:00 - 10:00', 'Intro to CS (CS101)', 'L1', 'Morning roll-call'],
+    ['10:00 - 12:00', 'Mathematics (CS103)', 'L1', 'Morning roll-call'],
+    ['13:00 - 15:00', 'Database Systems (CS203)', 'L2', 'Afternoon roll-call'],
+  ], [25, 35, 20, 20]),
+  caption('Table 5.6 — Attendance time slots and course mapping.'),
+]
+
 /* ─── ASSEMBLE ────────────────────────────────────────────── */
+const headerText = new Header({
+  children: [new Paragraph({
+    alignment: AlignmentType.RIGHT,
+    children: [T('SIARM · IUGET Bonabéri Bachelor Project · 2026', { size: 18, color: GRAY, italics: true })],
+  })],
+})
+
+const footerCenter = (fmt) => new Footer({
+  children: [new Paragraph({
+    alignment: AlignmentType.RIGHT,
+    children: [
+      T('Page ', { size: 18, color: GRAY }),
+      new TextRun({ children: [PageNumber.CURRENT], size: 18, color: GRAY }),
+      T(' / ', { size: 18, color: GRAY }),
+      new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 18, color: GRAY }),
+    ],
+  })],
+})
+
 const doc = new Document({
   creator: 'James Murdza',
   title: 'SIARM Bachelor Project Report',
@@ -1008,39 +1067,37 @@ const doc = new Document({
   },
   sections: [
     {
+      // Cover page — no page number
       properties: { page: { pageNumbers: { start: 1, formatType: NumberFormat.DECIMAL } } },
-      headers: {
-        default: new Header({
-          children: [new Paragraph({
-            alignment: AlignmentType.RIGHT,
-            children: [T('SIARM · IUGET Bonabéri Bachelor Project · 2026', { size: 18, color: GRAY, italics: true })],
-          })],
-        }),
-      },
-      footers: {
-        default: new Footer({
-          children: [new Paragraph({
-            alignment: AlignmentType.CENTER,
-            children: [
-              T('Page ', { size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.CURRENT], size: 18, color: GRAY }),
-              T(' / ', { size: 18, color: GRAY }),
-              new TextRun({ children: [PageNumber.TOTAL_PAGES], size: 18, color: GRAY }),
-            ],
-          })],
-        }),
-      },
+      headers: { default: new Header({ children: [] }) },
+      footers: { default: new Footer({ children: [] }) },
+      children: cover,
+    },
+    {
+      // Front matter — Roman numerals (i, ii, iii ...)
+      properties: { page: { pageNumbers: { start: 1, formatType: NumberFormat.LOWER_ROMAN } } },
+      headers: { default: headerText },
+      footers: { default: footerCenter(NumberFormat.LOWER_ROMAN) },
       children: [
-        ...cover,
         ...dedication,
         ...acknowledgements,
         ...abstract,
         ...toc,
+      ],
+    },
+    {
+      // Main content — Arabic numerals (1, 2, 3 ... 50+)
+      properties: { page: { pageNumbers: { start: 1, formatType: NumberFormat.DECIMAL } } },
+      headers: { default: headerText },
+      footers: { default: footerCenter(NumberFormat.DECIMAL) },
+      children: [
         ...chapter1,
         ...chapter2,
         ...chapter3,
         ...chapter4,
         ...chapter5,
+        ...chatSection,
+        ...attendanceDetail,
         ...chapter5b,
         ...chapter6,
         ...chapter7,

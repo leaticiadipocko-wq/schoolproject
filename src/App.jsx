@@ -10,6 +10,7 @@ import ParentPortal from '@/pages/parent/ParentPortal'
 import ParentRegister from '@/pages/parent/ParentRegister'
 import TranscriptVerification from '@/pages/TranscriptVerification'
 import Verification from '@/pages/Verification'
+import ResultChecker from '@/pages/ResultChecker'
 
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
 import DashboardLayout from '@/components/layout/DashboardLayout'
@@ -43,6 +44,7 @@ import Profile        from '@/pages/Profile'
 import Help           from '@/pages/Help'
 import OfflineStatus  from '@/pages/OfflineStatus'
 import Discussions    from '@/pages/Discussions'
+import Chat           from '@/pages/Chat'
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
@@ -81,6 +83,7 @@ export default function App() {
       <Route path="/verify/student/:studentId" element={<Verification />} />
       <Route path="/verify/receipt/:ref" element={<Verification />} />
       <Route path="/verify/enrollment/:id/:ref" element={<Verification />} />
+        <Route path="/results" element={<ResultChecker />} />
 
       {/* Student */}
       <Route
@@ -96,6 +99,7 @@ export default function App() {
         <Route path="timetable"     element={<Timetable />} />
         <Route path="results"       element={<Results />} />
         <Route path="announcements" element={<Announcements />} />
+        <Route path="chat"          element={<Chat />} />
         <Route path="learning"      element={<Learning />} />
         <Route path="transcript"    element={<Transcript />} />
         <Route path="fees"          element={<Fees />} />
@@ -124,6 +128,7 @@ export default function App() {
         <Route path="lessons"       element={<PublishLesson />} />
         <Route path="assignments"   element={<LecturerAssignments />} />
         <Route path="discussions"   element={<Discussions />} />
+        <Route path="chat"          element={<Chat />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />

@@ -16,7 +16,89 @@ export function DataProvider({ children }) {
     announcements: [],
     attendance: [],
     attendanceLog: [],
-    results: [],
+    conversations: [
+      {
+        id: 'conv-1',
+        type: 'direct',
+        name: 'Chituh Innocentia',
+        participants: [
+          { uid: 'lec-001', name: 'Mr Nkoma Ngouloure', role: 'lecturer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nkoma' },
+          { uid: 'stu-001', name: 'Chituh Innocentia', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
+        ],
+        unread: 0,
+        updatedAt: new Date(Date.now() - 600000).toISOString(),
+      },
+      {
+        id: 'conv-2',
+        type: 'direct',
+        name: 'Nkwenti Deshnic',
+        participants: [
+          { uid: 'lec-001', name: 'Mr Nkoma Ngouloure', role: 'lecturer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nkoma' },
+          { uid: 'stu-002', name: 'Nkwenti Deshnic', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Deshnic' },
+        ],
+        unread: 2,
+        updatedAt: new Date(Date.now() - 1800000).toISOString(),
+      },
+      {
+        id: 'conv-3',
+        type: 'group',
+        name: 'SWE - Compiler Design Group',
+        participants: [
+          { uid: 'lec-001', name: 'Mr Nkoma Ngouloure', role: 'lecturer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nkoma' },
+          { uid: 'stu-001', name: 'Chituh Innocentia', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
+          { uid: 'stu-002', name: 'Nkwenti Deshnic', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Deshnic' },
+          { uid: 'stu-003', name: 'Wandji Adrien', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Adrien' },
+        ],
+        unread: 5,
+        updatedAt: new Date(Date.now() - 300000).toISOString(),
+      },
+      {
+        id: 'conv-4',
+        type: 'direct',
+        name: 'Winner Chinuere',
+        participants: [
+          { uid: 'sta-001', name: 'Winner Chinuere', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Winner' },
+          { uid: 'stu-001', name: 'Chituh Innocentia', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
+        ],
+        unread: 0,
+        updatedAt: new Date(Date.now() - 86400000).toISOString(),
+      },
+    ],
+    messages: [
+      { id: 'msg-1', conversationId: 'conv-1', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Good morning Mr Nkoma! I had a question about the Compiler Design assignment.', timestamp: new Date(Date.now() - 3600000).toISOString(), read: true },
+      { id: 'msg-2', conversationId: 'conv-1', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Good morning Innocentia. Sure, what is your question?', timestamp: new Date(Date.now() - 3000000).toISOString(), read: true },
+      { id: 'msg-3', conversationId: 'conv-1', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'I am working on the LR parser construction and I am stuck on the parsing table. Could you help me understand the reduce actions?', timestamp: new Date(Date.now() - 2400000).toISOString(), read: true },
+      { id: 'msg-4', conversationId: 'conv-1', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Of course. Let me explain... The reduce action is taken when we have a handle on top of the stack. Look at the item set I₀ — when we see a follow symbol that appears in the FOLLOW of the LHS non-terminal, we reduce by that production.', timestamp: new Date(Date.now() - 1800000).toISOString(), read: true },
+      { id: 'msg-5', conversationId: 'conv-1', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'I will also share an example in class tomorrow. Keep up the good work!', timestamp: new Date(Date.now() - 1200000).toISOString(), read: false },
+      { id: 'msg-6', conversationId: 'conv-1', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Thank you sir! That makes sense now. I will practice more examples.', timestamp: new Date(Date.now() - 600000).toISOString(), read: false },
+      { id: 'msg-7', conversationId: 'conv-2', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'Sir, I will not be able to attend the Saturday class. I have a family event.', timestamp: new Date(Date.now() - 7200000).toISOString(), read: true },
+      { id: 'msg-8', conversationId: 'conv-2', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Noted Deshnic. Please make sure to catch up on the Design Project work with your group mates.', timestamp: new Date(Date.now() - 6000000).toISOString(), read: true },
+      { id: 'msg-9', conversationId: 'conv-2', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'Yes sir, I have already coordinated with my group. Thank you!', timestamp: new Date(Date.now() - 4800000).toISOString(), read: true },
+      { id: 'msg-10', conversationId: 'conv-2', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'Also, could you please send me the Research Methodology slides? I missed the last lecture.', timestamp: new Date(Date.now() - 3600000).toISOString(), read: false },
+      { id: 'msg-11', conversationId: 'conv-2', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Sure, I will upload them to the portal this evening.', timestamp: new Date(Date.now() - 1800000).toISOString(), read: false },
+      { id: 'msg-12', conversationId: 'conv-3', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Good evening everyone! Has anyone started on the Compiler Design assignment?', timestamp: new Date(Date.now() - 7200000).toISOString(), read: true },
+      { id: 'msg-13', conversationId: 'conv-3', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'I started it yesterday. The LR parsing table is quite challenging.', timestamp: new Date(Date.now() - 6000000).toISOString(), read: true },
+      { id: 'msg-14', conversationId: 'conv-3', sender: { uid: 'stu-003', name: 'Wandji Adrien' }, text: 'Same here! I spent 3 hours on it and still confused about the shift/reduce conflicts.', timestamp: new Date(Date.now() - 5400000).toISOString(), read: true },
+      { id: 'msg-15', conversationId: 'conv-3', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Everyone, I see you are struggling. I will dedicate the first 20 minutes of Thursday class to go over the tricky parts. In the meantime, review the example in Chapter 4 of the textbook.', timestamp: new Date(Date.now() - 3600000).toISOString(), read: true },
+      { id: 'msg-16', conversationId: 'conv-3', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Thank you sir! That will help a lot.', timestamp: new Date(Date.now() - 3000000).toISOString(), read: true },
+      { id: 'msg-17', conversationId: 'conv-3', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'Thanks Mr Nkoma!', timestamp: new Date(Date.now() - 2400000).toISOString(), read: true },
+      { id: 'msg-18', conversationId: 'conv-3', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Also, please form groups of 3 for the Design Project. Submit your group composition by Friday.', timestamp: new Date(Date.now() - 1800000).toISOString(), read: false },
+      { id: 'msg-19', conversationId: 'conv-3', sender: { uid: 'stu-003', name: 'Wandji Adrien' }, text: 'Noted sir!', timestamp: new Date(Date.now() - 1200000).toISOString(), read: false },
+      { id: 'msg-20', conversationId: 'conv-3', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'We are already a group of 3! Innocentia, Deshnic and I.', timestamp: new Date(Date.now() - 600000).toISOString(), read: false },
+      { id: 'msg-21', conversationId: 'conv-4', sender: { uid: 'stu-005', name: 'Winner Chinuere' }, text: 'Hey Innocentia! Are you coming to the study group tonight?', timestamp: new Date(Date.now() - 90000000).toISOString(), read: true },
+      { id: 'msg-22', conversationId: 'conv-4', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Hi Winner! Yes I will be there at 6pm in the library.', timestamp: new Date(Date.now() - 86400000).toISOString(), read: true },
+    ],
+    results: [
+      { id: 1, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Mathematics', semester: 'Semester 1', ca: 28, exam: 65, total: 93, grade: 'A' },
+      { id: 2, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Physics', semester: 'Semester 1', ca: 25, exam: 58, total: 83, grade: 'A' },
+      { id: 3, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Programming', semester: 'Semester 1', ca: 30, exam: 70, total: 100, grade: 'A' },
+      { id: 4, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Database Systems', semester: 'Semester 2', ca: 27, exam: 62, total: 89, grade: 'A' },
+      { id: 5, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Web Development', semester: 'Semester 2', ca: 26, exam: 55, total: 81, grade: 'A' },
+      { id: 6, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Software Engineering', semester: 'Semester 2', ca: 24, exam: 50, total: 74, grade: 'B+' },
+      { id: 7, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Mathematics', semester: 'Semester 1', ca: 22, exam: 45, total: 67, grade: 'B' },
+      { id: 8, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Physics', semester: 'Semester 1', ca: 20, exam: 40, total: 60, grade: 'B' },
+      { id: 9, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Programming', semester: 'Semester 1', ca: 28, exam: 60, total: 88, grade: 'A' },
+    ],
     enrolledCourses: [],
     timetable: [],
     users: [],
@@ -579,6 +661,56 @@ export function DataProvider({ children }) {
     }
   }, [])
 
+  // Chat
+  const sendMessage = useCallback((conversationId, text) => {
+    if (!text.trim()) return
+    const newMsg = {
+      id: `msg-${Date.now()}`,
+      conversationId,
+      sender: { uid: user?.uid, name: user?.name },
+      text: text.trim(),
+      timestamp: new Date().toISOString(),
+      read: false,
+    }
+    setStore(s => ({
+      ...s,
+      messages: [...s.messages, newMsg],
+      conversations: s.conversations.map(c =>
+        c.id === conversationId
+          ? {
+              ...c,
+              lastMessage: { text: text.trim(), timestamp: newMsg.timestamp, sender: user?.name },
+              unread: 0,
+              updatedAt: newMsg.timestamp,
+            }
+          : c
+      ),
+    }))
+  }, [user])
+
+  const createConversation = useCallback((participants, type = 'direct', name = '') => {
+    const convId = `conv-${Date.now()}`
+    const newConv = {
+      id: convId,
+      type,
+      name: name || participants.map(p => p.name).join(', '),
+      participants,
+      unread: 0,
+      updatedAt: new Date().toISOString(),
+    }
+    setStore(s => ({ ...s, conversations: [newConv, ...s.conversations] }))
+    return convId
+  }, [])
+
+  const markConversationRead = useCallback((conversationId) => {
+    setStore(s => ({
+      ...s,
+      conversations: s.conversations.map(c =>
+        c.id === conversationId ? { ...c, unread: 0 } : c
+      ),
+    }))
+  }, [])
+
   // Password reset
   const requestPasswordReset = useCallback(async (email) => {
     try {
@@ -606,6 +738,7 @@ export function DataProvider({ children }) {
     logAction,
     createAssignment, submitAssignment, gradeSubmission,
     postDiscussion, replyToDiscussion,
+    sendMessage, createConversation, markConversationRead,
     requestPasswordReset,
     enrollCourse, unenrollCourse,
     addUser, updateUser, deleteUser,
@@ -636,10 +769,20 @@ function gradeFor(total) {
 }
 
 const initialState = {
-  announcements: [],
+  announcements: [
+    { id: 1, title: 'Welcome to SIARM', body: 'Welcome to the new academic year!', author: 'Admin', createdAt: new Date().toISOString(), pinned: true },
+    { id: 2, title: 'Exam Schedule', body: 'Final exams start next week.', author: 'Registrar', createdAt: new Date(Date.now() - 86400000).toISOString(), pinned: false },
+  ],
   attendance: [],
   attendanceLog: [],
-  results: [],
+  results: [
+    { id: 1, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Mathematics', semester: 'Semester 1', ca: 25, exam: 60, total: 85, grade: 'A' },
+    { id: 2, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Physics', semester: 'Semester 1', ca: 28, exam: 55, total: 83, grade: 'A' },
+    { id: 3, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Programming', semester: 'Semester 1', ca: 30, exam: 50, total: 80, grade: 'A' },
+    { id: 4, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Database Systems', semester: 'Semester 2', ca: 22, exam: 48, total: 70, grade: 'B+' },
+    { id: 5, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Web Development', semester: 'Semester 2', ca: 25, exam: 45, total: 70, grade: 'B+' },
+    { id: 6, studentId: 'IUGET/2026/SWE/0011', studentName: 'Result Check Student', course: 'Software Engineering', semester: 'Semester 2', ca: 20, exam: 40, total: 60, grade: 'B' },
+  ],
   enrolledCourses: [],
   timetable: [],
   users: [],

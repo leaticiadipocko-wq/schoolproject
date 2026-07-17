@@ -3,7 +3,7 @@ import {
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
   WifiOff, MapPin, Sparkles, ClipboardList, MessageSquare, Activity,
-  Archive, Globe,
+  Archive, Globe, MessageCircle,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -16,6 +16,7 @@ export const STUDENT_NAV = [
       { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
       { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },
+      { to: '/student/chat',          label: 'Chat',           icon: MessageCircle },
       { to: '/student/discussions',   label: 'Discussions',   icon: MessageSquare },
       { to: '/student/announcements', label: 'Announcements', icon: Megaphone },
     ],
@@ -58,6 +59,7 @@ export const LECTURER_NAV = [
   {
     title: 'Communicate',
     links: [
+      { to: '/lecturer/chat',          label: 'Chat',           icon: MessageCircle },
       { to: '/lecturer/announcements', label: 'Announcements', icon: Megaphone },
     ],
   },

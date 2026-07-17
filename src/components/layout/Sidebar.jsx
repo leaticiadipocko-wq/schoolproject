@@ -1,8 +1,11 @@
-import { NavLink } from 'react-router-dom'
-import { X } from 'lucide-react'
+import { NavLink, Link } from 'react-router-dom'
+import { X, User as UserIcon } from 'lucide-react'
 import Logo from '@/components/Logo'
+import { useAuth } from '@/context/AuthContext'
+import { ROLE_LABELS } from '@/lib/roles'
 
 export default function Sidebar({ items, open, onClose }) {
+  const { user } = useAuth()
   return (
     <>
       {/* Mobile overlay */}
@@ -60,6 +63,28 @@ export default function Sidebar({ items, open, onClose }) {
             </div>
           ))}
         </nav>
+
+        {/* User profile */}
+        {user && (
+          <div className="p-3 border-t border-ink-100">
+            <Link
+              to={`/${user.role}/profile`}
+              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-ink-50 transition"
+            >
+              {user.avatar ? (
+                <img src={user.avatar} alt="" className="w-9 h-9 rounded-full ring-2 ring-brand-100" />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-brand-100 flex items-center justify-center">
+                  <UserIcon size={18} className="text-brand-600" />
+                </div>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-medium truncate">{user.name}</div>
+                <div className="text-[10px] text-ink-500 truncate">{ROLE_LABELS[user?.role]}</div>
+              </div>
+            </Link>
+          </div>
+        )}
 
         <div className="p-3 border-t border-ink-100">
           <div className="rounded-xl bg-gradient-to-br from-brand-700 to-brand-800 text-white p-4">
