@@ -112,6 +112,10 @@ class ApiClient {
         return this.accessToken
       } catch (error) {
         console.error('Token refresh failed:', error)
+        if (error instanceof TypeError && error.message === 'Failed to fetch') {
+          this.clearTokens()
+          throw new Error('Unable to reach server. Please check your connection and try again.')
+        }
         this.clearTokens()
         return null
       } finally {
@@ -186,7 +190,9 @@ class ApiClient {
 
       return data
     } catch (error) {
-      console.error(`API Error (${endpoint}):`, error)
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        throw new Error('Unable to reach server. Please check your connection and try again.')
+      }
       throw error
     }
   }

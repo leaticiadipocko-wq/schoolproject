@@ -1,446 +1,605 @@
-// Mock API Server for SIARM Demo Mode
-// Handles auth endpoints when PHP backend is not available
-
 import http from 'http';
-import { URL } from 'url';
 import crypto from 'crypto';
+import { URL } from 'url';
+import { readFileSync, existsSync } from 'fs';
 
 const PORT = 8000;
+const SELF = `http://localhost:${PORT}`;
+const DATA_PATH = process.argv[2] || './mock-data.json';
 
-// In-memory user store
-const users = new Map();
-const tokens = new Map();
+const users = new Map(); // email → user
+const tokens = new Map(); // refresh_token → email
+const sessions = new Map(); // access_token → email
 
-// Pre-seed demo users
-const DEMO_USERS = [
-  { email: 'student@iuget.cm', password: 'password', full_name: 'Chituh Innocentia', role: 'student', id: 1, uuid: crypto.randomUUID(), phone: '670000001' },
-  { email: 'lecturer@iuget.cm', password: 'password', full_name: 'Mr Nkoma Ngouloure', role: 'lecturer', id: 2, uuid: crypto.randomUUID(), phone: '670000002' },
-  { email: 'staff@iuget.cm', password: 'password', full_name: 'Mrs. Linda Foncha', role: 'staff', id: 3, uuid: crypto.randomUUID(), phone: '670000003' },
-  { email: 'admin@iuget.cm', password: 'password', full_name: 'Prof. James Murdza', role: 'admin', id: 4, uuid: crypto.randomUUID(), phone: '670000004' },
-]
-DEMO_USERS.forEach(d => {
-  const passwordHash = crypto.createHash('sha256').update(d.password).digest('hex')
-  const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(d.full_name)}`
+const mockUsers = [
+  { id:1, uid:'stu-001', email:'student@iuget.cm', password:'password', role:'student', name:'Chituh Innocentia',   avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
+  { id:2, uid:'lec-001', email:'lecturer@iuget.cm', password:'password', role:'lecturer', name:'Dr. Nkengafac Mfortaw', avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Mfortaw' },
+  { id:3, uid:'stf-001', email:'staff@iuget.cm',    password:'password', role:'staff',   name:'Veronica Munteng',      avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Munteng' },
+  { id:4, uid:'adm-001', email:'admin@iuget.cm',    password:'password', role:'admin',   name:'Prof. Fonkem',          avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Fonkem' },
+];
+
+const avatarUrl = (s) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s)}`;
+
+mockUsers.forEach(d => {
+  const passwordHash = crypto.createHash('sha256').update(d.password).digest('hex');
   const user = {
-    id: d.id, uuid: d.uuid, email: d.email, password_hash: passwordHash,
-    full_name: d.full_name, role: d.role, avatar_url: avatarUrl, phone: d.phone,
-    status: 'active', created_at: '2025-09-01T08:00:00.000Z', last_login_at: null,
+    id: d.id, uuid: crypto.randomUUID(), email: d.email,
+    password_hash: passwordHash,
+    full_name: d.name, role: d.role,
+    avatar_url: avatarUrl(d.name),
+    phone: d.role === 'student' ? '670000001' : d.role === 'lecturer' ? '670000002' : d.role === 'staff' ? '670000003' : '670000000',
+    status: 'active',
+    created_at: '2025-09-01T08:00:00.000Z', last_login_at: null,
+  };
+  if (d.role === 'student') {
+    user.registration_number = 'REG/2025/00001';
+    user.matricule = 'IUGET/2025/SWE/0142';
+    user.programme_id = 1;
+    user.level = 3;
+    user.specialty = 'SWE';
+    user.studentId = 'IUGET/2025/SWE/0142';
+    user.program = 'Software Engineering';
   }
-  if (d.role === 'student') { user.registration_number = 'REG/2025/00001'; user.matricule = 'IUGET/2025/SWE/0142'; user.programme_id = 1; user.level = 3; user.specialty = 'SWE'; user.studentId = 'IUGET/2025/SWE/0142'; user.program = 'Software Engineering' }
-  users.set(d.email, user)
-})
+  users.set(d.email, user);
+});
 
-function generateToken(user) {
-  const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
+function generateToken(user, exp) {
+  const header = Buffer.from(JSON.stringify({ alg:'HS256', typ:'JWT' })).toString('base64url');
   const payload = Buffer.from(JSON.stringify({
-    user_id: user.id,
-    uuid: user.uuid,
-    email: user.email,
-    role: user.role,
+    user_id: user.id, uuid: user.uuid,
+    email: user.email, role: user.role,
     name: user.full_name,
-    exp: Math.floor(Date.now() / 1000) + 315360000
+    exp: exp || Math.floor(Date.now() / 1000) + 315360000,
   })).toString('base64url');
-  const signature = crypto.createHmac('sha256', 'siarm-jwt-secret-key-2025').update(`${header}.${payload}`).digest('base64url');
-  return `${header}.${payload}.${signature}`;
+  const sig = crypto.createHmac('sha256', 'siarm-jwt-secret-key-2025').update(`${header}.${payload}`).digest('base64url');
+  return `${header}.${payload}.${sig}`;
 }
 
 function generateRefreshToken() {
   return crypto.randomBytes(32).toString('hex');
 }
 
+function verifyToken(authHeader) {
+  if (!authHeader) return null;
+  const parts = authHeader.split(' ');
+  if (parts.length !== 2 || parts[0] !== 'Bearer') return null;
+  const token = parts[1];
+  const segs = token.split('.');
+  if (segs.length !== 3) return null;
+  try {
+    return JSON.parse(Buffer.from(segs[1], 'base64url').toString());
+  } catch { return null; }
+}
+
+function sendJson(res, status, data) {
+  const body = JSON.stringify(data);
+  res.writeHead(status, {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+  });
+  res.end(body);
+}
+
 function parseBody(req) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     let body = '';
-    req.on('data', chunk => body += chunk);
+    req.on('data', c => body += c);
     req.on('end', () => {
-      try {
-        resolve(JSON.parse(body));
-      } catch {
-        resolve({});
-      }
+      try { resolve(JSON.parse(body)); } catch { resolve({}); }
     });
   });
 }
 
-function sendJson(res, status, data) {
-  res.writeHead(status, { 
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
-    'Access-Control-Allow-Credentials': 'true'
-  });
-  res.end(JSON.stringify(data));
-}
+// ── Static data sets ──────────────────────────────────────────
+const ANNOUNCEMENTS = [
+  { id:1, title:'Welcome to SIARM', body:'Welcome to the new academic year! Ready for an amazing session?', author:'Admin', createdAt:new Date().toISOString(), pinned:true },
+  { id:2, title:'Exam Schedule Published', body:'Final exams start next week. Check your timetable.', author:'Registrar', createdAt:new Date(Date.now()-864e5).toISOString(), pinned:false },
+];
 
-function verifyToken(authHeader) {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.slice(7);
-  try {
-    const [, payload] = token.split('.');
-    return JSON.parse(Buffer.from(payload, 'base64url').toString());
-  } catch {
-    return null;
-  }
-}
+const TIMETABLE = [
+  { id:1, day:'Monday', time:'08:00-10:00', course:'Mathematics',     room:'A101', lecturer:'Dr. Smith',   specialty:'SWE' },
+  { id:2, day:'Monday', time:'10:30-12:30', course:'Physics',         room:'B202', lecturer:'Dr. Johnson', specialty:'SWE' },
+  { id:3, day:'Tuesday', time:'08:00-10:00', course:'Programming',     room:'C303', lecturer:'Prof. Williams', specialty:'SWE' },
+  { id:4, day:'Wednesday', time:'14:00-16:00', course:'Database Systems', room:'D404', lecturer:'Dr. Brown', specialty:'SWE' },
+  { id:5, day:'Thursday', time:'10:30-12:30', course:'Web Development', room:'E505', lecturer:'Dr. Davis', specialty:'SWE' },
+  { id:6, day:'Friday', time:'08:00-10:00', course:'Software Engineering', room:'F606', lecturer:'Dr. Wilson', specialty:'SWE' },
+];
+
+const RESULTS = [
+  { id:1, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Mathematics',        semester:'Semester 1', ca:28, exam:65, total:93, grade:'A' },
+  { id:2, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Physics',            semester:'Semester 1', ca:25, exam:58, total:83, grade:'A' },
+  { id:3, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Programming',        semester:'Semester 1', ca:30, exam:70, total:100,grade:'A' },
+  { id:4, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Database Systems',   semester:'Semester 2', ca:27, exam:62, total:89, grade:'A' },
+  { id:5, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Web Development',    semester:'Semester 2', ca:26, exam:55, total:81, grade:'A' },
+  { id:6, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Software Engineering',semester:'Semester 2', ca:24, exam:50, total:74, grade:'B+' },
+  { id:7, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Mathematics',        semester:'Semester 1', ca:22, exam:45, total:67, grade:'B' },
+  { id:8, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Physics',            semester:'Semester 1', ca:20, exam:40, total:60, grade:'B' },
+  { id:9, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Programming',        semester:'Semester 1', ca:28, exam:60, total:88, grade:'A' },
+];
+
+const COURSES = [
+  { id:1, code:'MATH101', name:'Mathematics',        credits:4, lecturer:'Dr. Smith',   specialty:'SWE', semester:'Semester 1' },
+  { id:2, code:'PHY101',  name:'Physics',            credits:4, lecturer:'Dr. Johnson', specialty:'SWE', semester:'Semester 1' },
+  { id:3, code:'CS101',   name:'Programming',        credits:5, lecturer:'Prof. Williams', specialty:'SWE', semester:'Semester 1' },
+  { id:4, code:'DB101',   name:'Database Systems',   credits:4, lecturer:'Dr. Brown',   specialty:'SWE', semester:'Semester 2' },
+  { id:5, code:'WEB101',  name:'Web Development',    credits:4, lecturer:'Dr. Davis',   specialty:'SWE', semester:'Semester 2' },
+  { id:6, code:'SE101',   name:'Software Engineering', credits:5, lecturer:'Dr. Wilson', specialty:'SWE', semester:'Semester 2' },
+];
+
+const STUDENT_USERS = [
+  { id:'IUGET/2025/SWE/0142', name:'Chituh Innocentia', email:'student@iuget.cm', level:3, specialty:'SWE', program:'Software Engineering' },
+  { id:'IUGET/2025/SWE/0001', name:'Jane Smith', email:'jane@iuget.cm', level:3, specialty:'SWE', program:'Software Engineering' },
+];
 
 const server = http.createServer(async (req, res) => {
-  // Handle CORS preflight
-  if (req.method === 'OPTIONS') {
-    return sendJson(res, 204, {});
-  }
+  try {
+    const url = new URL(req.url, SELF);
+    const path = url.pathname.replace('/api', '');
+    const segments = path.split('/').filter(Boolean);
 
-  const url = new URL(req.url, `http://localhost:${PORT}`);
-  const path = url.pathname.replace('/api', '');
-  const segments = path.split('/').filter(Boolean);
-  
-  console.log(`${new Date().toISOString()} ${req.method} ${path}`);
+    // ── Auth ──────────────────────────────────────────────────
+    if (segments[0] === 'auth') {
+      const action = segments[1];
 
-  // Auth endpoints
-  if (segments[0] === 'auth') {
-    const action = segments[1];
-    
-    // POST /api/auth/register
-    if (req.method === 'POST' && action === 'register') {
-      const body = await parseBody(req);
-      const { email, password, full_name, role, phone } = body;
-      
-      if (!email || !password || !full_name || !role) {
-        return sendJson(res, 400, { success: false, message: 'Missing required fields' });
-      }
-      
-      if (password.length < 8) {
-        return sendJson(res, 400, { success: false, message: 'Password must be at least 8 characters' });
-      }
-      
-      const normalizedEmail = email.toLowerCase().trim();
-      if (users.has(normalizedEmail)) {
-        return sendJson(res, 409, { success: false, message: 'Email already in use' });
-      }
-      
-      const id = users.size + 1;
-      const uuid = crypto.randomUUID();
-      const passwordHash = crypto.createHash('sha256').update(password).digest('hex'); // Demo only
-      const avatarUrl = `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(full_name)}`;
-      
-      const user = {
-        id,
-        uuid,
-        email: normalizedEmail,
-        password_hash: passwordHash,
-        full_name,
-        role,
-        avatar_url: avatarUrl,
-        phone: phone || null,
-        status: 'pending',
-        created_at: new Date().toISOString()
-      };
-      
-      users.set(normalizedEmail, user);
-      
-      // Create role-specific record
-      if (role === 'student') {
-        const regNumber = `REG/${new Date().getFullYear()}/${String(users.size).padStart(5, '0')}`;
-        const matricule = `IUGET/${new Date().getFullYear()}/SWE/${String(users.size).padStart(4, '0')}`;
-        user.registration_number = regNumber;
-        user.matricule = matricule;
-        user.programme_id = 1;
-        user.level = 1;
-        user.specialty = 'SWE';
-        user.studentId = matricule;
-        user.program = 'Software Engineering';
-      }
-      
-      const token = generateToken(user);
-      const refresh_token = generateRefreshToken();
-      tokens.set(refresh_token, { userId: id, email: normalizedEmail, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 });
-      
-      return sendJson(res, 201, {
-        success: true,
-        message: 'Registration successful. Account pending approval.',
-        data: {
-          token,
-          refresh_token,
-          user: {
-            id: user.id,
-            uuid: user.uuid,
-            email: user.email,
-            name: user.full_name,
-            full_name: user.full_name,
-            role: user.role,
-            avatar: user.avatar_url,
-            avatar_url: user.avatar_url,
-            status: user.status,
-            profile: user
-          }
+      // REGISTER
+      if (req.method === 'POST' && action === 'register') {
+        const body = await parseBody(req);
+        const { email, password, full_name, role, phone } = body;
+
+        if (!email || !password || !full_name || !role)
+          return sendJson(res, 400, { success:false, message:'Missing required fields' });
+        if (password.length < 8)
+          return sendJson(res, 400, { success:false, message:'Password must be at least 8 characters' });
+
+        const ne = email.toLowerCase().trim();
+        if (users.has(ne))
+          return sendJson(res, 409, { success:false, message:'Email already in use' });
+
+        const id = users.size + 1;
+        const uuid = crypto.randomUUID();
+        const pwHash = crypto.createHash('sha256').update(password).digest('hex');
+        const avUrl = avatarUrl(full_name);
+        const user = { id, uuid, email:ne, password_hash:pwHash, full_name, role, avatar_url:avUrl, phone:phone||null, status:'pending', created_at:new Date().toISOString() };
+
+        if (role === 'student') {
+          user.registration_number = `REG/${new Date().getFullYear()}/${String(id).padStart(5,'0')}`;
+          user.matricule = `IUGET/${new Date().getFullYear()}/SWE/${String(id).padStart(4,'0')}`;
+          user.programme_id = 1; user.level = 1; user.specialty = 'SWE';
+          user.studentId = user.matricule; user.program = 'Software Engineering';
         }
-      });
+
+        users.set(ne, user);
+        const token = generateToken(user);
+        const refresh_token = generateRefreshToken();
+        tokens.set(refresh_token, ne);
+
+        return sendJson(res, 201, {
+          success:true, message:'Registration successful. Account pending approval.',
+          data: { token, refresh_token, user: {
+            id:user.id, uuid:user.uuid, email:user.email,
+            name:user.full_name, full_name:user.full_name,
+            role:user.role, avatar:user.avatar_url, avatar_url:user.avatar_url,
+            status:user.status, profile:user
+          } }
+        });
+      }
+
+      // LOGIN
+      if (req.method === 'POST' && action === 'login') {
+        const body = await parseBody(req);
+        const { email, password } = body;
+        if (!email || !password)
+          return sendJson(res, 400, { success:false, message:'Missing required fields: email, password' });
+
+        const user = users.get(email.toLowerCase().trim());
+        if (!user)
+          return sendJson(res, 401, { success:false, message:'Invalid email or password' });
+
+        const pwHash = crypto.createHash('sha256').update(password).digest('hex');
+        if (user.password_hash !== pwHash)
+          return sendJson(res, 401, { success:false, message:'Invalid email or password' });
+
+        user.last_login_at = new Date().toISOString();
+        const token = generateToken(user);
+        const refresh_token = generateRefreshToken();
+        tokens.set(refresh_token, user.email);
+
+        return sendJson(res, 200, {
+          success:true, message:'Login successful',
+          data: { token, refresh_token, remember_me:false, user: {
+            id:user.id, uuid:user.uuid, email:user.email,
+            name:user.full_name, full_name:user.full_name,
+            role:user.role, avatar:user.avatar_url, avatar_url:user.avatar_url,
+            phone:user.phone, status:user.status,
+            last_login_at:user.last_login_at, profile:user
+          } }
+        });
+      }
+
+      // REFRESH
+      if (req.method === 'POST' && action === 'refresh') {
+        const body = await parseBody(req);
+        const { refresh_token } = body;
+        if (!refresh_token || !tokens.has(refresh_token))
+          return sendJson(res, 401, { success:false, message:'Invalid refresh token' });
+
+        const userEmail = tokens.get(refresh_token);
+        const user = users.get(userEmail);
+        if (!user)
+          return sendJson(res, 404, { success:false, message:'User not found' });
+
+        const newToken = generateToken(user);
+        return sendJson(res, 200, { success:true, access_token:newToken, refresh_token });
+      }
+
+      // LOGOUT
+      if (req.method === 'POST' && action === 'logout') {
+        const body = await parseBody(req);
+        const { refresh_token } = body;
+        if (refresh_token) tokens.delete(refresh_token);
+        return sendJson(res, 200, { success:true, message:'Logged out successfully' });
+      }
+
+      // ME
+      if (req.method === 'GET' && action === 'me') {
+        const userData = verifyToken(req.headers.authorization);
+        if (!userData)
+          return sendJson(res, 401, { success:false, message:'Authentication required' });
+
+        const user = users.get(userData.email);
+        if (!user)
+          return sendJson(res, 404, { success:false, message:'User not found' });
+
+        return sendJson(res, 200, {
+          success:true, data:{ user:{ ...user, name:user.full_name, avatar:user.avatar_url, profile:user } }
+        });
+      }
+
+      // FORGOT PASSWORD
+      if (req.method === 'POST' && action === 'forgot-password') {
+        const body = await parseBody(req);
+        const { email } = body;
+        if (!email)
+          return sendJson(res, 400, { success:false, message:'Email is required' });
+        return sendJson(res, 200, { success:true, message:'Password reset link sent to your email' });
+      }
+
+      // RESET PASSWORD
+      if (req.method === 'POST' && action === 'reset-password') {
+        const body = await parseBody(req);
+        const { token, password, password_confirm } = body;
+        if (!token || !password || !password_confirm)
+          return sendJson(res, 400, { success:false, message:'Missing required fields' });
+        if (password !== password_confirm)
+          return sendJson(res, 400, { success:false, message:'Passwords do not match' });
+        return sendJson(res, 200, { success:true, message:'Password reset successfully' });
+      }
+
+      // CHANGE PASSWORD
+      if (req.method === 'POST' && action === 'change-password') {
+        const userData = verifyToken(req.headers.authorization);
+        if (!userData) return sendJson(res, 401, { success:false, message:'Authentication required' });
+
+        const body = await parseBody(req);
+        const { current_password, new_password } = body;
+        const user = users.get(userData.email);
+        if (!user) return sendJson(res, 404, { success:false, message:'User not found' });
+
+        const curHash = crypto.createHash('sha256').update(current_password).digest('hex');
+        if (user.password_hash !== curHash)
+          return sendJson(res, 401, { success:false, message:'Current password is incorrect' });
+        if (new_password.length < 8)
+          return sendJson(res, 400, { success:false, message:'Password must be at least 8 characters' });
+
+        user.password_hash = crypto.createHash('sha256').update(new_password).digest('hex');
+        users.set(userData.email, user);
+        return sendJson(res, 200, { success:true, message:'Password changed successfully' });
+      }
+
+      return sendJson(res, 404, { success:false, message:`Auth endpoint not found: ${action}` });
     }
-    
-    // POST /api/auth/login
-    if (req.method === 'POST' && action === 'login') {
-      const body = await parseBody(req);
-      const { email, password } = body;
-      
-      if (!email || !password) {
-        return sendJson(res, 400, { success: false, message: 'Missing required fields: email, password' });
-      }
-      
-      const normalizedEmail = email.toLowerCase().trim();
-      const user = users.get(normalizedEmail);
-      
-      if (!user) {
-        return sendJson(res, 401, { success: false, message: 'Invalid email or password' });
-      }
-      
-      const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
-      if (user.password_hash !== passwordHash) {
-        return sendJson(res, 401, { success: false, message: 'Invalid email or password' });
-      }
-      
-      user.status = 'active';
-      user.last_login_at = new Date().toISOString();
-      users.set(normalizedEmail, user);
-      
-      const token = generateToken(user);
-      const refresh_token = generateRefreshToken();
-      tokens.set(refresh_token, { userId: user.id, email: normalizedEmail, expires: Date.now() + 30 * 24 * 60 * 60 * 1000 });
-      
-      return sendJson(res, 200, {
-        success: true,
-        message: 'Login successful',
-        data: {
-          token,
-          refresh_token,
-          user: {
-            id: user.id,
-            uuid: user.uuid,
-            email: user.email,
-            name: user.full_name,
-            full_name: user.full_name,
-            role: user.role,
-            avatar: user.avatar_url,
-            avatar_url: user.avatar_url,
-            phone: user.phone,
-            status: user.status,
-            last_login_at: user.last_login_at,
-            profile: user
-          }
-        }
-      });
-    }
-    
-    // POST /api/auth/refresh
-    if (req.method === 'POST' && action === 'refresh') {
-      const body = await parseBody(req);
-      const { refresh_token } = body;
-      if (!refresh_token || !tokens.has(refresh_token)) {
-        return sendJson(res, 401, { success: false, message: 'Invalid refresh token' });
-      }
-      const tokenData = tokens.get(refresh_token);
-      const user = users.get(tokenData.email);
-      if (!user) {
-        return sendJson(res, 404, { success: false, message: 'User not found' });
-      }
-      const newToken = generateToken(user);
-      return sendJson(res, 200, {
-        success: true,
-        access_token: newToken,
-        refresh_token: refresh_token,
-      });
-    }
-    
-    // POST /api/auth/logout
-    if (req.method === 'POST' && action === 'logout') {
-      const body = await parseBody(req);
-      const { refresh_token } = body;
-      if (refresh_token) tokens.delete(refresh_token);
-      return sendJson(res, 200, { success: true, message: 'Logged out successfully' });
-    }
-    
-    // GET /api/auth/me
-    if (req.method === 'GET' && action === 'me') {
+
+    // ── Users ─────────────────────────────────────────────────
+    if (segments[0] === 'users') {
       const userData = verifyToken(req.headers.authorization);
-      if (!userData) {
-        return sendJson(res, 401, { success: false, message: 'Authentication required' });
-      }
-      
+      if (!userData) return sendJson(res, 401, { success:false, message:'Authentication required' });
+
       const user = users.get(userData.email);
-      if (!user) {
-        return sendJson(res, 404, { success: false, message: 'User not found' });
+      if (!user || !['admin','staff'].includes(user.role))
+        return sendJson(res, 403, { success:false, message:'Insufficient permissions' });
+
+      const id = segments[1];
+
+      // GET /users
+      if (req.method === 'GET' && !id) {
+        const list = Array.from(users.values()).map(u => ({
+          id:u.id, uuid:u.uuid, email:u.email,
+          name:u.full_name, full_name:u.full_name,
+          role:u.role, avatar:u.avatar_url, avatar_url:u.avatar_url,
+          phone:u.phone, status:u.status, created_at:u.created_at
+        }));
+        return sendJson(res, 200, { success:true, data:list });
       }
-      
-      return sendJson(res, 200, {
-        success: true,
-        data: {
-          user: {
-            ...user,
-            name: user.full_name,
-            avatar: user.avatar_url,
-            profile: user
-          }
-        }
-      });
+
+      // GET /users/{id}
+      if (req.method === 'GET' && id) {
+        const found = Array.from(users.values()).find(u => String(u.id) === id || u.uuid === id);
+        if (!found) return sendJson(res, 404, { success:false, message:'User not found' });
+        return sendJson(res, 200, { success:true, data:{ ...found, name:found.full_name, avatar:found.avatar_url } });
+      }
+
+      // POST /users
+      if (req.method === 'POST') {
+        const body = await parseBody(req);
+        const newId = users.size + 1;
+        const pwHash = crypto.createHash('sha256').update(body.password||'password').digest('hex');
+        const nUser = {
+          id:newId, uuid:crypto.randomUUID(),
+          email:body.email, password_hash:pwHash,
+          full_name:body.name||body.full_name,
+          role:body.role||'student', avatar_url:avatarUrl(body.name||'User'),
+          phone:body.phone||null, status:'active', created_at:new Date().toISOString()
+        };
+        users.set(nUser.email, nUser);
+        return sendJson(res, 201, { success:true, message:'User created', data:nUser });
+      }
+
+      // PUT /users/{id}
+      if (req.method === 'PUT' && id) {
+        const found = Array.from(users.values()).find(u => String(u.id) === id || u.uuid === id);
+        if (!found) return sendJson(res, 404, { success:false, message:'User not found' });
+        const body = await parseBody(req);
+        Object.assign(found, body);
+        if (body.name) found.full_name = body.name;
+        if (body.avatar) found.avatar_url = body.avatar;
+        users.set(found.email, found);
+        return sendJson(res, 200, { success:true, message:'User updated', data:found });
+      }
+
+      // DELETE /users/{id}
+      if (req.method === 'DELETE' && id) {
+        const found = Array.from(users.entries()).find(([_,u]) => String(u.id) === id || u.uuid === id);
+        if (!found) return sendJson(res, 404, { success:false, message:'User not found' });
+        users.delete(found[0]);
+        return sendJson(res, 200, { success:true, message:'User deleted' });
+      }
+
+      // POST /users/{id}/password
+      if (req.method === 'POST' && id && segments[2] === 'password') {
+        const found = Array.from(users.values()).find(u => String(u.id) === id || u.uuid === id);
+        if (!found) return sendJson(res, 404, { success:false, message:'User not found' });
+        const body = await parseBody(req);
+        found.password_hash = crypto.createHash('sha256').update(body.new_password||'password').digest('hex');
+        users.set(found.email, found);
+        return sendJson(res, 200, { success:true, message:'Password updated' });
+      }
+
+      return sendJson(res, 404, { success:false, message:'Users endpoint not found' });
     }
-    
-    // POST /api/auth/forgot-password
-    if (req.method === 'POST' && action === 'forgot-password') {
-      const body = await parseBody(req);
-      const { email } = body;
-      
-      if (!email) {
-        return sendJson(res, 400, { success: false, message: 'Email is required' });
+
+    // ── Announcements ─────────────────────────────────────────
+    if (segments[0] === 'announcements') {
+      const id = segments[1];
+
+      if (req.method === 'GET' && !id)
+        return sendJson(res, 200, { success:true, data:ANNOUNCEMENTS });
+
+      if (req.method === 'POST' && !id) {
+        const body = await parseBody(req);
+        const a = { id:ANNOUNCEMENTS.length+1, title:body.title, body:body.body, author:'Admin', createdAt:new Date().toISOString(), pinned:false };
+        ANNOUNCEMENTS.unshift(a);
+        return sendJson(res, 201, { success:true, message:'Announcement created', data:a });
       }
-      
-      // Always return success to prevent email enumeration
-      return sendJson(res, 200, { 
-        success: true, 
-        message: 'If the email exists, a reset link has been sent' 
-      });
+
+      if (req.method === 'POST' && id && segments[2] === 'pin') {
+        const a = ANNOUNCEMENTS.find(x => String(x.id) === id);
+        if (!a) return sendJson(res, 404, { success:false, message:'Not found' });
+        a.pinned = !a.pinned;
+        return sendJson(res, 200, { success:true, data:a });
+      }
+
+      if (req.method === 'DELETE' && id) {
+        const idx = ANNOUNCEMENTS.findIndex(x => String(x.id) === id);
+        if (idx === -1) return sendJson(res, 404, { success:false, message:'Not found' });
+        ANNOUNCEMENTS.splice(idx, 1);
+        return sendJson(res, 200, { success:true, message:'Deleted' });
+      }
+
+      return sendJson(res, 404, { success:false, message:'Announcements endpoint not found' });
     }
-    
-    // POST /api/auth/reset-password
-    if (req.method === 'POST' && action === 'reset-password') {
-      const body = await parseBody(req);
-      const { token, password, password_confirm } = body;
-      
-      if (!token || !password || !password_confirm) {
-        return sendJson(res, 400, { success: false, message: 'Missing required fields' });
+
+    // ── Timetable ─────────────────────────────────────────────
+    if (segments[0] === 'timetable') {
+      const day = segments[1], time = segments[2];
+
+      if (req.method === 'GET' && !day)
+        return sendJson(res, 200, { success:true, data:TIMETABLE });
+
+      if (req.method === 'POST' && !day) {
+        const body = await parseBody(req);
+        const t = { id:TIMETABLE.length+1, day:body.day, time:body.time, course:body.course, room:body.room, lecturer:body.lecturer, specialty:body.specialty||'SWE' };
+        TIMETABLE.push(t);
+        return sendJson(res, 201, { success:true, data:t });
       }
-      
-      if (password !== password_confirm) {
-        return sendJson(res, 400, { success: false, message: 'Passwords do not match' });
+
+      if (req.method === 'DELETE' && day && time) {
+        const idx = TIMETABLE.findIndex(t => t.day === day && t.time === time);
+        if (idx === -1) return sendJson(res, 404, { success:false, message:'Not found' });
+        TIMETABLE.splice(idx, 1);
+        return sendJson(res, 200, { success:true, message:'Deleted' });
       }
-      
-      if (password.length < 8) {
-        return sendJson(res, 400, { success: false, message: 'Password must be at least 8 characters' });
-      }
-      
-      return sendJson(res, 200, { success: true, message: 'Password reset successful' });
+
+      return sendJson(res, 404, { success:false, message:'Timetable endpoint not found' });
     }
-    
-    // POST /api/auth/change-password
-    if (req.method === 'POST' && action === 'change-password') {
-      const userData = verifyToken(req.headers.authorization);
-      if (!userData) {
-        return sendJson(res, 401, { success: false, message: 'Authentication required' });
-      }
-      
-      const body = await parseBody(req);
-      const { current_password, new_password } = body;
-      
-      const user = users.get(userData.email);
-      if (!user) {
-        return sendJson(res, 404, { success: false, message: 'User not found' });
-      }
-      
-      const currentHash = crypto.createHash('sha256').update(current_password).digest('hex');
-      if (user.password_hash !== currentHash) {
-        return sendJson(res, 401, { success: false, message: 'Current password is incorrect' });
-      }
-      
-      if (new_password.length < 8) {
-        return sendJson(res, 400, { success: false, message: 'Password must be at least 8 characters' });
-      }
-      
-      user.password_hash = crypto.createHash('sha256').update(new_password).digest('hex');
-      users.set(userData.email, user);
-      
-      return sendJson(res, 200, { success: true, message: 'Password changed successfully' });
+
+    // ── Results ───────────────────────────────────────────────
+    if (segments[0] === 'results') {
+      if (req.method === 'GET')
+        return sendJson(res, 200, { success:true, data:RESULTS });
+      return sendJson(res, 404, { success:false, message:'Results endpoint not found' });
     }
+
+    // ── Students ──────────────────────────────────────────────
+    if (segments[0] === 'students') {
+      const studentId = segments[1];
+      const sub = segments[2];
+
+      if (!studentId)
+        return sendJson(res, 400, { success:false, message:'Student ID required' });
+
+      const student = STUDENT_USERS.find(s => s.id === studentId) || STUDENT_USERS[0];
+
+      // GET /students/{id}
+      if (req.method === 'GET' && !sub)
+        return sendJson(res, 200, { success:true, data:student });
+
+      // GET /students/{id}/timetable
+      if (req.method === 'GET' && sub === 'timetable')
+        return sendJson(res, 200, { success:true, data:TIMETABLE });
+
+      // GET /students/{id}/attendance
+      if (req.method === 'GET' && sub === 'attendance')
+        return sendJson(res, 200, { success:true, data:[] });
+
+      // GET /students/{id}/results
+      if (req.method === 'GET' && sub === 'results')
+        return sendJson(res, 200, { success:true, data:RESULTS });
+
+      // GET /students/{id}/transcript
+      if (req.method === 'GET' && sub === 'transcript')
+        return sendJson(res, 200, { success:true, data:RESULTS });
+
+      // GET /students/{id}/fees
+      if (req.method === 'GET' && sub === 'fees')
+        return sendJson(res, 200, { success:true, data:{ total:500000, paid:300000, balance:200000, sessions:[{session:'2025/2026', tuition:500000, paid:300000, balance:200000}] } });
+
+      // POST /students/{id}/register
+      if (req.method === 'POST' && sub === 'register')
+        return sendJson(res, 200, { success:true, message:'Registration successful' });
+
+      // GET /students/{id}/available-courses
+      if (req.method === 'GET' && sub === 'available-courses')
+        return sendJson(res, 200, { success:true, data:COURSES });
+
+      return sendJson(res, 404, { success:false, message:'Student endpoint not found' });
+    }
+
+    // ── Lecturer ──────────────────────────────────────────────
+    if (segments[0] === 'lecturer') {
+      const sub = segments[1];
+
+      // GET /lecturer/courses
+      if (req.method === 'GET' && sub === 'courses')
+        return sendJson(res, 200, { success:true, data:COURSES });
+
+      // GET /lecturer/attendance/records
+      if (req.method === 'GET' && sub === 'attendance' && segments[2] === 'records')
+        return sendJson(res, 200, { success:true, data:[] });
+
+      // POST /lecturer/attendance
+      if (req.method === 'POST' && sub === 'attendance') {
+        const body = await parseBody(req);
+        return sendJson(res, 200, { success:true, message:`Attendance saved for ${body.course_id||'course'}` });
+      }
+
+      // POST /lecturer/grades
+      if (req.method === 'POST' && sub === 'grades') {
+        const body = await parseBody(req);
+        return sendJson(res, 200, { success:true, message:`Grades saved for ${body.course_id||'course'}` });
+      }
+
+      // POST /lecturer/publish-grades
+      if (req.method === 'POST' && sub === 'publish-grades')
+        return sendJson(res, 200, { success:true, message:'Grades published' });
+
+      return sendJson(res, 404, { success:false, message:'Lecturer endpoint not found' });
+    }
+
+    // ── Courses ───────────────────────────────────────────────
+    if (segments[0] === 'courses') {
+      if (req.method === 'POST' && segments[1] === 'enroll') {
+        const body = await parseBody(req);
+        return sendJson(res, 200, { success:true, message:`Enrolled in ${(body.course_ids||[]).length} course(s)` });
+      }
+      if (req.method === 'POST' && segments[1] === 'unenroll') {
+        const body = await parseBody(req);
+        return sendJson(res, 200, { success:true, message:`Unenrolled from ${(body.course_ids||[]).length} course(s)` });
+      }
+      return sendJson(res, 200, { success:true, data:COURSES });
+    }
+
+    // ── Lessons ───────────────────────────────────────────────
+    if (segments[0] === 'lessons') {
+      if (req.method === 'POST' && !segments[1]) {
+        const body = await parseBody(req);
+        return sendJson(res, 201, { success:true, message:'Lesson published', data:{ id:Date.now(), ...body } });
+      }
+      if (req.method === 'DELETE' && segments[1])
+        return sendJson(res, 200, { success:true, message:'Lesson deleted' });
+      return sendJson(res, 404, { success:false, message:'Lessons endpoint not found' });
+    }
+
+    // ── Assignments ───────────────────────────────────────────
+    if (segments[0] === 'assignments') {
+      if (req.method === 'POST')
+        return sendJson(res, 201, { success:true, message:'Assignment created' });
+      return sendJson(res, 200, { success:true, data:[] });
+    }
+
+    // ── Submissions ───────────────────────────────────────────
+    if (segments[0] === 'submissions') {
+      if (req.method === 'POST' && !segments[1]) {
+        const body = await parseBody(req);
+        return sendJson(res, 201, { success:true, message:'Assignment submitted', data:{ id:Date.now(), ...body } });
+      }
+      if (req.method === 'POST' && segments[2] === 'grade') {
+        const body = await parseBody(req);
+        return sendJson(res, 200, { success:true, message:`Graded: ${body.grade||0}` });
+      }
+      return sendJson(res, 200, { success:true, data:[] });
+    }
+
+    // ── Discussions ───────────────────────────────────────────
+    if (segments[0] === 'discussions') {
+      if (req.method === 'POST' && !segments[1])
+        return sendJson(res, 201, { success:true, message:'Discussion posted' });
+      if (req.method === 'POST' && segments[2] === 'reply')
+        return sendJson(res, 200, { success:true, message:'Reply posted' });
+      return sendJson(res, 200, { success:true, data:[] });
+    }
+
+    // ── Health check ──────────────────────────────────────────
+    if (path === '/health')
+      return sendJson(res, 200, { success:true, status:'ok', uptime:process.uptime() });
+
+    // ── 404 fallback ─────────────────────────────────────────
+    sendJson(res, 404, { success:false, message:`Endpoint not found: ${req.method} ${path}` });
+  } catch (err) {
+    console.error('SERVER ERROR:', err);
+    sendJson(res, 500, { success:false, message:'Internal server error' });
   }
-  
-  // Users endpoints
-  if (segments[0] === 'users') {
-    const userData = verifyToken(req.headers.authorization);
-    if (!userData) {
-      return sendJson(res, 401, { success: false, message: 'Authentication required' });
-    }
-    
-    // Only admin/staff can access user management
-    const user = users.get(userData.email);
-    if (!user || !['admin', 'staff'].includes(user.role)) {
-      return sendJson(res, 403, { success: false, message: 'Insufficient permissions' });
-    }
-    
-    // GET /api/users
-    if (req.method === 'GET' && !segments[1]) {
-      const userList = Array.from(users.values()).map(u => ({
-        id: u.id,
-        uuid: u.uuid,
-        email: u.email,
-        full_name: u.full_name,
-        role: u.role,
-        avatar_url: u.avatar_url,
-        phone: u.phone,
-        status: u.status,
-        created_at: u.created_at
-      }));
-      return sendJson(res, 200, { success: true, data: userList });
-    }
-  }
-  
-  // Announcements endpoint
-  if (segments[0] === 'announcements') {
-    const announcements = [
-      { id: 1, title: 'Welcome to SIARM', body: 'Welcome to the new academic year!', author: 'Admin', createdAt: new Date().toISOString(), pinned: true },
-      { id: 2, title: 'Exam Schedule', body: 'Final exams start next week.', author: 'Registrar', createdAt: new Date(Date.now() - 86400000).toISOString(), pinned: false },
-    ];
-    
-    if (req.method === 'GET') {
-      return sendJson(res, 200, { success: true, data: announcements });
-    }
-  }
-  
-  // Timetable endpoint
-  if (segments[0] === 'timetable') {
-    const timetable = [
-      { id: 1, day: 'Monday', time: '08:00 - 10:00', course: 'Mathematics', room: 'A101', lecturer: 'Dr. Smith', specialty: 'SWE' },
-      { id: 2, day: 'Monday', time: '10:30 - 12:30', course: 'Physics', room: 'B202', lecturer: 'Dr. Johnson', specialty: 'SWE' },
-      { id: 3, day: 'Tuesday', time: '08:00 - 10:00', course: 'Programming', room: 'C303', lecturer: 'Prof. Williams', specialty: 'SWE' },
-      { id: 4, day: 'Wednesday', time: '14:00 - 16:00', course: 'Database Systems', room: 'D404', lecturer: 'Dr. Brown', specialty: 'SWE' },
-      { id: 5, day: 'Thursday', time: '10:30 - 12:30', course: 'Web Development', room: 'E505', lecturer: 'Dr. Davis', specialty: 'SWE' },
-      { id: 6, day: 'Friday', time: '08:00 - 10:00', course: 'Software Engineering', room: 'F606', lecturer: 'Dr. Wilson', specialty: 'SWE' },
-    ];
-    return sendJson(res, 200, { success: true, data: timetable });
-  }
-  
-  // Results endpoint
-  if (segments[0] === 'results') {
-    // Sample results data for demo
-    const results = [
-      { id: 1, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Mathematics', semester: 'Semester 1', ca: 28, exam: 65, total: 93, grade: 'A' },
-      { id: 2, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Physics', semester: 'Semester 1', ca: 25, exam: 58, total: 83, grade: 'A' },
-      { id: 3, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Programming', semester: 'Semester 1', ca: 30, exam: 70, total: 100, grade: 'A' },
-      { id: 4, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Database Systems', semester: 'Semester 2', ca: 27, exam: 62, total: 89, grade: 'A' },
-      { id: 5, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Web Development', semester: 'Semester 2', ca: 26, exam: 55, total: 81, grade: 'A' },
-      { id: 6, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Software Engineering', semester: 'Semester 2', ca: 24, exam: 50, total: 74, grade: 'B+' },
-      { id: 7, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Mathematics', semester: 'Semester 1', ca: 22, exam: 45, total: 67, grade: 'B' },
-      { id: 8, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Physics', semester: 'Semester 1', ca: 20, exam: 40, total: 60, grade: 'B' },
-      { id: 9, studentId: 'IUGET/2024/SWE/0002', studentName: 'Jane Smith', course: 'Programming', semester: 'Semester 1', ca: 28, exam: 60, total: 88, grade: 'A' },
-    ];
-    
-    if (req.method === 'GET') {
-      return sendJson(res, 200, { success: true, data: results });
-    }
-  }
-  
-  // Default 404
-  sendJson(res, 404, { success: false, message: `Endpoint not found: ${req.method} ${path}` });
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Mock API server running on http://0.0.0.0:${PORT}`);
-  console.log(`Endpoints available:`);
-  console.log(`  POST /api/auth/register`);
-  console.log(`  POST /api/auth/login`);
-  console.log(`  POST /api/auth/refresh`);
-  console.log(`  POST /api/auth/logout`);
-  console.log(`  GET  /api/auth/me`);
-  console.log(`  POST /api/auth/forgot-password`);
-  console.log(`  POST /api/auth/reset-password`);
-  console.log(`  POST /api/auth/change-password`);
-  console.log(`  GET  /api/users`);
-  console.log(`  GET  /api/announcements`);
-  console.log(`  GET  /api/timetable`);
+  console.log(`✓ Mock API running on http://0.0.0.0:${PORT}`);
+  const endpoints = [
+    'POST /auth/register', 'POST /auth/login', 'POST /auth/refresh',
+    'POST /auth/logout', 'GET /auth/me',
+    'POST /auth/forgot-password', 'POST /auth/reset-password', 'POST /auth/change-password',
+    'GET /users', 'GET/POST /users/{id}', 'PUT/DELETE /users/{id}',
+    'GET/POST /announcements', 'POST /announcements/{id}/pin', 'DELETE /announcements/{id}',
+    'GET/POST /timetable', 'DELETE /timetable/{day}/{time}',
+    'GET /results', 'GET /students/{id}[/timetable|attendance|results|transcript|fees|available-courses]',
+    'POST /students/{id}/register',
+    'GET /lecturer/courses', 'GET /lecturer/attendance/records',
+    'POST /lecturer/attendance', 'POST /lecturer/grades', 'POST /lecturer/publish-grades',
+    'POST /courses/enroll', 'POST /courses/unenroll',
+    'POST /lessons', 'DELETE /lessons/{id}',
+    'POST /assignments', 'POST /submissions', 'POST /submissions/{id}/grade',
+    'POST /discussions', 'POST /discussions/{id}/reply',
+    'GET /health',
+  ];
+  endpoints.forEach(e => console.log(`  ${e}`));
 });
