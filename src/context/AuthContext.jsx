@@ -44,21 +44,11 @@ export function AuthProvider({ children }) {
     setRefreshing(true)
     
     try {
-      const refreshed = await SessionManager.extendSession()
-      if (!refreshed) {
-        // Session couldn't be refreshed, clear auth
-        logout()
-      } else {
-        // Refresh user data
-        const userData = await authApi.me()
-        if (userData) {
-          setUser(userData)
-          TokenStorage.setUserData(userData)
-        }
-      }
+      await SessionManager.extendSession()
     } catch (error) {
-      console.error('Token refresh failed:', error)
-      logout()
+      console.warn('Token refresh failed, session continues:', error)
+    } finally {
+      setRefreshing(false)
     }
   }
 

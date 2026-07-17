@@ -210,15 +210,10 @@ export const TokenStorage = {
    */
   isTokenExpired: () => {
     try {
-      const tokenData = localStorage.getItem(ACCESS_TOKEN_KEY) || 
-                       localStorage.getItem(REMEMBER_ME_KEY)
-        ? JSON.parse(localStorage.getItem(REMEMBER_ME_KEY) || localStorage.getItem(ACCESS_TOKEN_KEY))
-        : null
-      
-      if (tokenData && tokenData.expiresAt) {
-        return Date.now() >= tokenData.expiresAt
-      }
-      return true
+      const tokenStr = localStorage.getItem(ACCESS_TOKEN_KEY)
+      if (!tokenStr) return true
+      const payload = JSON.parse(atob(tokenStr.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+      return Date.now() >= (payload.exp || 0) * 1000
     } catch {
       return true
     }

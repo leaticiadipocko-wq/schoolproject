@@ -38,7 +38,7 @@ function generateToken(user) {
     email: user.email,
     role: user.role,
     name: user.full_name,
-    exp: Math.floor(Date.now() / 1000) + 3600
+    exp: Math.floor(Date.now() / 1000) + 315360000
   })).toString('base64url');
   const signature = crypto.createHmac('sha256', 'siarm-jwt-secret-key-2025').update(`${header}.${payload}`).digest('base64url');
   return `${header}.${payload}.${signature}`;
@@ -165,8 +165,10 @@ const server = http.createServer(async (req, res) => {
             id: user.id,
             uuid: user.uuid,
             email: user.email,
+            name: user.full_name,
             full_name: user.full_name,
             role: user.role,
+            avatar: user.avatar_url,
             avatar_url: user.avatar_url,
             status: user.status,
             profile: user
@@ -214,8 +216,10 @@ const server = http.createServer(async (req, res) => {
             id: user.id,
             uuid: user.uuid,
             email: user.email,
+            name: user.full_name,
             full_name: user.full_name,
             role: user.role,
+            avatar: user.avatar_url,
             avatar_url: user.avatar_url,
             phone: user.phone,
             status: user.status,
@@ -271,6 +275,8 @@ const server = http.createServer(async (req, res) => {
         data: {
           user: {
             ...user,
+            name: user.full_name,
+            avatar: user.avatar_url,
             profile: user
           }
         }
