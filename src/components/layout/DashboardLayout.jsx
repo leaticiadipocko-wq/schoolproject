@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
+import ChatBot from '@/pages/ChatBot'
 
 export default function DashboardLayout({ navItems }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -28,6 +29,7 @@ export default function DashboardLayout({ navItems }) {
           <Outlet />
         </main>
       </div>
+      <ChatBot />
     </div>
   )
 }

@@ -667,7 +667,7 @@ export function DataProvider({ children }) {
     const newMsg = {
       id: `msg-${Date.now()}`,
       conversationId,
-      sender: { uid: user?.uid, name: user?.name },
+      sender: { uid: user?.uid, name: user?.name, avatar: user?.avatar },
       text: text.trim(),
       timestamp: new Date().toISOString(),
       read: false,
@@ -686,6 +686,8 @@ export function DataProvider({ children }) {
           : c
       ),
     }))
+    if (window.siarmSyncMessage) window.siarmSyncMessage(newMsg)
+    return newMsg
   }, [user])
 
   const createConversation = useCallback((participants, type = 'direct', name = '') => {
@@ -699,6 +701,7 @@ export function DataProvider({ children }) {
       updatedAt: new Date().toISOString(),
     }
     setStore(s => ({ ...s, conversations: [newConv, ...s.conversations] }))
+    if (window.siarmSyncConv) window.siarmSyncConv(newConv)
     return convId
   }, [])
 
@@ -709,6 +712,52 @@ export function DataProvider({ children }) {
         c.id === conversationId ? { ...c, unread: 0 } : c
       ),
     }))
+  }, [])
+
+  const addNewUser = useCallback((userData) => {
+    const newUser = {
+      id: userData.uid || userData.id || `user-${Date.now()}`,
+      uid: userData.uid || userData.id || `user-${Date.now()}`,
+      name: userData.name || userData.full_name,
+      email: userData.email,
+      role: userData.role,
+      phone: userData.phone || '',
+      avatar: userData.avatar || `https://api.dicebear.com/7.x/avataaars/svg?seed=${(userData.name || userData.email).replace(/[^a-zA-Z0-9]/g, '')}`,
+      createdAt: new Date().toISOString(),
+    }
+    setStore(s => ({
+      ...s,
+      users: [newUser, ...s.users.filter(u => u.id !== newUser.id)],
+    }))
+    return newUser
+  }, [])
+
+  // Sync chat data with API
+  useEffect(() => {
+    const syncMsg = async (msg) => {
+      try {
+        await fetch('/api/chats/' + msg.conversationId + '/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(msg),
+        })
+      } catch (e) { console.error('Chat sync error:', e) }
+    }
+    const syncConv = async (conv) => {
+      try {
+        await fetch('/api/chats', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(conv),
+        })
+      } catch (e) { console.error('Chat sync error:', e) }
+    }
+    window.siarmSyncMessage = syncMsg
+    window.siarmSyncConv = syncConv
+    return () => {
+      delete window.siarmSyncMessage
+      delete window.siarmSyncConv
+    }
   }, [])
 
   // Password reset
@@ -738,7 +787,7 @@ export function DataProvider({ children }) {
     logAction,
     createAssignment, submitAssignment, gradeSubmission,
     postDiscussion, replyToDiscussion,
-    sendMessage, createConversation, markConversationRead,
+    sendMessage, createConversation, markConversationRead, addNewUser,
     requestPasswordReset,
     enrollCourse, unenrollCourse,
     addUser, updateUser, deleteUser,

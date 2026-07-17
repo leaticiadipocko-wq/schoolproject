@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import { Mail, Lock, User, ArrowRight, GraduationCap, BookOpen, Briefcase, ShieldCheck, Eye, EyeOff, AlertCircle, CheckCircle2 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
+import { useData } from '@/context/DataContext'
 import { roleHome, ROLES } from '@/lib/roles'
 import Logo from '@/components/Logo'
 import { validatePassword, getPasswordStrengthColor, getPasswordStrengthLabel } from '@/lib/auth'
@@ -16,6 +17,7 @@ const ROLE_CARDS = [
 
 export default function Register() {
   const { register } = useAuth()
+  const { addNewUser } = useData()
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
@@ -37,6 +39,7 @@ export default function Register() {
     setLoading(true)
     try {
       const u = await register({ name, email, password, role })
+      addNewUser({ ...u, name: u.name || name, uid: u.uid || u.id, role: u.role || role })
       toast.success(`Welcome to SIARM, ${u.name.split(' ')[0]}!`)
       navigate(roleHome(u.role), { replace: true })
     } catch (err) {

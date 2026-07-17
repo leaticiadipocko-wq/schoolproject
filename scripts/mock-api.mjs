@@ -10,6 +10,8 @@ const DATA_PATH = process.argv[2] || './mock-data.json';
 const users = new Map(); // email → user
 const tokens = new Map(); // refresh_token → email
 const sessions = new Map(); // access_token → email
+const chatConversations = new Map();
+const chatMessages = {};
 
 const mockUsers = [
   { id:1, uid:'stu-001', email:'student@iuget.cm', password:'password', role:'student', name:'Chituh Innocentia',   avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
@@ -568,6 +570,82 @@ const server = http.createServer(async (req, res) => {
       if (req.method === 'POST' && segments[2] === 'reply')
         return sendJson(res, 200, { success:true, message:'Reply posted' });
       return sendJson(res, 200, { success:true, data:[] });
+    }
+
+    // ── Chat ──────────────────────────────────────────────────
+    if (segments[0] === 'chats') {
+      if (req.method === 'GET' && !segments[1]) {
+        const list = Array.from(chatConversations.values()).map(c => ({
+          ...c,
+          lastMessage: chatMessages[c.id]?.length ? chatMessages[c.id][chatMessages[c.id].length - 1] : null,
+          messageCount: (chatMessages[c.id] || []).length,
+        }));
+        return sendJson(res, 200, { success:true, data:list });
+      }
+      if (req.method === 'POST' && !segments[1]) {
+        const body = await parseBody(req);
+        const convId = `chat-${Date.now()}`;
+        const conv = { id:convId, type:body.type||'direct', name:body.name||'', participants:body.participants||[], unread:0, updatedAt:new Date().toISOString() };
+        chatConversations.set(convId, conv);
+        chatMessages[convId] = [];
+        return sendJson(res, 201, { success:true, data:conv });
+      }
+      if (req.method === 'GET' && segments[1]) {
+        const msgs = chatMessages[segments[1]] || [];
+        return sendJson(res, 200, { success:true, data:msgs });
+      }
+      if (req.method === 'POST' && segments[1] && segments[2] === 'messages') {
+        const body = await parseBody(req);
+        if (!chatMessages[segments[1]]) chatMessages[segments[1]] = [];
+        const msg = { id:`chatmsg-${Date.now()}`, conversationId:segments[1], sender:body.sender, text:body.text, timestamp:new Date().toISOString(), read:false };
+        chatMessages[segments[1]].push(msg);
+        if (chatConversations.has(segments[1])) {
+          const c = chatConversations.get(segments[1]);
+          c.lastMessage = { text:body.text, timestamp:msg.timestamp, sender:body.sender?.name };
+          c.updatedAt = msg.timestamp;
+        }
+        return sendJson(res, 201, { success:true, data:msg });
+      }
+      return sendJson(res, 404, { success:false, message:'Chat endpoint not found' });
+    }
+
+    // ── Chatbot ───────────────────────────────────────────────
+    if (path === '/chatbot') {
+      const body = await parseBody(req);
+      const msg = (body?.message || '').toLowerCase().trim();
+      const name = body?.userName || 'User';
+
+      const responses = [
+        { keywords:['hello','hi','hey','greetings'], reply:`Hello ${name}! 👋 How can I help you with your academic needs today?` },
+        { keywords:['fee','payment','pay','finance','bursary','tuition'], reply:`To check your fees and make payments, please visit the **Fees & Payments** section under your profile. You can pay via mobile money, bank transfer, or at the bursary office.` },
+        { keywords:['result','grade','score','exam','mark'], reply:`Your results are available in the **Results** section. If you notice any discrepancy, please contact your lecturer or the academic registrar within 14 days of publication.` },
+        { keywords:['timetable','schedule','class','course','lecture'], reply:`Your class timetable is available in the **Timetable** section. All times are in WAT (West African Time). Please arrive 5 minutes before your scheduled class.` },
+        { keywords:['register','registration','enroll','course'], reply:`Course registration is done at the beginning of each semester through the **Course Registration** portal. You need to clear your fees before registration.` },
+        { keywords:['transcript','certificate','diploma'], reply:`Transcript requests are processed by the Academic Registrar's office. Processing takes 3-5 business days. You can track your request status in the portal.` },
+        { keywords:['library','book','resource','research'], reply:`The University Library is open Monday-Friday 8:00 AM - 8:00 PM and Saturday 9:00 AM - 3:00 PM. You can also access the e-library through the portal.` },
+        { keywords:['hostel','accommodation','dormitory','housing'], reply:`For accommodation inquiries, please contact the Student Affairs Office. Applications for on-campus housing open at the start of each academic year.` },
+        { keywords:['password','reset','forgot','login'], reply:`If you forgot your password, click **Forgot Password** on the login page. A reset link will be sent to your registered email address.` },
+        { keywords:['deadline','due','submission','submit','assignment'], reply:`Assignment deadlines are set by your lecturer and displayed in the **Assignments** section. Late submissions may incur a penalty of 5% per day.` },
+        { keywords:['contact','support','helpdesk','help','assist'], reply:`You can reach the IT Helpdesk at helpdesk@iuget.cm or visit room B105 during working hours. For academic issues, contact your faculty's administrative officer.` },
+        { keywords:['holiday','break','vacation','calendar'], reply:`The academic calendar is available in the **Calendar** section. Key dates include: Mid-Semester Break (Week 7), End-of-Semester Exams (Week 16-17), and Holidays as announced.` },
+      ];
+
+      let reply = `I'm sorry ${name}, I couldn't understand your question. Please try asking about **fees, results, timetable, registration, assignments, library, hostel, contact, or deadlines**.`;
+      for (const r of responses) {
+        if (r.keywords.some(k => msg.includes(k))) {
+          reply = r.reply;
+          break;
+        }
+      }
+
+      return sendJson(res, 200, {
+        success:true,
+        data:{
+          reply,
+          timestamp: new Date().toISOString(),
+          intent: msg.includes('fee') ? 'fee' : msg.includes('result') ? 'result' : 'general'
+        }
+      });
     }
 
     // ── Health check ──────────────────────────────────────────

@@ -150,6 +150,7 @@ export default function App() {
         <Route path="finance"       element={<Finance />} />
         <Route path="assignments"   element={<Assignments />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
+        <Route path="chat"          element={<Chat />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="analytics"     element={<Analytics />} />
         <Route path="audit"         element={<AuditLog />} />
@@ -176,6 +177,7 @@ export default function App() {
         <Route path="assignments"   element={<Assignments />} />
         <Route path="users"         element={<UserManagement />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
+        <Route path="chat"          element={<Chat />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="settings"      element={<Settings />} />
         <Route path="audit"         element={<AuditLog />} />

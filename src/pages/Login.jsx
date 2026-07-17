@@ -12,7 +12,7 @@ import { validatePassword } from '@/lib/auth'
 
 export default function Login() {
   const { login, resetPassword } = useAuth()
-  const { requestPasswordReset } = useData()
+  const { requestPasswordReset, addNewUser } = useData()
   const { t, lang, toggle } = useLang()
   const navigate = useNavigate()
   const location = useLocation()
@@ -32,6 +32,7 @@ export default function Login() {
     setLoading(true)
     try {
       const u = await login(email, password, rememberMe)
+      addNewUser({ ...u, uid: u.uid || u.id, })
       toast.success(t('login.success', { name: u.name?.split(' ')[0] || '' }))
       navigate(from || roleHome(u.role), { replace: true })
     } catch (err) {

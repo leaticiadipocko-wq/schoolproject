@@ -81,6 +81,7 @@ export const STAFF_NAV = [
       { to: '/staff/assignments',   label: 'Assignments',     icon: MapPin },
       { to: '/staff/timetable',     label: 'Timetable',       icon: CalendarClock },
       { to: '/staff/announcements', label: 'Announcements',   icon: Megaphone },
+      { to: '/staff/chat',          label: 'Chat',             icon: MessageCircle },
     ],
   },
   {
@@ -129,6 +130,7 @@ export const ADMIN_NAV = [
       { to: '/admin/audit',         label: 'Audit Log',     icon: Activity },
       { to: '/admin/minesup',       label: 'MINESUP Reports', icon: Globe },
       { to: '/admin/export',        label: 'Data Export',   icon: Archive },
+      { to: '/admin/chat',          label: 'Chat',           icon: MessageCircle },
     ],
   },
   {

@@ -1,10 +1,11 @@
 import { useState, useMemo, useRef, useEffect } from 'react'
+import toast from 'react-hot-toast'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { useLang } from '@/context/LanguageContext'
 import {
   Send, Search, ArrowLeft, Phone, Video, MoreVertical,
-  Check, CheckCheck, User as UserIcon, Users,
+  Check, CheckCheck, User as UserIcon, Users, Plus, X, MessageCircle,
 } from 'lucide-react'
 
 function formatTime(ts) {
@@ -32,7 +33,7 @@ function formatLastSeen(ts) {
 
 export default function Chat() {
   const { user } = useAuth()
-  const { conversations, messages, sendMessage, createConversation, markConversationRead } = useData()
+  const { conversations, messages, sendMessage, createConversation, markConversationRead, users, addNewUser } = useData()
   const { lang } = useLang()
   const [activeConv, setActiveConv] = useState(null)
   const [showList, setShowList] = useState(true)
@@ -112,6 +113,53 @@ export default function Chat() {
     [conversations]
   )
 
+  const [showNewConv, setShowNewConv] = useState(false)
+  const [newConvName, setNewConvName] = useState('')
+  const [selectedUsers, setSelectedUsers] = useState([])
+  const [userSearch, setUserSearch] = useState('')
+
+
+  const allUsers = useMemo(() => {
+    const seen = {}
+    return (users || []).filter(u => {
+      const key = u?.uid || u?.id || u?.uuid
+      if (!key) return false
+      if (key === user?.uid || key === user?.id) return false
+      if (seen[key]) return false
+      seen[key] = true
+      return true
+    })
+  }, [users, user])
+
+  const filteredUsers = useMemo(() => {
+    if (!userSearch.trim()) return allUsers
+    const q = userSearch.toLowerCase()
+    return allUsers.filter(u => u.name?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q))
+  }, [allUsers, userSearch])
+
+  const handleCreateConversation = () => {
+    if (selectedUsers.length === 0) return
+    const type = selectedUsers.length === 1 ? 'direct' : 'group'
+    const participants = [
+      { uid: user?.uid, name: user?.name, role: user?.role, avatar: user?.avatar },
+      ...selectedUsers,
+    ]
+    createConversation(participants, type, newConvName)
+    setShowNewConv(false)
+    setSelectedUsers([])
+    setNewConvName('')
+    setUserSearch('')
+    toast.success(type === 'group' ? 'Group created' : 'Conversation started')
+  }
+
+  const toggleUser = (u) => {
+    setSelectedUsers(prev =>
+      prev.find(p => p.uid === u.uid)
+        ? prev.filter(p => p.uid !== u.uid)
+        : [...prev, u]
+    )
+  }
+
   const latestMessage = (conv) => {
     const convMsgs = messages.filter(m => m.conversationId === conv.id)
     if (convMsgs.length === 0) return conv.lastMessage?.text || ''
@@ -149,6 +197,13 @@ export default function Chat() {
               onChange={e => setSearch(e.target.value)}
             />
           </div>
+          <button
+            onClick={() => setShowNewConv(true)}
+            className="mt-3 w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-medium text-sm transition"
+          >
+            <Plus size={16} />
+            {lang === 'en' ? 'New Conversation' : 'Nouvelle conversation'}
+          </button>
         </div>
 
         {/* Scrollable list */}
@@ -390,6 +445,105 @@ export default function Chat() {
           </>
         )}
       </div>
+      {/* New Conversation Modal */}
+      {showNewConv && (
+        <div className="fixed inset-0 z-50 bg-black/40 flex items-center justify-center p-4" onClick={() => setShowNewConv(false)}>
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[80vh] overflow-hidden shadow-2xl" onClick={e => e.stopPropagation()}>
+            <div className="flex items-center justify-between px-5 py-4 border-b border-ink-100">
+              <h3 className="font-display font-bold text-lg">
+                {lang === 'en' ? 'New Conversation' : 'Nouvelle conversation'}
+              </h3>
+              <button onClick={() => setShowNewConv(false)} className="p-1 hover:bg-ink-100 rounded-lg">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="p-5 space-y-4">
+              {selectedUsers.length > 1 && (
+                <div>
+                  <label className="label">Group name</label>
+                  <input
+                    className="input"
+                    placeholder={lang === 'en' ? 'e.g. Compiler Design Group' : 'Ex: Groupe Compilation'}
+                    value={newConvName}
+                    onChange={e => setNewConvName(e.target.value)}
+                  />
+                </div>
+              )}
+              <div>
+                <label className="label">
+                  {lang === 'en' ? 'Participants' : 'Participants'}
+                  {selectedUsers.length > 0 && (
+                    <span className="text-ink-400 font-normal ml-1">({selectedUsers.length} {lang === 'en' ? 'selected' : 'selectionnes'})</span>
+                  )}
+                </label>
+                <div className="relative mb-2">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
+                  <input
+                    className="input pl-8 text-sm"
+                    placeholder={lang === 'en' ? 'Search users...' : 'Rechercher...'}
+                    value={userSearch}
+                    onChange={e => setUserSearch(e.target.value)}
+                  />
+                </div>
+                {selectedUsers.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-2">
+                    {selectedUsers.map(u => (
+                      <span key={u.uid} className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-brand-100 text-brand-700 text-xs font-medium">
+                        {u.name}
+                        <button onClick={() => toggleUser(u)} className="hover:text-red-500"><X size={12} /></button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div className="max-h-40 overflow-y-auto border border-ink-100 rounded-xl divide-y divide-ink-50">
+                  {filteredUsers.map(u => (
+                    <button
+                      key={u.uid}
+                      onClick={() => toggleUser(u)}
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-ink-50 text-left transition ${
+                        selectedUsers.find(p => p.uid === u.uid) ? 'bg-brand-50' : ''
+                      }`}
+                    >
+                      {u.avatar ? (
+                        <img src={u.avatar} alt="" className="w-8 h-8 rounded-full object-cover" />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-brand-100 flex items-center justify-center">
+                          <UserIcon size={14} className="text-brand-600" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">{u.name}</div>
+                        <div className="text-[11px] text-ink-500">{(u.role || u.role || '')}{u.email ? ` · ${u.email}` : ''}</div>
+                      </div>
+                      {selectedUsers.find(p => p.uid === u.uid) && (
+                        <Check size={16} className="text-brand-600 shrink-0" />
+                      )}
+                    </button>
+                  ))}
+                  {filteredUsers.length === 0 && (
+                    <div className="text-center py-6 text-ink-500 text-sm">
+                      {lang === 'en' ? 'No users found' : 'Aucun utilisateur trouve'}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <button
+                onClick={handleCreateConversation}
+                disabled={selectedUsers.length === 0}
+                className="btn-primary w-full py-2.5"
+              >
+                <MessageCircle size={16} />
+                {selectedUsers.length === 0
+                  ? (lang === 'en' ? 'Select participants' : 'Selectionnez des participants')
+                  : selectedUsers.length === 1
+                    ? (lang === 'en' ? 'Start Chat' : 'Demarrer la discussion')
+                    : (lang === 'en' ? `Create Group (${selectedUsers.length} members)` : `Creer le groupe (${selectedUsers.length} membres)`)
+                }
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
