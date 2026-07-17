@@ -96,17 +96,12 @@ export default function App() {
       >
         <Route index element={<StudentDashboard />} />
         <Route path="attendance"    element={<Attendance />} />
-        <Route path="timetable"     element={<Timetable />} />
         <Route path="results"       element={<Results />} />
-        <Route path="announcements" element={<Announcements />} />
-        <Route path="chat"          element={<Chat />} />
-        <Route path="learning"      element={<Learning />} />
-        <Route path="transcript"    element={<Transcript />} />
-        <Route path="fees"          element={<Fees />} />
-        <Route path="idcard"        element={<IDCard />} />
         <Route path="assignments"   element={<StudentAssignments />} />
-        <Route path="checkin"       element={<CheckIn />} />
+        <Route path="chat"          element={<Chat />} />
         <Route path="discussions"   element={<Discussions />} />
+        <Route path="announcements" element={<Announcements />} />
+        <Route path="learning"      element={<Learning />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />

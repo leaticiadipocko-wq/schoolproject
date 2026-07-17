@@ -12,33 +12,28 @@ export const STUDENT_NAV = [
     links: [
       { to: '/student',               label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/student/attendance',    label: 'Attendance',    icon: ClipboardCheck },
-      { to: '/student/checkin',       label: 'Check In',      icon: ClipboardCheck },
-      { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
       { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },
-      { to: '/student/chat',          label: 'Chat',           icon: MessageCircle },
-      { to: '/student/discussions',   label: 'Discussions',   icon: MessageSquare },
-      { to: '/student/announcements', label: 'Announcements', icon: Megaphone },
     ],
   },
   {
-    title: 'Records',
+    title: 'Communicate',
     links: [
-      { to: '/student/idcard',        label: 'ID Card',        icon: IdCard },
-      { to: '/student/fees',          label: 'Tuition & Fees', icon: Wallet },
-      { to: '/student/transcript',    label: 'Transcript',     icon: FileSpreadsheet },
+      { to: '/student/chat',          label: 'Chat',           icon: MessageCircle },
+      { to: '/student/discussions',   label: 'Discussions',   icon: MessageSquare },
     ],
   },
   {
     title: 'Learning',
     links: [
-      { to: '/student/learning', label: 'Mobile Learning',  icon: GraduationCap },
+      { to: '/student/learning',      label: 'Mobile Learning', icon: GraduationCap },
+      { to: '/student/announcements', label: 'Announcements',   icon: Megaphone },
     ],
   },
   {
     title: 'System',
     links: [
-      { to: '/student/offline',  label: 'Offline Mode',     icon: WifiOff },
+      { to: '/student/offline',       label: 'Offline Mode',   icon: WifiOff },
     ],
   },
 ]

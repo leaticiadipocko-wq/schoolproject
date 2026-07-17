@@ -1,15 +1,13 @@
 import { Link } from 'react-router-dom'
-import { ClipboardCheck, CalendarClock, FileText, BookOpen, ArrowRight, Wallet, IdCard, Megaphone } from 'lucide-react'
+import { ClipboardCheck, CalendarClock, FileText, BookOpen, ArrowRight, Megaphone } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip, Cell } from 'recharts'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import StatCard from '@/components/ui/StatCard'
 
-const formatFCFA = (n) => new Intl.NumberFormat('fr-CM').format(n) + ' FCFA'
-
 export default function StudentDashboard() {
   const { user } = useAuth()
-  const { attendance, announcements: allAnnouncements, timetable, enrolledCourses, recommendedCourses, fees } = useData()
+  const { attendance, announcements: allAnnouncements, timetable, enrolledCourses } = useData()
   const today = new Date().toLocaleDateString('en-US', { weekday: 'long' })
   // Show only the student's specialty + Bachelor (Level 3) evening schedule
   const todayClasses = timetable.filter(
@@ -38,32 +36,32 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Quick actions: Fees + ID Card */}
+      {/* Quick links: Profile + Resources */}
       <div className="grid sm:grid-cols-2 gap-4">
-        <Link to="/student/fees" className="card-hover bg-gradient-to-br from-accent-50 to-amber-50 border-accent-200 group">
+        <Link to="/student/profile" className="card-hover bg-gradient-to-br from-brand-50 to-accent-50 border-brand-200 group">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-accent-600 text-white flex items-center justify-center group-hover:scale-110 transition">
-              <Wallet size={22} />
+            <div className="w-12 h-12 rounded-xl bg-brand-600 text-white flex items-center justify-center group-hover:scale-110 transition">
+              <FileText size={22} />
             </div>
             <div className="flex-1">
-              <div className="text-xs text-ink-500">Outstanding tuition</div>
-              <div className="text-xl font-display font-bold text-accent-700">{formatFCFA(fees.balance)}</div>
-              <div className="text-xs text-ink-500">Due {new Date(fees.deadline).toLocaleDateString('en-GB')}</div>
-            </div>
-            <ArrowRight size={20} className="text-accent-600 group-hover:translate-x-1 transition" />
-          </div>
-        </Link>
-        <Link to="/student/idcard" className="card-hover bg-gradient-to-br from-brand-50 to-accent-50 border-brand-200 group">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-brand-800 text-white flex items-center justify-center group-hover:scale-110 transition">
-              <IdCard size={22} />
-            </div>
-            <div className="flex-1">
-              <div className="text-xs text-ink-500">Student ID Card</div>
-              <div className="text-xl font-display font-bold text-brand-800">View & print</div>
-              <div className="text-xs text-ink-500">Valid until Sep 2027</div>
+              <div className="text-xs text-ink-500">Personal Information</div>
+              <div className="text-xl font-display font-bold text-brand-800">View & update</div>
+              <div className="text-xs text-ink-500">Keep your profile up to date</div>
             </div>
             <ArrowRight size={20} className="text-brand-800 group-hover:translate-x-1 transition" />
+          </div>
+        </Link>
+        <Link to="/student/learning" className="card-hover bg-gradient-to-br from-accent-50 to-amber-50 border-accent-200 group">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 rounded-xl bg-accent-600 text-white flex items-center justify-center group-hover:scale-110 transition">
+              <BookOpen size={22} />
+            </div>
+            <div className="flex-1">
+              <div className="text-xs text-ink-500">Learning Resources</div>
+              <div className="text-xl font-display font-bold text-accent-700">Access materials</div>
+              <div className="text-xs text-ink-500">Lecturer-published lessons & self-study</div>
+            </div>
+            <ArrowRight size={20} className="text-accent-600 group-hover:translate-x-1 transition" />
           </div>
         </Link>
       </div>

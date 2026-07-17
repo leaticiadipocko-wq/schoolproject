@@ -1,9 +1,9 @@
 import { useState, useMemo } from 'react'
 import toast from 'react-hot-toast'
-import { Wand2, Plus, Save, AlertCircle, X, Trash2, Moon, Sun } from 'lucide-react'
+import { Wand2, Plus, Save, AlertCircle, X, Trash2, Moon, Sun, Sparkles } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { useData } from '@/context/DataContext'
-import { TIMETABLE_TRACKS } from '@/lib/mockData'
+import { TIMETABLE_TRACKS, MOCK_COURSES } from '@/lib/mockData'
 
 export default function TimetableBuilder() {
   const { timetable, setTimetableSlot, removeTimetableSlot } = useData()
@@ -53,6 +53,23 @@ export default function TimetableBuilder() {
 
   const publish = () => toast.success(`Timetable for ${track.short} published to all students`)
 
+  const generateTimetable = () => {
+    const sampleCourses = MOCK_COURSES.slice(0, 6)
+    const weekdaySlots = track.weekdaySlots || []
+    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
+    let idx = 0
+    for (const day of days) {
+      for (const slot of weekdaySlots) {
+        if (!cells[`${day}|${slot}`] && idx < sampleCourses.length) {
+          const c = sampleCourses[idx % sampleCourses.length]
+          setTimetableSlot({ day, time: slot, course: c.code || c.name, room: `Room ${String(100 + (idx % 5) + 1)}`, lecturer: c.lecturer || 'TBA', track: trackId })
+          idx++
+        }
+      }
+    }
+    toast.success(`Generated ${idx} slots for ${track.short}`)
+  }
+
   // Count totals for this track
   const allocated = Object.keys(cells).length
   const totalSlots = (track.days.length - (track.saturdaySlots.length === 0 ? 1 : 0)) * track.weekdaySlots.length
@@ -65,6 +82,7 @@ export default function TimetableBuilder() {
         subtitle={track.description}
         actions={
           <>
+            <button onClick={generateTimetable} className="btn-secondary"><Sparkles size={16} /> Generate</button>
             <button onClick={checkConflicts} className="btn-secondary"><Wand2 size={16} /> Check conflicts</button>
             <button onClick={publish} className="btn-primary"><Save size={16} /> Publish</button>
           </>
