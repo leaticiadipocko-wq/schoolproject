@@ -226,8 +226,31 @@ const server = http.createServer(async (req, res) => {
       });
     }
     
+    // POST /api/auth/refresh
+    if (req.method === 'POST' && action === 'refresh') {
+      const body = await parseBody(req);
+      const { refresh_token } = body;
+      if (!refresh_token || !tokens.has(refresh_token)) {
+        return sendJson(res, 401, { success: false, message: 'Invalid refresh token' });
+      }
+      const tokenData = tokens.get(refresh_token);
+      const user = users.get(tokenData.email);
+      if (!user) {
+        return sendJson(res, 404, { success: false, message: 'User not found' });
+      }
+      const newToken = generateToken(user);
+      return sendJson(res, 200, {
+        success: true,
+        access_token: newToken,
+        refresh_token: refresh_token,
+      });
+    }
+    
     // POST /api/auth/logout
     if (req.method === 'POST' && action === 'logout') {
+      const body = await parseBody(req);
+      const { refresh_token } = body;
+      if (refresh_token) tokens.delete(refresh_token);
       return sendJson(res, 200, { success: true, message: 'Logged out successfully' });
     }
     
@@ -405,6 +428,7 @@ server.listen(PORT, '0.0.0.0', () => {
   console.log(`Endpoints available:`);
   console.log(`  POST /api/auth/register`);
   console.log(`  POST /api/auth/login`);
+  console.log(`  POST /api/auth/refresh`);
   console.log(`  POST /api/auth/logout`);
   console.log(`  GET  /api/auth/me`);
   console.log(`  POST /api/auth/forgot-password`);
