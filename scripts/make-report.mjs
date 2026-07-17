@@ -14,10 +14,10 @@ const DIAGRAM_DIR = path.resolve(process.cwd(), 'deliverables/diagrams')
 const BRAND_DIR   = path.resolve(process.cwd(), 'public/brand')
 const OUT_FILE    = path.resolve(process.cwd(), 'deliverables/SIARM-Report.docx')
 
-const NAVY = '1E3AA0'
-const RED  = 'E63946'
-const GRAY = '64748B'
-const INK  = '1E293B'
+const NAVY = '000000'
+const RED  = '000000'
+const GRAY = '000000'
+const INK  = '000000'
 
 const T = (text, opts = {}) => new TextRun({ text, font: 'Times New Roman', ...opts })
 
