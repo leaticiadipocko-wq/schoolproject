@@ -12,6 +12,7 @@ import html2canvas from 'html2canvas'
 import Logo from '@/components/Logo'
 import QRCode from '@/components/QRCode'
 import { getEnrollmentVerificationUrl } from '@/lib/verificationUrl'
+import { api } from '@/lib/api'
 
 // IUGET tuition structure
 const FEE_BREAKDOWN = [
@@ -82,7 +83,6 @@ export default function ParentRegister() {
   const onPaymentSuccess = ({ reference, method }) => {
     const paidAt = new Date().toISOString()
     setPaid({ reference, method, paidAt, amount: pay.amount })
-    // Generate the final student record
     const matricule = `IUGET/${new Date().getFullYear()}/${program.specialty}/${String(Math.floor(Math.random() * 900) + 100).padStart(4, '0')}`
     const lastWord  = child.fullName.trim().split(/\s+/).pop().toLowerCase().replace(/[^a-z]/g, '')
     const email     = `${lastWord}.${matricule.split('/').pop()}@iuget.cm`
@@ -102,7 +102,6 @@ export default function ParentRegister() {
 
   return (
     <div className="min-h-screen bg-ink-50">
-      {/* Top nav */}
       <header className="border-b border-ink-100 bg-white">
         <div className="max-w-5xl mx-auto px-6 py-3.5 flex items-center justify-between">
           <Link to="/parent" className="flex items-center gap-3">
@@ -114,7 +113,6 @@ export default function ParentRegister() {
         </div>
       </header>
 
-      {/* Stepper */}
       <div className="max-w-5xl mx-auto px-6 pt-8">
         <Stepper step={step} />
       </div>
@@ -139,7 +137,6 @@ export default function ParentRegister() {
           </motion.div>
         </AnimatePresence>
 
-        {/* Bottom nav (hidden on payment & success which have their own CTAs) */}
         {step < 4 && (
           <div className="mt-8 flex items-center justify-between">
             <button onClick={goBack} disabled={step === 1} className="btn-secondary disabled:opacity-40">
@@ -298,44 +295,76 @@ function SpecialtyStep({ program, setProgram }) {
 
 /* ─── Step 4 — Review & pay ───────────────────────────────── */
 function PaymentStep({ pay, setPay, parent, child, program, onSuccess }) {
-  const [stage, setStage] = useState('select')  // select | enter-phone | enter-password | processing | success
-  const [phone, setPhone]   = useState('')
-  const [pwd, setPwd]       = useState('')
-  const [showPwd, setShowPwd] = useState(false)
-  const [reference, setReference] = useState(null)
+  const [stage, setStage] = useState('select')
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState('')
 
   const method = PAY_METHODS.find((m) => m.id === pay.method)
 
-  const startPayment = () => {
-    setReference(ref(method.id.toUpperCase()))
-    if (method.id === 'momo' || method.id === 'om') {
-      setStage('enter-phone')
-    } else if (method.id === 'paypal') {
-      setStage('enter-password')  // PayPal asks email + password — we'll reuse password stage
-    } else if (method.id === 'visa') {
-      setStage('enter-password')  // Visa 3DS — we'll show a card form
-    } else {
-      // bank transfer — show the bank details and stop
-      setStage('bank')
+  const startPayment = async () => {
+    setError('')
+    setProcessing(true)
+    setStage('processing')
+    try {
+      const initResp = await api.request('/payments/initialize', {
+        method: 'POST',
+        body: { amount: pay.amount, method: method.id, methodName: method.name },
+      })
+      if (!initResp.success) throw new Error(initResp.message || 'Failed to initialize payment')
+
+      const { authorization_url, access_code, reference, publicKey } = initResp.data
+
+      if (['momo', 'om'].includes(method.id)) {
+        const handler = window.PaystackPop?.setup({
+          key: publicKey,
+          email: parent.email || parent.phone + '@parent.iuget.cm',
+          amount: Math.round(pay.amount * 100),
+          ref: reference,
+          access_code,
+          currency: 'XAF',
+          channels: ['mobile_money'],
+          mobile_money: { provider: method.id === 'momo' ? 'mtn' : 'orange' },
+          onSuccess: (txn) => {
+            setStage('success')
+            setTimeout(() => onSuccess({ reference: txn.reference || reference, method: method.name }), 800)
+          },
+          onCancel: () => { setStage('select'); setProcessing(false); toast.error('Payment cancelled') },
+          onError: (err) => { setStage('select'); setProcessing(false); setError(err?.message || 'Payment failed') },
+        })
+        if (!handler) {
+          window.open(authorization_url, '_blank')
+          setStage('select'); setProcessing(false)
+          toast.error('Paystack popup blocked. Please allow popups and try again.')
+        }
+      } else {
+        const handler = window.PaystackPop?.setup({
+          key: publicKey,
+          email: parent.email || parent.phone + '@parent.iuget.cm',
+          amount: Math.round(pay.amount * 100),
+          ref: reference,
+          access_code,
+          currency: 'XAF',
+          onSuccess: (txn) => {
+            setStage('success')
+            setTimeout(() => onSuccess({ reference: txn.reference || reference, method: method.name }), 800)
+          },
+          onCancel: () => { setStage('select'); setProcessing(false); toast.error('Payment cancelled') },
+          onError: (err) => { setStage('select'); setProcessing(false); setError(err?.message || 'Payment failed') },
+        })
+        if (!handler) {
+          window.open(authorization_url, '_blank')
+          setStage('select'); setProcessing(false)
+          toast.error('Paystack popup blocked. Please allow popups and try again.')
+        }
+      }
+    } catch (err) {
+      setError(err.message)
+      setStage('select')
+      setProcessing(false)
     }
   }
 
-  const confirmPhone = () => {
-    if (!/^\d{8,12}$/.test(phone.replace(/\s+/g, ''))) return toast.error('Enter a valid Cameroonian phone number')
-    setStage('enter-password')
-  }
-
-  const submitPassword = async () => {
-    if (!pwd) return toast.error('PIN / password is required')
-    // ── PRIVACY: we never persist pwd anywhere
-    setStage('processing')
-    await new Promise((r) => setTimeout(r, 2200))
-    setPwd('')           // <- erase immediately after the simulated send
-    setStage('success')
-    setTimeout(() => onSuccess({ reference, method: method.name }), 1400)
-  }
-
-  const cancel = () => { setStage('select'); setPhone(''); setPwd(''); setReference(null) }
+  const cancel = () => { setStage('select'); setProcessing(false); setError('') }
 
   return (
     <div className="space-y-5">
@@ -398,18 +427,18 @@ function PaymentStep({ pay, setPay, parent, child, program, onSuccess }) {
           </div>
         </div>
 
-        <button onClick={startPayment} className="btn-primary w-full mt-5 py-3 text-base">
-          <Wallet size={18} /> Proceed to payment · {fmtFCFA(pay.amount)}
+        <button onClick={startPayment} disabled={processing} className="btn-primary w-full mt-5 py-3 text-base">
+          <Wallet size={18} /> {processing ? 'Processing…' : 'Proceed to payment · ' + fmtFCFA(pay.amount)}
         </button>
       </div>
 
-      {/* USSD / payment modal */}
+      {/* Payment processing / success modal */}
       <AnimatePresence>
         {stage !== 'select' && (
           <motion.div
             initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="fixed inset-0 z-50 bg-ink-900/70 backdrop-blur-sm flex items-center justify-center p-4"
-            onClick={(e) => { if (e.target === e.currentTarget && stage !== 'processing' && stage !== 'success') cancel() }}
+            onClick={(e) => { if (e.target === e.currentTarget && stage !== 'processing') cancel() }}
           >
             <motion.div
               initial={{ opacity: 0, scale: 0.92, y: 20 }}
@@ -418,41 +447,41 @@ function PaymentStep({ pay, setPay, parent, child, program, onSuccess }) {
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
               className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden"
             >
-              {/* Provider header */}
-              <div className={`bg-gradient-to-br ${method.color} text-white p-5 flex items-center justify-between`}>
+              <div className={`bg-gradient-to-br ${method?.color} text-white p-5 flex items-center justify-between`}>
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-white/20 flex items-center justify-center">
                     <method.icon size={22} />
                   </div>
                   <div>
-                    <div className="font-display font-bold">{method.name}</div>
-                    <div className="text-xs text-white/80 font-mono">Ref · {reference}</div>
+                    <div className="font-display font-bold">{method?.name}</div>
+                    <div className="text-xs text-white/80">{stage === 'processing' ? 'Processing payment' : stage === 'success' ? 'Payment complete' : ''}</div>
                   </div>
                 </div>
-                {stage !== 'processing' && stage !== 'success' && (
+                {stage !== 'processing' && (
                   <button onClick={cancel} className="p-1.5 hover:bg-white/15 rounded-lg"><X size={18} /></button>
                 )}
               </div>
-
-              {/* Body — driven by stage */}
               <div className="p-6">
-                {stage === 'enter-phone' && (
-                  <USSDPhonePane method={method} phone={phone} setPhone={setPhone} confirm={confirmPhone} cancel={cancel} amount={pay.amount} />
+                {stage === 'processing' && (
+                  <div className="text-center space-y-4 py-6">
+                    <Loader2 size={48} className="mx-auto text-brand-800 animate-spin" />
+                    <div className="font-display font-bold text-lg">Opening {method?.name}…</div>
+                    <div className="text-sm text-ink-500">
+                      Paystack checkout will open in a popup. Please complete the payment there.
+                    </div>
+                  </div>
                 )}
-                {stage === 'enter-password' && method.id === 'paypal' && (
-                  <PayPalPane pwd={pwd} setPwd={setPwd} showPwd={showPwd} setShowPwd={setShowPwd} submit={submitPassword} cancel={cancel} amount={pay.amount} />
+                {stage === 'success' && (
+                  <div className="text-center space-y-4 py-6">
+                    <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto">
+                      <CheckCircle2 size={36} />
+                    </div>
+                    <div className="font-display font-bold text-xl">Payment successful!</div>
+                    <div className="text-sm text-ink-500">
+                      Your payment via {method?.name} has been confirmed. Redirecting…
+                    </div>
+                  </div>
                 )}
-                {stage === 'enter-password' && method.id === 'visa' && (
-                  <VisaPane pwd={pwd} setPwd={setPwd} showPwd={showPwd} setShowPwd={setShowPwd} submit={submitPassword} cancel={cancel} amount={pay.amount} />
-                )}
-                {stage === 'enter-password' && (method.id === 'momo' || method.id === 'om') && (
-                  <PinPane method={method} phone={phone} pwd={pwd} setPwd={setPwd} showPwd={showPwd} setShowPwd={setShowPwd} submit={submitPassword} cancel={cancel} amount={pay.amount} />
-                )}
-                {stage === 'bank' && (
-                  <BankPane reference={reference} amount={pay.amount} confirm={() => onSuccess({ reference, method: method.name })} cancel={cancel} />
-                )}
-                {stage === 'processing' && <ProcessingPane method={method} amount={pay.amount} />}
-                {stage === 'success'    && <PaymentSuccessPane method={method} reference={reference} amount={pay.amount} />}
               </div>
             </motion.div>
           </motion.div>
@@ -462,262 +491,7 @@ function PaymentStep({ pay, setPay, parent, child, program, onSuccess }) {
   )
 }
 
-/* USSD phone-entry pane (MoMo / OM) */
-function USSDPhonePane({ method, phone, setPhone, confirm, cancel, amount }) {
-  return (
-    <>
-      {/* USSD-style screen */}
-      <div className="bg-ink-900 text-emerald-300 font-mono text-sm rounded-xl p-4 mb-4">
-        <div className="text-ink-400">{method.id === 'momo' ? 'MTN Cameroon' : 'Orange Cameroun'}</div>
-        <div className="mt-1">› Dialled {method.prefix}</div>
-        <div className="mt-3">{method.id === 'momo' ? 'Welcome to MTN MoMo' : 'Bienvenue sur Orange Money'}</div>
-        <div className="mt-3">› 1. Send money</div>
-        <div>› <span className="text-amber-300">2. Pay merchant</span></div>
-        <div>› 3. Buy airtime</div>
-        <div className="mt-3 text-amber-300">Selected: Pay merchant</div>
-        <div className="mt-2">Merchant code: <span className="text-white">IUGET-BURSARY</span></div>
-        <div>Amount: <span className="text-white">{fmtFCFA(amount)}</span></div>
-        <div className="mt-3">→ Enter your phone number</div>
-      </div>
-
-      <div className="mb-4">
-        <label className="label">Your {method.id === 'momo' ? 'MTN' : 'Orange'} number</label>
-        <div className="relative">
-          <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-          <input
-            className="input pl-9 font-mono"
-            placeholder={method.id === 'momo' ? '67xxxxxxx' : '69xxxxxxx'}
-            value={phone}
-            onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
-            autoFocus
-          />
-        </div>
-        <div className="text-[11px] text-ink-500 mt-1">9 digits, no country code · e.g. {method.id === 'momo' ? '670123456' : '691234567'}</div>
-      </div>
-
-      <div className="flex gap-2">
-        <button onClick={cancel} className="btn-secondary flex-1">Cancel</button>
-        <button onClick={confirm} className="btn-primary flex-1">Continue <ArrowRight size={16} /></button>
-      </div>
-    </>
-  )
-}
-
-/* PIN entry — MoMo/OM */
-function PinPane({ method, phone, pwd, setPwd, showPwd, setShowPwd, submit, cancel, amount }) {
-  return (
-    <>
-      <div className="bg-ink-900 text-emerald-300 font-mono text-sm rounded-xl p-4 mb-4">
-        <div className="text-ink-400">{method.id === 'momo' ? 'MTN MoMo' : 'Orange Money'}</div>
-        <div className="mt-2">You will pay <span className="text-white">{fmtFCFA(amount)}</span></div>
-        <div>To <span className="text-white">IUGET BURSARY</span></div>
-        <div>From <span className="text-white">+237 {phone}</span></div>
-        <div className="mt-3 text-amber-300">→ Confirm with your PIN</div>
-      </div>
-
-      <div className="mb-2">
-        <label className="label">Your PIN</label>
-        <div className="relative">
-          <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-          <input
-            type={showPwd ? 'text' : 'password'}
-            className="input pl-9 pr-10 font-mono tracking-[0.5em] text-center"
-            placeholder="••••"
-            maxLength={6}
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value.replace(/\D/g, ''))}
-            autoFocus
-          />
-          <button
-            type="button"
-            onClick={() => setShowPwd(!showPwd)}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400 hover:text-ink-700"
-          >
-            {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        </div>
-      </div>
-
-      <PrivacyHint />
-
-      <div className="mt-4 flex gap-2">
-        <button onClick={cancel} className="btn-secondary flex-1">Cancel</button>
-        <button onClick={submit} className="btn-primary flex-1">Confirm payment</button>
-      </div>
-    </>
-  )
-}
-
-/* PayPal pane */
-function PayPalPane({ pwd, setPwd, showPwd, setShowPwd, submit, cancel, amount }) {
-  return (
-    <>
-      <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-4 text-sm">
-        <div className="font-semibold text-blue-900">Pay with PayPal</div>
-        <div className="text-blue-700 mt-1">Total: <span className="font-bold">${(amount / 600).toFixed(2)} USD</span> ({fmtFCFA(amount)})</div>
-        <div className="text-blue-700 mt-1">Recipient: <span className="font-mono">bursary@iuget.cm</span></div>
-      </div>
-
-      <Field label="PayPal email" value="parent@example.com" onChange={() => {}} disabled />
-      <div className="mt-3">
-        <label className="label">PayPal password</label>
-        <div className="relative">
-          <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-          <input
-            type={showPwd ? 'text' : 'password'}
-            className="input pl-9 pr-10"
-            placeholder="Your PayPal password"
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value)}
-            autoFocus
-          />
-          <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">
-            {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        </div>
-      </div>
-
-      <PrivacyHint />
-
-      <div className="mt-4 flex gap-2">
-        <button onClick={cancel} className="btn-secondary flex-1">Cancel</button>
-        <button onClick={submit} className="btn-primary flex-1">Log in & pay</button>
-      </div>
-    </>
-  )
-}
-
-/* Visa / Mastercard pane */
-function VisaPane({ pwd, setPwd, showPwd, setShowPwd, submit, cancel, amount }) {
-  const [card, setCard] = useState('')
-  const [expiry, setExpiry] = useState('')
-  const [cvc, setCvc] = useState('')
-  return (
-    <>
-      <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4 text-sm">
-        <div className="font-semibold text-slate-900">3-D Secure verification</div>
-        <div className="text-slate-700 mt-1">Total: <span className="font-bold">{fmtFCFA(amount)}</span> · Merchant <span className="font-mono">IUGET-BURSARY</span></div>
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <div className="col-span-2"><Field label="Card number" value={card.replace(/(\d{4})(?=\d)/g, '$1 ').trim()} onChange={(v) => setCard(v.replace(/\D/g, '').slice(0, 16))} placeholder="•••• •••• •••• ••••" /></div>
-        <Field label="Expiry (MM/YY)" value={expiry} onChange={(v) => setExpiry(v.replace(/[^\d/]/g, ''))} placeholder="12/27" />
-        <Field label="CVC" value={cvc} onChange={(v) => setCvc(v.replace(/\D/g, '').slice(0, 4))} placeholder="•••" />
-      </div>
-      <div className="mt-3">
-        <label className="label">3-D Secure password (one-time)</label>
-        <div className="relative">
-          <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
-          <input
-            type={showPwd ? 'text' : 'password'}
-            className="input pl-9 pr-10 font-mono tracking-widest"
-            placeholder="• • • • • •"
-            value={pwd}
-            onChange={(e) => setPwd(e.target.value.replace(/\D/g, '').slice(0, 6))}
-            autoFocus
-          />
-          <button type="button" onClick={() => setShowPwd(!showPwd)} className="absolute right-3 top-1/2 -translate-y-1/2 text-ink-400">
-            {showPwd ? <EyeOff size={16} /> : <Eye size={16} />}
-          </button>
-        </div>
-      </div>
-
-      <PrivacyHint />
-
-      <div className="mt-4 flex gap-2">
-        <button onClick={cancel} className="btn-secondary flex-1">Cancel</button>
-        <button onClick={submit} className="btn-primary flex-1">Verify & pay</button>
-      </div>
-    </>
-  )
-}
-
-/* Bank transfer pane */
-function BankPane({ reference, amount, confirm, cancel }) {
-  const copy = (text) => { navigator.clipboard.writeText(text); toast.success('Copied') }
-  return (
-    <>
-      <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-4 mb-4 text-sm">
-        <div className="font-semibold text-emerald-900">IUGET bursary bank account</div>
-        <div className="text-emerald-700 mt-1">Reference your transfer with <span className="font-mono font-bold">{reference}</span></div>
-      </div>
-      <div className="space-y-2.5">
-        {[
-          ['Bank',    IUGET_BANK.bank],
-          ['Branch',  IUGET_BANK.branch],
-          ['Account', IUGET_BANK.account],
-          ['Number',  IUGET_BANK.number],
-          ['IBAN',    IUGET_BANK.iban],
-          ['SWIFT',   IUGET_BANK.swift],
-          ['Amount',  fmtFCFA(amount)],
-        ].map(([k, v]) => (
-          <div key={k} className="flex items-center justify-between gap-3 p-2.5 rounded-lg bg-ink-50">
-            <div className="text-xs text-ink-500 uppercase">{k}</div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-sm">{v}</span>
-              <button onClick={() => copy(v)} className="text-ink-400 hover:text-brand-700" title="Copy">
-                <Copy size={14} />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p className="text-xs text-ink-500 mt-3">
-        The bursary office will validate the transfer within 24-48 hours and issue your receipt.
-      </p>
-
-      <div className="mt-4 flex gap-2">
-        <button onClick={cancel} className="btn-secondary flex-1">Cancel</button>
-        <button onClick={confirm} className="btn-primary flex-1">I have transferred</button>
-      </div>
-    </>
-  )
-}
-
-/* Processing pane */
-function ProcessingPane({ method, amount }) {
-  return (
-    <div className="text-center py-6">
-      <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-br ${method.color} text-white flex items-center justify-center`}>
-        <Loader2 className="animate-spin" size={28} />
-      </div>
-      <div className="mt-4 font-display font-bold text-lg">Processing payment…</div>
-      <div className="text-sm text-ink-500 mt-1">Securely contacting {method.name}</div>
-      <div className="text-xs text-ink-400 mt-3 font-mono">Amount {fmtFCFA(amount)}</div>
-      <div className="mt-4 flex justify-center gap-1.5 text-ink-400 text-xs">
-        <span>Encrypting</span>·<span>Authenticating</span>·<span>Authorising</span>
-      </div>
-    </div>
-  )
-}
-
-/* Payment-success pane (inside the modal) — before we jump to the big confirmation screen */
-function PaymentSuccessPane({ method, reference, amount }) {
-  return (
-    <div className="text-center py-4">
-      <motion.div
-        initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ type: 'spring', damping: 14 }}
-        className="mx-auto w-20 h-20 rounded-full bg-emerald-500 text-white flex items-center justify-center"
-      >
-        <CheckCircle2 size={42} />
-      </motion.div>
-      <div className="mt-4 text-2xl font-display font-bold text-emerald-700">SUCCESSFUL PAYMENT</div>
-      <div className="text-sm text-ink-500 mt-1">Your payment of <span className="font-bold">{fmtFCFA(amount)}</span> via {method.name} was accepted.</div>
-      <div className="text-xs text-ink-400 mt-2 font-mono">Reference {reference}</div>
-      <div className="mt-4 text-xs text-ink-500">Issuing your registration confirmation…</div>
-    </div>
-  )
-}
-
-function PrivacyHint() {
-  return (
-    <div className="mt-3 flex items-start gap-2 text-[11px] text-ink-500">
-      <ShieldCheck size={12} className="text-emerald-600 mt-0.5 shrink-0" />
-      <span>SIARM never stores this password — it is forwarded to the provider and erased from memory.</span>
-    </div>
-  )
-}
-
+/* Summary block used in the review step */
 function SummaryBlock({ title, rows, highlight }) {
   return (
     <div className={`rounded-xl border p-4 ${highlight ? 'border-brand-200 bg-brand-50' : 'border-ink-100 bg-ink-50'}`}>
@@ -753,204 +527,122 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon: Icon,
       <label className="label">{label}</label>
       <div className="relative">
         {Icon && <Icon size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />}
-        <input
-          type={type}
-          className={`input ${Icon ? 'pl-9' : ''}`}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
-          disabled={disabled}
-        />
+        {type === 'date' ? (
+          <input type="date" className={`input ${Icon ? 'pl-9' : ''}`} value={value} onChange={(e) => onChange(e.target.value)} disabled={disabled} />
+        ) : (
+          <input type={type} className={`input ${Icon ? 'pl-9' : ''}`} value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} disabled={disabled} />
+        )}
       </div>
     </div>
   )
 }
 
-/* ─── Step 5 — Final confirmation + receipt ───────────────── */
-function SuccessStep({ enrolment, paid }) {
-  const printRef = useRef()
-  // Look up the bursar's stored signature from localStorage (or a default placeholder)
-  let bursarSig = null
-  try { bursarSig = JSON.parse(localStorage.getItem('siarm.store.v2') || '{}')?.signatures?.bursar } catch {}
+const PAY_METHODS_ALL = [...PAY_METHODS]
 
-  const print = () => window.print()
+/* ─── Step 5 — Confirmation ───────────────────────────────── */
+function SuccessStep({ enrolment, paid }) {
+  const receiptRef = useRef()
+  const [printing, setPrinting] = useState(false)
+
+  const { matricule, email, child, parent, program, paymentRef, paymentMethod, enrolledOn, initialPassword } = enrolment
+
   const downloadPDF = async () => {
-    const t = toast.loading('Generating receipt PDF…')
+    if (!receiptRef.current) return
+    const t = toast.loading('Generating PDF…')
     try {
-      const canvas = await html2canvas(printRef.current, { scale: 2, backgroundColor: '#ffffff' })
-      const img = canvas.toDataURL('image/png')
+      const canvas = await html2canvas(receiptRef.current, { scale: 2, backgroundColor: '#ffffff' })
+      const imgData = canvas.toDataURL('image/png')
       const pdf = new jsPDF('p', 'mm', 'a4')
-      const w = pdf.internal.pageSize.getWidth()
-      const h = (canvas.height * w) / canvas.width
-      pdf.addImage(img, 'PNG', 0, 0, w, h)
-      pdf.save(`IUGET-Registration-${enrolment.matricule.replace(/\//g, '-')}.pdf`)
-      toast.success('Receipt saved', { id: t })
-    } catch (err) {
-      toast.error('Could not generate PDF', { id: t })
-    }
+      const pw = pdf.internal.pageSize.getWidth()
+      const ph = (canvas.height * pw) / canvas.width
+      pdf.addImage(imgData, 'PNG', 0, 0, pw, ph)
+      pdf.save(`IUGET-Enrolment-${matricule.replace(/\//g, '-')}.pdf`)
+      toast.success('PDF downloaded', { id: t })
+    } catch { toast.error('Could not generate PDF', { id: t }) }
   }
+
+  const printReceipt = () => {
+    setPrinting(true)
+    setTimeout(() => { window.print(); setPrinting(false) }, 200)
+  }
+
+  const copy = (text, label) => { navigator.clipboard.writeText(text); toast.success(`${label} copied`) }
 
   return (
     <div className="space-y-5">
-      {/* Big success banner */}
-      <motion.div
-        initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
-        className="card bg-gradient-to-br from-emerald-500 to-emerald-700 text-white border-0 text-center py-10"
-      >
-        <motion.div
-          initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.2, type: 'spring' }}
-          className="mx-auto w-20 h-20 rounded-full bg-white text-emerald-600 flex items-center justify-center"
-        >
-          <CheckCircle2 size={48} />
-        </motion.div>
-        <h2 className="mt-4 text-3xl md:text-4xl font-display font-bold">Student registered successfully</h2>
-        <p className="text-white/90 mt-2 max-w-2xl mx-auto">
-          {enrolment.child.fullName} is officially enrolled at IUGET Bonabéri.
-          Login credentials and registration details are below.
-        </p>
-        <div className="mt-5 flex justify-center gap-3 flex-wrap">
-          <button onClick={print} className="bg-white text-emerald-700 hover:bg-white/90 px-5 py-2.5 rounded-xl font-medium inline-flex items-center gap-2">
-            <Printer size={16} /> Print receipt
-          </button>
-          <button onClick={downloadPDF} className="bg-white/15 hover:bg-white/25 px-5 py-2.5 rounded-xl font-medium inline-flex items-center gap-2">
-            <Download size={16} /> Download PDF
-          </button>
+      {/* Success hero */}
+      <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center py-6">
+        <div className="w-20 h-20 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto shadow-lg shadow-emerald-200">
+          <CheckCircle2 size={44} />
         </div>
+        <h2 className="text-3xl font-display font-bold mt-4">Enrolment complete!</h2>
+        <p className="text-ink-500 mt-1">Your child has been registered at IUGET Bonabéri.</p>
       </motion.div>
 
-      {/* Printable receipt */}
-      <div ref={printRef} className="bg-white border border-ink-100 rounded-2xl p-8 print-section">
-        {/* Letterhead */}
-        <div className="flex items-start justify-between pb-4 border-b-2 border-brand-800">
-          <div className="flex items-start gap-4">
-            <Logo size={56} withText={false} />
-            <div>
-              <div className="font-display font-bold text-lg text-ink-900">Institut Universitaire des Grandes Écoles des Tropiques</div>
-              <div className="text-xs text-ink-600">Bonabéri Campus · Douala, Cameroon · www.iuget.cm</div>
-              <div className="text-xs text-ink-500 italic mt-0.5">« Bien choisir c'est déjà réussir »</div>
-            </div>
-          </div>
-          <div className="text-right text-xs text-ink-600">
-            <div className="font-bold text-base text-ink-900">OFFICIAL ENROLMENT RECEIPT</div>
-            <div className="font-mono text-[11px] mt-1">N° {enrolment.matricule.replace(/\//g, '·')}</div>
-            <div className="font-mono text-[11px]">Issued {new Date(paid.paidAt).toLocaleString('en-GB')}</div>
+      {/* Receipt card — also the print target */}
+      <div ref={receiptRef} className="card max-w-2xl mx-auto receipt-print">
+        {/* Header */}
+        <div className="flex items-start justify-between pb-5 border-b-2 border-brand-800">
+          <Logo size={44} />
+          <div className="text-right">
+            <div className="font-display font-bold text-lg text-brand-900">ENROLMENT CONFIRMATION</div>
+            <div className="text-xs text-ink-500">IUGET Bonabéri · Bursary Office</div>
           </div>
         </div>
 
-        {/* Big matricule */}
-        <div className="mt-5 rounded-xl bg-brand-50 border border-brand-100 p-4">
-          <div className="text-xs text-brand-700 uppercase tracking-wider">Matricule attributed</div>
-          <div className="text-2xl md:text-3xl font-display font-bold text-brand-900 font-mono tracking-wider mt-1">{enrolment.matricule}</div>
+        {/* Key credentials */}
+        <div className="mt-5 grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+          <div className="text-ink-500">Matricule</div>
+          <div className="font-bold font-mono text-right">{matricule}</div>
+          <div className="text-ink-500">Email</div>
+          <div className="font-mono text-right">{email}</div>
+          <div className="text-ink-500">Initial password</div>
+          <div className="font-mono text-right">{initialPassword}</div>
+          <div className="text-ink-500">Enrolled on</div>
+          <div className="font-mono text-right">{new Date(enrolledOn).toLocaleDateString()}</div>
         </div>
 
-        {/* Student details */}
-        <div className="mt-6">
-          <div className="text-xs font-bold uppercase tracking-wider text-brand-800">Student details</div>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm mt-2">
-            <Row k="Full name"    v={enrolment.child.fullName} />
-            <Row k="Date of birth"v={new Date(enrolment.child.dob).toLocaleDateString('en-GB')} />
-            <Row k="Sex"          v={enrolment.child.sex === 'M' ? 'Male' : 'Female'} />
-            <Row k="Nationality"  v={enrolment.child.nationality} />
-            <Row k="Previous school" v={enrolment.child.prevSchool || '—'} />
-            <Row k="Average (GCE A/L)" v={enrolment.child.average ? `${enrolment.child.average}%` : '—'} />
-            <Row k="Specialty"    v={SPECIALTIES[enrolment.program.specialty]?.name} />
-            <Row k="Level"        v={`Level ${enrolment.program.level} · Year 2026/2027`} />
-            <Row k="University email" v={enrolment.email} />
-            <Row k="Initial password" v={enrolment.initialPassword} mono />
+        <div className="mt-4 grid grid-cols-2 gap-x-6 gap-y-3 text-sm pt-4 border-t border-ink-200">
+          <div><span className="text-ink-500">Student</span><div className="font-medium mt-0.5">{child.fullName}</div></div>
+          <div><span className="text-ink-500">Program</span><div className="font-medium mt-0.5">{SPECIALTIES[program.specialty]?.name} · Level {program.level}</div></div>
+          <div><span className="text-ink-500">Parent</span><div className="font-medium mt-0.5">{parent.fullName}</div></div>
+          <div><span className="text-ink-500">Payment</span><div className="font-medium mt-0.5">{paymentMethod} · Ref: <span className="font-mono">{paymentRef}</span></div></div>
+        </div>
+
+        <div className="mt-4 pt-4 border-t border-ink-200">
+          <div className="flex justify-between items-baseline">
+            <span className="text-ink-500">Tuition paid</span>
+            <span className="text-3xl font-display font-bold text-brand-800">{fmtFCFA(paid?.amount || TOTAL_FEES)}</span>
           </div>
         </div>
 
-        {/* Parent details */}
-        <div className="mt-6">
-          <div className="text-xs font-bold uppercase tracking-wider text-brand-800">Parent / Guardian</div>
-          <div className="grid grid-cols-2 gap-x-6 gap-y-1.5 text-sm mt-2">
-            <Row k="Name"         v={enrolment.parent.fullName} />
-            <Row k="Relationship" v={enrolment.parent.relationship} />
-            <Row k="Phone"        v={enrolment.parent.phone} />
-            <Row k="Email"        v={enrolment.parent.email || '—'} />
-            <Row k="Address"      v={`${enrolment.parent.address || '—'}, ${enrolment.parent.city}`} />
-          </div>
-        </div>
-
-        {/* Payment summary */}
-        <div className="mt-6">
-          <div className="text-xs font-bold uppercase tracking-wider text-brand-800">Payment received</div>
-          <table className="w-full text-sm border border-ink-200 mt-2">
-            <tbody>
-              {FEE_BREAKDOWN.map((f) => (
-                <tr key={f.item} className="border-b border-ink-100">
-                  <td className="p-2">{f.item}</td>
-                  <td className="p-2 text-right font-medium">{fmtFCFA(f.value)}</td>
-                </tr>
-              ))}
-              <tr className="bg-emerald-50">
-                <td className="p-2 font-bold">TOTAL PAID</td>
-                <td className="p-2 text-right font-bold text-emerald-700">{fmtFCFA(paid.amount)}</td>
-              </tr>
-            </tbody>
-          </table>
-          <div className="mt-2 grid grid-cols-3 gap-3 text-xs">
-            <div><span className="text-ink-500">Method:</span> <span className="font-medium">{paid.method}</span></div>
-            <div><span className="text-ink-500">Reference:</span> <span className="font-mono font-medium">{paid.reference}</span></div>
-            <div><span className="text-ink-500">Status:</span> <span className="text-emerald-700 font-bold">PAID</span></div>
-          </div>
-        </div>
-
-        {/* Note + signatures */}
-        <div className="mt-6 rounded-xl bg-amber-50 border border-amber-100 p-3 text-xs text-amber-900">
-          The parent / guardian may request a stamped duplicate of this receipt at the bursary office.
-          Bring this document on first day of class. Welcome to IUGET! 🎓
-        </div>
-
-        <div className="mt-6 pt-6 border-t border-ink-200 grid grid-cols-4 gap-6 text-xs text-ink-600 items-end">
+        {/* QR verification */}
+        <div className="mt-5 flex items-center justify-between p-4 rounded-xl bg-ink-50">
           <div>
-            <div className="h-10" />
-            <div className="border-t border-ink-400 pt-1.5">Parent signature</div>
-          </div>
-          <div>
-            <div className="h-12 flex items-end justify-center">
-              {bursarSig
-                ? <img src={bursarSig} alt="" className="h-12 object-contain" />
-                : <span className="text-[10px] text-ink-400 italic">(unsigned)</span>}
+            <div className="text-sm font-semibold">Verify online</div>
+            <div className="text-xs text-ink-500 mt-0.5 max-w-[200px]">
+              Scan or navigate to this URL to verify your enrolment:
             </div>
-            <div className="border-t border-ink-400 pt-1.5">Bursar signature</div>
-          </div>
-          <div>
-            <div className="h-10" />
-            <div className="border-t border-ink-400 pt-1.5">Official seal</div>
-          </div>
-          {/* Verification QR */}
-          <div className="flex flex-col items-center">
-            <div className="bg-white p-1 rounded-lg border border-ink-200 shadow-soft">
-              <QRCode value={getEnrollmentVerificationUrl(enrolment.matricule, paid.reference)} size={86} />
+            <div className="text-xs font-mono text-brand-800 mt-1 break-all">
+              {getEnrollmentVerificationUrl(matricule)}
             </div>
-            <div className="text-[9px] text-ink-500 mt-1 text-center leading-tight">
-              Scan to verify<br />
-              <span className="font-mono">{new URL(getEnrollmentVerificationUrl(enrolment.matricule, paid.reference)).origin}</span>
-            </div>
+          </div>
+          <div className="shrink-0">
+            <QRCode value={getEnrollmentVerificationUrl(matricule)} size={72} />
           </div>
         </div>
-        <div className="mt-4 text-[9px] text-ink-400 text-center">
-          Generated by SIARM · Verify at {new URL(getEnrollmentVerificationUrl(enrolment.matricule, paid.reference)).origin}/verify/enrollment/{enrolment.matricule.split('/').pop()}/{paid.reference} · Privacy: SIARM never stores parent passwords or card details
+
+        <div className="mt-4 text-[10px] text-ink-400 text-center">
+          Electronically generated document. Verify at verify.iuget.cm/enrolment/{matricule.replace(/\//g, '')}
         </div>
       </div>
 
-      <style>{`
-        @media print {
-          body * { visibility: hidden; }
-          .print-section, .print-section * { visibility: visible; }
-          .print-section { position: absolute; left: 0; top: 0; width: 100%; border: none; padding: 20mm; box-shadow: none; border-radius: 0; }
-        }
-      `}</style>
-    </div>
-  )
-}
-
-function Row({ k, v, mono }) {
-  return (
-    <div className="flex gap-2">
-      <span className="text-ink-500 min-w-[120px]">{k}:</span>
-      <span className={`font-medium ${mono ? 'font-mono' : ''}`}>{v}</span>
+      {/* Actions */}
+      <div className="flex justify-center gap-3 flex-wrap max-w-2xl mx-auto">
+        <button onClick={printReceipt} className="btn-secondary"><Printer size={16} /> Print</button>
+        <button onClick={downloadPDF} className="btn-primary"><Download size={16} /> Download PDF</button>
+        <button onClick={() => copy(matricule, 'Matricule')} className="btn-secondary"><Copy size={16} /> Copy matricule</button>
+      </div>
     </div>
   )
 }
