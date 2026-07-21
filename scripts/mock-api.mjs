@@ -145,68 +145,67 @@ const server = http.createServer(async (req, res) => {
     if (segments[0] === 'auth') {
       const action = segments[1];
 
-      // REGISTER
+      // REGISTER — accept any credentials
       if (req.method === 'POST' && action === 'register') {
         const body = await parseBody(req);
-        const { email, password, full_name, role, phone } = body;
-
-        if (!email || !password || !full_name || !role)
-          return sendJson(res, 400, { success:false, message:'Missing required fields' });
-        if (password.length < 8)
-          return sendJson(res, 400, { success:false, message:'Password must be at least 8 characters' });
-
-        const ne = email.toLowerCase().trim();
-        if (users.has(ne))
-          return sendJson(res, 409, { success:false, message:'Email already in use' });
+        const { email, password, full_name, name, role } = body;
+        const ne = (email || 'user@iuget.cm').toLowerCase().trim();
+        const fullName = full_name || name || ne.split('@')[0];
+        const userRole = role || 'student';
 
         const id = users.size + 1;
         const uuid = crypto.randomUUID();
-        const pwHash = crypto.createHash('sha256').update(password).digest('hex');
-        const avUrl = avatarUrl(full_name);
-        const user = { id, uuid, email:ne, password_hash:pwHash, full_name, role, avatar_url:avUrl, phone:phone||null, status:'pending', created_at:new Date().toISOString() };
+        const pwHash = crypto.createHash('sha256').update(password || 'password').digest('hex');
+        const avUrl = avatarUrl(fullName);
+        const user = { id, uuid, email:ne, password_hash:pwHash, full_name:fullName, role:userRole, avatar_url:avUrl, phone:null, status:'active', created_at:new Date().toISOString() };
 
-        if (role === 'student') {
+        if (userRole === 'student') {
           user.registration_number = `REG/${new Date().getFullYear()}/${String(id).padStart(5,'0')}`;
           user.matricule = `IUGET/${new Date().getFullYear()}/SWE/${String(id).padStart(4,'0')}`;
           user.programme_id = 1; user.level = 1; user.specialty = 'SWE';
           user.studentId = user.matricule; user.program = 'Software Engineering';
         }
 
-        users.set(ne, user);
-        const token = generateToken(user);
+        if (!users.has(ne)) users.set(ne, user);
+        const existing = users.get(ne);
+        const token = generateToken(existing);
         const refresh_token = generateRefreshToken();
         tokens.set(refresh_token, ne);
 
         return sendJson(res, 201, {
-          success:true, message:'Registration successful. Account pending approval.',
+          success:true, message:'Registration successful.',
           data: { token, refresh_token, user: {
-            id:user.id, uuid:user.uuid, email:user.email,
-            name:user.full_name, full_name:user.full_name,
-            role:user.role, avatar:user.avatar_url, avatar_url:user.avatar_url,
-            status:user.status, profile:user
+            id:existing.id, uuid:existing.uuid, email:existing.email,
+            name:existing.full_name, full_name:existing.full_name,
+            role:existing.role, avatar:existing.avatar_url, avatar_url:existing.avatar_url,
+            status:existing.status, profile:existing
           } }
         });
       }
 
-      // LOGIN
+      // LOGIN — auto-create user if not found, accept any password
       if (req.method === 'POST' && action === 'login') {
         const body = await parseBody(req);
         const { email, password } = body;
-        if (!email || !password)
-          return sendJson(res, 400, { success:false, message:'Missing required fields: email, password' });
+        const ne = (email || 'user@iuget.cm').toLowerCase().trim();
 
-        const user = users.get(email.toLowerCase().trim());
-        if (!user)
-          return sendJson(res, 401, { success:false, message:'Invalid email or password' });
+        if (!users.has(ne)) {
+          const id = users.size + 1;
+          const uuid = crypto.randomUUID();
+          const pwHash = crypto.createHash('sha256').update(password || 'password').digest('hex');
+          const avUrl = avatarUrl(ne.split('@')[0]);
+          const newUser = { id, uuid, email:ne, password_hash:pwHash, full_name:ne.split('@')[0], role:'student', avatar_url:avUrl, phone:null, status:'active', created_at:new Date().toISOString(), last_login_at:new Date().toISOString() };
+          newUser.registration_number = `REG/${new Date().getFullYear()}/${String(id).padStart(5,'0')}`;
+          newUser.matricule = `IUGET/${new Date().getFullYear()}/SWE/${String(id).padStart(4,'0')}`;
+          newUser.studentId = newUser.matricule; newUser.program = 'Software Engineering';
+          users.set(ne, newUser);
+        }
 
-        const pwHash = crypto.createHash('sha256').update(password).digest('hex');
-        if (user.password_hash !== pwHash)
-          return sendJson(res, 401, { success:false, message:'Invalid email or password' });
-
+        const user = users.get(ne);
         user.last_login_at = new Date().toISOString();
         const token = generateToken(user);
         const refresh_token = generateRefreshToken();
-        tokens.set(refresh_token, user.email);
+        tokens.set(refresh_token, ne);
 
         return sendJson(res, 200, {
           success:true, message:'Login successful',
