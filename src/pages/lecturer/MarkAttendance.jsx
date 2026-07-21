@@ -101,7 +101,7 @@ export default function MarkAttendance() {
             <span className="badge-success">{present.size} present</span>{' '}
             <span className="badge-danger">{MOCK_STUDENTS.length - present.size} absent</span>
           </div>
-          <div className="relative w-64">
+          <div className="relative w-full sm:w-64">
             <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-ink-400" />
             <input
               value={query} onChange={(e) => setQuery(e.target.value)}
@@ -118,7 +118,7 @@ export default function MarkAttendance() {
               <button
                 key={s.id}
                 onClick={() => toggle(s.id)}
-                className={`flex items-center gap-3 p-3 rounded-xl border transition text-left ${
+                className={`flex items-center gap-3 p-3 min-h-[44px] rounded-xl border transition text-left ${
                   isPresent
                     ? 'border-brand-400 bg-brand-50'
                     : 'border-ink-200 hover:bg-ink-50'

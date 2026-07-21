@@ -566,37 +566,114 @@ export function DataProvider({ children }) {
     setStore(s => (s.theme === 'light' ? s : { ...s, theme: 'light' }))
   }, [])
 
-  // Payments
-  const processPayment = useCallback(async ({ amount, method, methodName, phone, reference }) => {
-    await new Promise(r => setTimeout(r, 1800))
-    const ok = true
-    if (!ok) throw new Error('Payment provider declined')
-
-    const ref = reference || `${method.toUpperCase()}-${new Date().getFullYear()}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`
-    const date = new Date().toISOString()
-    const receipt = {
-      id: `pay-${Date.now()}`,
-      date,
-      amount: Number(amount),
-      method: methodName,
-      methodId: method,
-      phone: phone || '—',
-      reference: ref,
-      status: 'success',
+  // Payments — real Paystack integration
+  const processPayment = useCallback(async ({ amount, method, methodName, phone }) => {
+    let initResponse
+    try {
+      initResponse = await api.request('/api/payments/initialize', {
+        method: 'POST',
+        body: { amount, method, methodName, phone },
+      })
+      if (!initResponse.success) throw new Error(initResponse.message || 'Failed to initialize payment')
+    } catch (err) {
+      throw new Error(err.message || 'Payment gateway unavailable')
     }
 
-    setStore(s => ({
-      ...s,
-      payments: [receipt, ...s.payments],
-      fees: {
-        ...s.fees,
-        paid: s.fees.paid + Number(amount),
-        balance: Math.max(0, s.fees.balance - Number(amount)),
-      },
-    }))
+    const { authorization_url, access_code, reference, publicKey } = initResponse.data
 
-    return receipt
-  }, [])
+    // For mobile money (MTN/Orange) — open Paystack SDK inline
+    if (['momo', 'om'].includes(method)) {
+      return new Promise((resolve, reject) => {
+        const handler = window.PaystackPop?.setup({
+          key: publicKey,
+          email: user?.email || 'student@iuget.cm',
+          amount: Math.round(amount * 100),
+          ref: reference,
+          access_code,
+          currency: 'XAF',
+          channels: ['mobile_money'],
+          mobile_money: { provider: method === 'momo' ? 'mtn' : 'orange' },
+          onSuccess: async (txn) => {
+            try {
+              const verifyResp = await api.request('/api/payments/verify', {
+                method: 'POST',
+                body: { reference: txn.reference || reference },
+              })
+              if (!verifyResp.success) throw new Error('Verification failed')
+              const receipt = {
+                id: `pay-${Date.now()}`,
+                date: new Date().toISOString(),
+                amount: Number(amount),
+                method: methodName,
+                methodId: method,
+                phone: phone || '—',
+                reference: txn.reference || reference,
+                status: 'success',
+              }
+              setStore(s => ({
+                ...s,
+                payments: [receipt, ...s.payments],
+                fees: { ...s.fees, paid: s.fees.paid + Number(amount), balance: Math.max(0, s.fees.balance - Number(amount)) },
+              }))
+              resolve(receipt)
+            } catch (e) {
+              reject(e)
+            }
+          },
+          onCancel: () => reject(new Error('Payment cancelled')),
+          onError: (err) => reject(new Error(err?.message || 'Payment failed')),
+        })
+        if (!handler) {
+          window.open(authorization_url, '_blank')
+          reject(new Error('Paystack popup blocked. Please try again.'))
+        }
+      })
+    }
+
+    // For card / bank — open Paystack checkout modal
+    return new Promise((resolve, reject) => {
+      const handler = window.PaystackPop?.setup({
+        key: publicKey,
+        email: user?.email || 'student@iuget.cm',
+        amount: Math.round(amount * 100),
+        ref: reference,
+        access_code,
+        currency: 'XAF',
+        onSuccess: async (txn) => {
+          try {
+            const verifyResp = await api.request('/api/payments/verify', {
+              method: 'POST',
+              body: { reference: txn.reference || reference },
+            })
+            const receipt = {
+              id: `pay-${Date.now()}`,
+              date: new Date().toISOString(),
+              amount: Number(amount),
+              method: methodName,
+              methodId: method,
+              phone: phone || '—',
+              reference: txn.reference || reference,
+              status: 'success',
+            }
+            setStore(s => ({
+              ...s,
+              payments: [receipt, ...s.payments],
+              fees: { ...s.fees, paid: s.fees.paid + Number(amount), balance: Math.max(0, s.fees.balance - Number(amount)) },
+            }))
+            resolve(receipt)
+          } catch (e) {
+            reject(e)
+          }
+        },
+        onCancel: () => reject(new Error('Payment cancelled')),
+        onError: (err) => reject(new Error(err?.message || 'Payment failed')),
+      })
+      if (!handler) {
+        window.open(authorization_url, '_blank')
+        reject(new Error('Paystack popup blocked. Please try again.'))
+      }
+    })
+  }, [user])
 
   // Lessons
   const publishLesson = useCallback(async (lesson) => {

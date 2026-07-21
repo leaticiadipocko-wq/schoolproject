@@ -37,6 +37,9 @@ import PublishLesson from '@/pages/lecturer/PublishLesson'
 
 // Staff pages
 import StaffDashboard from '@/pages/staff/StaffDashboard'
+import StaffAttendanceView from '@/pages/staff/StaffAttendance'
+import StaffGradesView from '@/pages/staff/StaffGrades'
+import StaffComplaints from '@/pages/staff/StaffComplaints'
 import Enrollment from '@/pages/staff/Enrollment'
 
 // Shared pages
@@ -157,6 +160,9 @@ export default function App() {
         <Route index element={<StaffDashboard />} />
         <Route path="users"         element={<UserManagement />} />
         <Route path="enrollment"    element={<Enrollment />} />
+        <Route path="attendance"    element={<StaffAttendanceView />} />
+        <Route path="grades"        element={<StaffGradesView />} />
+        <Route path="complaints"    element={<StaffComplaints />} />
         <Route path="finance"       element={<Finance />} />
         <Route path="assignments"   element={<Assignments />} />
         <Route path="timetable"     element={<TimetableBuilder />} />

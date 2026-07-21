@@ -108,55 +108,57 @@ export default function EnterGrades() {
       </div>
 
       <div className="card overflow-hidden p-0">
-        <table className="w-full">
-          <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wider text-ink-500">
-            <tr>
-              <th className="text-left p-4">Student</th>
-              <th className="text-left p-4 w-32">CA (30)</th>
-              <th className="text-left p-4 w-32">Exam (70)</th>
-              <th className="text-left p-4 w-24">Total</th>
-              <th className="text-left p-4 w-24">Grade</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ink-100">
-            {rows.map((r) => {
-              const total = r.ca + r.exam
-              return (
-                <tr key={r.id} className="hover:bg-ink-50/50">
-                  <td className="p-4">
-                    <div className="font-medium text-sm">{r.name}</div>
-                    <div className="text-xs text-ink-500 font-mono">{r.id}</div>
-                  </td>
-                  <td className="p-4">
-                    <input
-                      type="number" min={0} max={30}
-                      className="input py-1.5 w-24 text-sm"
-                      value={r.ca}
-                      onChange={(e) => update(r.id, 'ca', e.target.value)}
-                    />
-                  </td>
-                  <td className="p-4">
-                    <input
-                      type="number" min={0} max={70}
-                      className="input py-1.5 w-24 text-sm"
-                      value={r.exam}
-                      onChange={(e) => update(r.id, 'exam', e.target.value)}
-                    />
-                  </td>
-                  <td className="p-4 font-semibold">{total}</td>
-                  <td className="p-4">
-                    <span className={`badge ${
-                      total >= 70 ? 'bg-emerald-100 text-emerald-700' :
-                      total >= 50 ? 'bg-brand-100 text-brand-800' :
-                      total >= 40 ? 'bg-amber-100 text-amber-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>{getGrade(total)}</span>
-                  </td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[500px]">
+            <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wider text-ink-500">
+              <tr>
+                <th className="text-left p-4 whitespace-nowrap">Student</th>
+                <th className="text-left p-4 w-32 whitespace-nowrap">CA (30)</th>
+                <th className="text-left p-4 w-32 whitespace-nowrap">Exam (70)</th>
+                <th className="text-left p-4 w-24 whitespace-nowrap">Total</th>
+                <th className="text-left p-4 w-24 whitespace-nowrap">Grade</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-ink-100">
+              {rows.map((r) => {
+                const total = r.ca + r.exam
+                return (
+                  <tr key={r.id} className="hover:bg-ink-50/50">
+                    <td className="p-4 whitespace-nowrap">
+                      <div className="font-medium text-sm">{r.name}</div>
+                      <div className="text-xs text-ink-500 font-mono">{r.id}</div>
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      <input
+                        type="number" min={0} max={30}
+                        className="input py-2 w-24 text-sm"
+                        value={r.ca}
+                        onChange={(e) => update(r.id, 'ca', e.target.value)}
+                      />
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      <input
+                        type="number" min={0} max={70}
+                        className="input py-2 w-24 text-sm"
+                        value={r.exam}
+                        onChange={(e) => update(r.id, 'exam', e.target.value)}
+                      />
+                    </td>
+                    <td className="p-4 font-semibold whitespace-nowrap">{total}</td>
+                    <td className="p-4 whitespace-nowrap">
+                      <span className={`badge ${
+                        total >= 70 ? 'bg-emerald-100 text-emerald-700' :
+                        total >= 50 ? 'bg-brand-100 text-brand-800' :
+                        total >= 40 ? 'bg-amber-100 text-amber-700' :
+                        'bg-red-100 text-red-700'
+                      }`}>{getGrade(total)}</span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

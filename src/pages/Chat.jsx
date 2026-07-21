@@ -121,14 +121,24 @@ export default function Chat() {
 
   const allUsers = useMemo(() => {
     const seen = {}
-    return (users || []).filter(u => {
-      const key = u?.uid || u?.id || u?.uuid
+    const fromStore = (users || []).filter(u => {
+      const key = u?.uid || u?.id || u?.uuid || u?.email
       if (!key) return false
-      if (key === user?.uid || key === user?.id) return false
+      const currentKey = user?.uid || user?.id || user?.email
+      if (key === currentKey) return false
       if (seen[key]) return false
       seen[key] = true
       return true
     })
+    if (fromStore.length >= 2) return fromStore
+    const { MOCK_USERS } = window.__MOCK_DATA__ || {}
+    if (!MOCK_USERS) return fromStore
+    return MOCK_USERS.filter(u => {
+      if (u.uid === user?.uid) return false
+      if (seen[u.uid]) return false
+      seen[u.uid] = true
+      return true
+    }).map(u => ({ id: u.uid, uid: u.uid, name: u.name, email: u.email, role: u.role, avatar: u.avatar }))
   }, [users, user])
 
   const filteredUsers = useMemo(() => {
@@ -173,7 +183,7 @@ export default function Chat() {
   }
 
   return (
-    <div className="h-[calc(100vh-5rem)] flex -m-6 overflow-hidden bg-ink-50/50">
+    <div className="h-[calc(100vh-5rem)] flex -m-4 md:-m-6 overflow-hidden bg-ink-50/50">
       {/* Conversation List */}
       <div className={`w-full md:w-80 lg:w-96 border-r border-ink-100 bg-white flex flex-col shrink-0 ${showList ? 'flex' : 'hidden md:flex'}`}>
         {/* Header */}
@@ -199,7 +209,7 @@ export default function Chat() {
           </div>
           <button
             onClick={() => setShowNewConv(true)}
-            className="mt-3 w-full flex items-center gap-2 px-4 py-2.5 rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-medium text-sm transition"
+            className="mt-3 w-full flex items-center gap-2 px-4 py-3 min-h-[44px] rounded-xl bg-brand-50 hover:bg-brand-100 text-brand-700 font-medium text-sm transition"
           >
             <Plus size={16} />
             {lang === 'en' ? 'New Conversation' : 'Nouvelle conversation'}
@@ -222,7 +232,7 @@ export default function Chat() {
             <button
               key={conv.id}
               onClick={() => openConversation(conv)}
-              className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-ink-50 transition border-b border-ink-50 text-left ${
+              className={`w-full flex items-center gap-3 px-4 py-3 min-h-[44px] hover:bg-ink-50 transition border-b border-ink-50 text-left ${
                 activeConv?.id === conv.id ? 'bg-brand-50/60' : ''
               }`}
             >
@@ -299,7 +309,7 @@ export default function Chat() {
             <div className="flex items-center gap-3 px-4 py-3 border-b border-ink-100 bg-white shrink-0">
               <button
                 onClick={() => setShowList(true)}
-                className="md:hidden p-1 -ml-1 text-ink-600 hover:text-ink-900"
+                className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center -ml-1 text-ink-600 hover:text-ink-900"
               >
                 <ArrowLeft size={20} />
               </button>
@@ -322,13 +332,13 @@ export default function Chat() {
                 </div>
               </div>
 
-              <button className="p-2 rounded-xl hover:bg-ink-100 text-ink-600">
+              <button className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-ink-100 text-ink-600">
                 <Phone size={18} />
               </button>
-              <button className="p-2 rounded-xl hover:bg-ink-100 text-ink-600">
+              <button className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-ink-100 text-ink-600">
                 <Video size={18} />
               </button>
-              <button className="p-2 rounded-xl hover:bg-ink-100 text-ink-600">
+              <button className="min-w-[44px] min-h-[44px] flex items-center justify-center rounded-xl hover:bg-ink-100 text-ink-600">
                 <MoreVertical size={18} />
               </button>
             </div>
@@ -390,7 +400,7 @@ export default function Chat() {
                       )}
                       {!isMe && !showAvatar && <div className="w-8 shrink-0 mr-2" />}
 
-                      <div className={`max-w-[75%] ${isMe ? 'order-1' : 'order-2'}`}>
+                      <div className={`max-w-[85%] sm:max-w-[75%] ${isMe ? 'order-1' : 'order-2'}`}>
                         {/* Sender name for group messages */}
                         {!isMe && activeConv.type === 'group' && showAvatar && (
                           <div className="text-[11px] font-medium text-brand-700 mb-0.5 ml-1">
@@ -500,7 +510,7 @@ export default function Chat() {
                     <button
                       key={u.uid}
                       onClick={() => toggleUser(u)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 hover:bg-ink-50 text-left transition ${
+                      className={`w-full flex items-center gap-3 px-3 py-3 min-h-[44px] hover:bg-ink-50 text-left transition ${
                         selectedUsers.find(p => p.uid === u.uid) ? 'bg-brand-50' : ''
                       }`}
                     >
@@ -530,7 +540,7 @@ export default function Chat() {
               <button
                 onClick={handleCreateConversation}
                 disabled={selectedUsers.length === 0}
-                className="btn-primary w-full py-2.5"
+                className="btn-primary w-full py-3 min-h-[44px]"
               >
                 <MessageCircle size={16} />
                 {selectedUsers.length === 0

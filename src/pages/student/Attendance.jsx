@@ -45,48 +45,50 @@ export default function Attendance() {
       </div>
 
       <div className="card overflow-hidden p-0">
-        <table className="w-full">
-          <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wider text-ink-500">
-            <tr>
-              <th className="text-left p-4">Course</th>
-              <th className="text-left p-4">Period</th>
-              <th className="text-left p-4">Attended</th>
-              <th className="text-left p-4">Total</th>
-              <th className="text-left p-4">Percentage</th>
-              <th className="text-left p-4">Status</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-ink-100">
-            {attendance.map((a) => (
-              <tr key={`${a.course}-${a.period || ''}`} className="hover:bg-ink-50/50 transition">
-                <td className="p-4 font-medium">{a.course}</td>
-                <td className="p-4 text-ink-600 font-mono text-xs">{a.period || '—'}</td>
-                <td className="p-4 text-ink-600">{a.attended}</td>
-                <td className="p-4 text-ink-600">{a.total}</td>
-                <td className="p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="flex-1 max-w-[200px] h-2 bg-ink-100 rounded-full overflow-hidden">
-                      <div
-                        className={`h-full rounded-full ${a.percent >= 75 ? 'bg-brand-500' : 'bg-amber-500'}`}
-                        style={{ width: `${a.percent}%` }}
-                      />
-                    </div>
-                    <span className="text-sm font-medium">{a.percent}%</span>
-                  </div>
-                </td>
-                <td className="p-4">
-                  {a.percent >= 75 ? (
-                    <span className="badge-success">Good</span>
-                  ) : a.percent >= 65 ? (
-                    <span className="badge-warning">At risk</span>
-                  ) : (
-                    <span className="badge-danger">Critical</span>
-                  )}
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[600px]">
+            <thead className="bg-ink-50 text-xs font-semibold uppercase tracking-wider text-ink-500">
+              <tr>
+                <th className="text-left p-4 whitespace-nowrap">Course</th>
+                <th className="text-left p-4 whitespace-nowrap">Period</th>
+                <th className="text-left p-4 whitespace-nowrap">Attended</th>
+                <th className="text-left p-4 whitespace-nowrap">Total</th>
+                <th className="text-left p-4 whitespace-nowrap">Percentage</th>
+                <th className="text-left p-4 whitespace-nowrap">Status</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody className="divide-y divide-ink-100">
+              {attendance.map((a) => (
+                <tr key={`${a.course}-${a.period || ''}`} className="hover:bg-ink-50/50 transition">
+                  <td className="p-4 font-medium whitespace-nowrap">{a.course}</td>
+                  <td className="p-4 text-ink-600 font-mono text-xs whitespace-nowrap">{a.period || '—'}</td>
+                  <td className="p-4 text-ink-600 whitespace-nowrap">{a.attended}</td>
+                  <td className="p-4 text-ink-600 whitespace-nowrap">{a.total}</td>
+                  <td className="p-4 whitespace-nowrap">
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 max-w-[120px] sm:max-w-[200px] h-2 bg-ink-100 rounded-full overflow-hidden">
+                        <div
+                          className={`h-full rounded-full ${a.percent >= 75 ? 'bg-brand-500' : 'bg-amber-500'}`}
+                          style={{ width: `${a.percent}%` }}
+                        />
+                      </div>
+                      <span className="text-sm font-medium">{a.percent}%</span>
+                    </div>
+                  </td>
+                  <td className="p-4 whitespace-nowrap">
+                    {a.percent >= 75 ? (
+                      <span className="badge-success">Good</span>
+                    ) : a.percent >= 65 ? (
+                      <span className="badge-warning">At risk</span>
+                    ) : (
+                      <span className="badge-danger">Critical</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   )

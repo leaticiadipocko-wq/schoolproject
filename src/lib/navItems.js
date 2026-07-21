@@ -100,6 +100,14 @@ export const STAFF_NAV = [
     ],
   },
   {
+    title: 'Academic',
+    links: [
+      { to: '/staff/attendance',    label: 'Attendance',      icon: ClipboardCheck },
+      { to: '/staff/grades',        label: 'Grades',           icon: FileSpreadsheet },
+      { to: '/staff/complaints',    label: 'Complaints',       icon: AlertTriangle },
+    ],
+  },
+  {
     title: 'Finance',
     links: [
       { to: '/staff/finance',       label: 'Tuition Tracking', icon: Banknote},

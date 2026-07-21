@@ -22,7 +22,7 @@ export default function Sidebar({ items, open, onClose }) {
       >
         <div className="flex items-center justify-between p-5 border-b border-ink-100">
           <Logo />
-          <button onClick={onClose} className="lg:hidden text-ink-500">
+          <button onClick={onClose} className="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-500">
             <X size={20} />
           </button>
         </div>
@@ -42,7 +42,7 @@ export default function Sidebar({ items, open, onClose }) {
                   end={section.links.length === 1 || to.split('/').length <= 2}
                   onClick={onClose}
                   className={({ isActive }) =>
-                    `flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
+                    `flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl text-sm font-medium transition ${
                       isActive
                         ? 'bg-brand-50 text-brand-700'
                         : 'text-ink-600 hover:bg-ink-50 hover:text-ink-900'
@@ -69,7 +69,7 @@ export default function Sidebar({ items, open, onClose }) {
           <div className="p-3 border-t border-ink-100">
             <Link
               to={`/${user.role}/profile`}
-              className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-ink-50 transition"
+              className="flex items-center gap-3 px-3 py-3 min-h-[44px] rounded-xl hover:bg-ink-50 transition"
             >
               {user.avatar ? (
                 <img src={user.avatar} alt="" className="w-9 h-9 rounded-full ring-2 ring-brand-100" />
@@ -90,7 +90,7 @@ export default function Sidebar({ items, open, onClose }) {
           <div className="rounded-xl bg-gradient-to-br from-brand-700 to-brand-800 text-white p-4">
             <div className="font-display font-bold text-sm">IUGET Bonabéri</div>
             <div className="text-xs text-white/80 mt-1">Bachelor of Technology · 2025/2026</div>
-            <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="mt-3 inline-block w-full text-center bg-white/15 hover:bg-white/25 transition rounded-lg py-1.5 text-xs font-medium">
+            <a href="https://iuget.cm" target="_blank" rel="noreferrer" className="mt-3 inline-block w-full text-center bg-white/15 hover:bg-white/25 transition rounded-lg py-2.5 text-xs font-medium min-h-[44px] flex items-center justify-center">
               Visit iuget.cm
             </a>
           </div>

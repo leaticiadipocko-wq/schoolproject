@@ -2,6 +2,7 @@ import http from 'http';
 import crypto from 'crypto';
 import { URL } from 'url';
 import { readFileSync, existsSync } from 'fs';
+import { initializeTransaction, verifyTransaction, generateReference, handleWebhook, getPublicKey } from './paystack-service.mjs'
 
 const PORT = 8000;
 const SELF = `http://localhost:${PORT}`;
@@ -307,13 +308,9 @@ const server = http.createServer(async (req, res) => {
       const userData = verifyToken(req.headers.authorization);
       if (!userData) return sendJson(res, 401, { success:false, message:'Authentication required' });
 
-      const user = users.get(userData.email);
-      if (!user || !['admin','staff'].includes(user.role))
-        return sendJson(res, 403, { success:false, message:'Insufficient permissions' });
-
       const id = segments[1];
 
-      // GET /users
+      // GET /users — any authenticated user can list (for chat cross-role communication)
       if (req.method === 'GET' && !id) {
         const list = Array.from(users.values()).map(u => ({
           id:u.id, uuid:u.uuid, email:u.email,
@@ -675,6 +672,107 @@ const server = http.createServer(async (req, res) => {
     if (segments[0] === 'exam-seating') {
       const { MOCK_EXAM_SEATING } = await import('../src/lib/mockData.js');
       return sendJson(res, 200, { success:true, data: MOCK_EXAM_SEATING });
+    }
+
+    // ── Payments (Paystack integration) ───────────────────────
+    if (segments[0] === 'payments') {
+      // GET /payments/key — public key for frontend (no auth required)
+      if (req.method === 'GET' && segments[1] === 'key') {
+        return sendJson(res, 200, { success:true, data: { publicKey: getPublicKey() } });
+      }
+
+      const userData = verifyToken(req.headers.authorization);
+      if (!userData) return sendJson(res, 401, { success:false, message:'Authentication required' });
+
+      // POST /payments/initialize — create a Paystack transaction
+      if (req.method === 'POST' && segments[1] === 'initialize') {
+        const body = JSON.parse(req.body || '{}');
+        const user = users.get(userData.email);
+        if (!user) return sendJson(res, 404, { success:false, message:'User not found' });
+
+        const channels = [];
+        if (body.method === 'momo') {
+          channels.push('mobile_money');
+          body.mobile_money = { provider: 'mtn' };
+        } else if (body.method === 'om') {
+          channels.push('mobile_money');
+          body.mobile_money = { provider: 'orange' };
+        } else if (body.method === 'visa') {
+          channels.push('card');
+        } else {
+          channels.push('bank_transfer');
+        }
+
+        const reference = generateReference();
+        let result;
+        try {
+          result = await initializeTransaction({
+            amount: body.amount,
+            email: user.email,
+            currency: 'XAF',
+            channels,
+            mobile_money: body.mobile_money,
+            metadata: {
+              userId: user.uuid,
+              studentId: user.studentId || user.registration_number,
+              method: body.method,
+              methodName: body.methodName,
+            },
+          });
+        } catch (err) {
+          return sendJson(res, 502, { success:false, message:'Payment gateway error' });
+        }
+
+        return sendJson(res, 200, {
+          success: true,
+          data: {
+            authorization_url: result.data.authorization_url,
+            access_code: result.data.access_code,
+            reference: result.data.reference || reference,
+            publicKey: getPublicKey(),
+          },
+        });
+      }
+
+      // POST /payments/verify — verify a transaction
+      if (req.method === 'POST' && segments[1] === 'verify') {
+        const body = JSON.parse(req.body || '{}');
+        const result = await verifyTransaction(body.reference);
+        return sendJson(res, 200, {
+          success: true,
+          data: {
+            status: result.data.status,
+            reference: result.data.reference,
+            amount: result.data.amount,
+            channel: result.data.channel,
+            paidAt: result.data.paid_at,
+          },
+        });
+      }
+
+      // POST /payments/webhook — Paystack webhook handler
+      if (req.method === 'POST' && segments[1] === 'webhook') {
+        const body = JSON.parse(req.body || '{}');
+        const event = req.headers['x-paystack-event'] || body.event;
+        const webhookResult = await handleWebhook(event, body.data);
+        if (webhookResult.success) {
+          console.log(`[Paystack Webhook] Payment confirmed: ${webhookResult.reference} (${webhookResult.amount} XAF via ${webhookResult.channel})`);
+        }
+        return sendJson(res, 200, { success: true });
+      }
+
+      // GET /payments/callback — redirect after Paystack checkout
+      if (req.method === 'GET' && segments[1] === 'callback') {
+        const ref = url.searchParams.get('reference') || '';
+        const status = url.searchParams.get('status') || 'success';
+        return sendJson(res, 200, {
+          success: status === 'success',
+          message: status === 'success' ? 'Payment completed' : 'Payment cancelled',
+          data: { reference: ref, status },
+        });
+      }
+
+      return sendJson(res, 404, { success:false, message:'Payments endpoint not found' });
     }
 
     // ── Health check ──────────────────────────────────────────

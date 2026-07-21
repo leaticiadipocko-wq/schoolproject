@@ -44,7 +44,7 @@ export default function Navbar({ onMenu, title }) {
     <header className="sticky top-0 z-20 bg-white/80 backdrop-blur-lg border-b border-ink-100">
       <div className="flex items-center justify-between gap-3 px-4 md:px-8 py-3.5">
         <div className="flex items-center gap-3 flex-1 min-w-0">
-          <button onClick={onMenu} className="lg:hidden text-ink-600 hover:text-ink-900">
+          <button onClick={onMenu} className="lg:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-ink-600 hover:text-ink-900">
             <Menu size={22} />
           </button>
           <div className="min-w-0">
@@ -70,7 +70,7 @@ export default function Navbar({ onMenu, title }) {
 
         {/* Notifications */}
         <div className="relative" ref={notifRef}>
-          <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-2 rounded-xl hover:bg-ink-100 text-ink-600" title={t('common.notifications')}>
+          <button onClick={() => setNotifOpen(!notifOpen)} className="relative min-w-[44px] min-h-[44px] p-2 flex items-center justify-center rounded-xl hover:bg-ink-100 text-ink-600" title={t('common.notifications')}>
             <Bell size={18} />
             {unread > 0 && (
               <span className="absolute top-1 right-1 min-w-[16px] h-4 px-1 bg-accent-600 text-white rounded-full text-[9px] font-bold flex items-center justify-center">
@@ -95,7 +95,7 @@ export default function Navbar({ onMenu, title }) {
                   <button
                     key={n.id}
                     onClick={() => markNotificationRead(n.id)}
-                    className={`w-full text-left p-3 hover:bg-ink-50 transition border-b border-ink-50 last:border-0 ${
+                    className={`w-full text-left p-3 min-h-[44px] hover:bg-ink-50 transition border-b border-ink-50 last:border-0 ${
                       !n.read ? 'bg-brand-50/40' : ''
                     }`}
                   >
@@ -118,7 +118,7 @@ export default function Navbar({ onMenu, title }) {
         <div className="relative" ref={profileRef}>
           <button
             onClick={() => setProfileOpen(!profileOpen)}
-            className="flex items-center gap-2.5 pl-1 pr-2 py-1 rounded-xl hover:bg-ink-100 transition"
+            className="flex items-center gap-2.5 pl-1 pr-2 py-1 min-h-[44px] rounded-xl hover:bg-ink-100 transition"
           >
             <img
               src={user?.avatar}
@@ -144,18 +144,18 @@ export default function Navbar({ onMenu, title }) {
                 </div>
               </div>
               <div className="p-2">
-                <button onClick={goProfile} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                <button onClick={goProfile} className="w-full flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg hover:bg-ink-50 text-sm text-ink-700">
                   <UserIcon size={16} /> {t('common.profile')}
                 </button>
-                <button onClick={goHelp} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                <button onClick={goHelp} className="w-full flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg hover:bg-ink-50 text-sm text-ink-700">
                   <HelpCircle size={16} /> {t('common.help')}
                 </button>
-                <button onClick={toggleLang} className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-ink-50 text-sm text-ink-700">
+                <button onClick={toggleLang} className="w-full flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg hover:bg-ink-50 text-sm text-ink-700">
                   <Languages size={16} /> {t('common.lang.toggle')}
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg hover:bg-red-50 text-sm text-red-600"
+                  className="w-full flex items-center gap-2.5 px-3 py-3 min-h-[44px] rounded-lg hover:bg-red-50 text-sm text-red-600"
                 >
                   <LogOut size={16} /> {t('common.signOut')}
                 </button>
