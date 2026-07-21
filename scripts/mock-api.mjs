@@ -1,18 +1,82 @@
 import http from 'http';
 import crypto from 'crypto';
+import path from 'path';
 import { URL } from 'url';
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
 import { initializeTransaction, verifyTransaction, generateReference, handleWebhook, getPublicKey } from './paystack-service.mjs'
 
 const PORT = 8000;
 const SELF = `http://localhost:${PORT}`;
-const DATA_PATH = process.argv[2] || './mock-data.json';
+const DATA_DIR = path.resolve(process.cwd(), 'database');
+const DATA_PATH = process.argv[2] || path.join(DATA_DIR, 'mock-data.json');
 
 const users = new Map(); // email → user
 const tokens = new Map(); // refresh_token → email
 const sessions = new Map(); // access_token → email
 const chatConversations = new Map();
 const chatMessages = {};
+
+function avatarUrl(s) {
+  return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s)}`;
+}
+
+function makeUser(d, password) {
+  const passwordHash = crypto.createHash('sha256').update(password || 'password').digest('hex');
+  return {
+    id: d.id, uuid: d.uuid || crypto.randomUUID(), email: d.email,
+    password_hash: d.password_hash || passwordHash,
+    full_name: d.full_name || d.name || d.full_name, role: d.role || 'student',
+    avatar_url: d.avatar_url || avatarUrl(d.full_name || d.name || d.email),
+    phone: d.phone || null,
+    status: d.status || 'active',
+    created_at: d.created_at || new Date().toISOString(),
+    last_login_at: d.last_login_at || null,
+    registration_number: d.registration_number || null,
+    matricule: d.matricule || null,
+    studentId: d.studentId || null,
+    programme_id: d.programme_id || null,
+    level: d.level || null,
+    specialty: d.specialty || null,
+    program: d.program || null,
+  };
+}
+
+// ── Persistence ──────────────────────────────────────────────
+function saveData() {
+  try {
+    if (!existsSync(DATA_DIR)) mkdirSync(DATA_DIR, { recursive: true });
+    const data = {
+      users: Array.from(users.values()),
+      _savedAt: new Date().toISOString(),
+    };
+    writeFileSync(DATA_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (err) {
+    console.error('Failed to save data:', err.message);
+  }
+}
+
+let _nextId = 5; // track next available ID
+
+function loadData() {
+  if (!existsSync(DATA_PATH)) return false;
+  try {
+    const raw = readFileSync(DATA_PATH, 'utf-8');
+    const data = JSON.parse(raw);
+    if (data.users && Array.isArray(data.users)) {
+      data.users.forEach(u => {
+        const user = makeUser(u, null);
+        user.password_hash = u.password_hash || crypto.createHash('sha256').update('password').digest('hex');
+        users.set(user.email, user);
+        if (user.id >= _nextId) _nextId = user.id + 1;
+      });
+      console.log(`Loaded ${data.users.length} users from ${DATA_PATH}`);
+      return true;
+    }
+  } catch (err) {
+    console.error('Failed to load data, using defaults:', err.message);
+  }
+  return false;
+}
 
 const mockUsers = [
   { id:1, uid:'stu-001', email:'student@iuget.cm', password:'password', role:'student', name:'Chituh Innocentia',   avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
@@ -21,30 +85,30 @@ const mockUsers = [
   { id:4, uid:'adm-001', email:'admin@iuget.cm',    password:'password', role:'admin',   name:'Prof. Fonkem',          avatar:'https://api.dicebear.com/7.x/avataaars/svg?seed=Fonkem' },
 ];
 
-const avatarUrl = (s) => `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(s)}`;
-
-mockUsers.forEach(d => {
-  const passwordHash = crypto.createHash('sha256').update(d.password).digest('hex');
-  const user = {
-    id: d.id, uuid: crypto.randomUUID(), email: d.email,
-    password_hash: passwordHash,
-    full_name: d.name, role: d.role,
-    avatar_url: avatarUrl(d.name),
-    phone: d.role === 'student' ? '670000001' : d.role === 'lecturer' ? '670000002' : d.role === 'staff' ? '670000003' : '670000000',
-    status: 'active',
-    created_at: '2025-09-01T08:00:00.000Z', last_login_at: null,
-  };
-  if (d.role === 'student') {
-    user.registration_number = 'REG/2025/00001';
-    user.matricule = 'IUGET/2025/SWE/0142';
-    user.programme_id = 1;
-    user.level = 3;
-    user.specialty = 'SWE';
-    user.studentId = 'IUGET/2025/SWE/0142';
-    user.program = 'Software Engineering';
-  }
-  users.set(d.email, user);
-});
+// Load persisted data first; fall back to seed users
+if (!loadData()) {
+  mockUsers.forEach(d => {
+    const user = makeUser({
+      id: d.id, uuid: crypto.randomUUID(), email: d.email,
+      full_name: d.name, role: d.role,
+      avatar_url: avatarUrl(d.name),
+      phone: d.role === 'student' ? '670000001' : d.role === 'lecturer' ? '670000002' : d.role === 'staff' ? '670000003' : '670000000',
+      status: 'active',
+      created_at: '2025-09-01T08:00:00.000Z',
+    }, d.password);
+    if (d.role === 'student') {
+      user.registration_number = 'REG/2025/00001';
+      user.matricule = 'IUGET/2025/SWE/0142';
+      user.programme_id = 1;
+      user.level = 3;
+      user.specialty = 'SWE';
+      user.studentId = 'IUGET/2025/SWE/0142';
+      user.program = 'Software Engineering';
+    }
+    users.set(d.email, user);
+  });
+  saveData();
+}
 
 function generateToken(user, exp) {
   const header = Buffer.from(JSON.stringify({ alg:'HS256', typ:'JWT' })).toString('base64url');
@@ -154,7 +218,7 @@ export async function handleApiRequest(req, res) {
         const fullName = full_name || name || ne.split('@')[0];
         const userRole = role || 'student';
 
-        const id = users.size + 1;
+        const id = _nextId++;
         const uuid = crypto.randomUUID();
         const pwHash = crypto.createHash('sha256').update(password || 'password').digest('hex');
         const avUrl = avatarUrl(fullName);
@@ -167,7 +231,7 @@ export async function handleApiRequest(req, res) {
           user.studentId = user.matricule; user.program = 'Software Engineering';
         }
 
-        if (!users.has(ne)) users.set(ne, user);
+        if (!users.has(ne)) { users.set(ne, user); saveData(); }
         const existing = users.get(ne);
         const token = generateToken(existing);
         const refresh_token = generateRefreshToken();
@@ -191,7 +255,7 @@ export async function handleApiRequest(req, res) {
         const ne = (email || 'user@iuget.cm').toLowerCase().trim();
 
         if (!users.has(ne)) {
-          const id = users.size + 1;
+          const id = _nextId++;
           const uuid = crypto.randomUUID();
           const pwHash = crypto.createHash('sha256').update(password || 'password').digest('hex');
           const avUrl = avatarUrl(ne.split('@')[0]);
@@ -200,6 +264,7 @@ export async function handleApiRequest(req, res) {
           newUser.matricule = `IUGET/${new Date().getFullYear()}/SWE/${String(id).padStart(4,'0')}`;
           newUser.studentId = newUser.matricule; newUser.program = 'Software Engineering';
           users.set(ne, newUser);
+          saveData();
         }
 
         const user = users.get(ne);
@@ -297,6 +362,7 @@ export async function handleApiRequest(req, res) {
 
         user.password_hash = crypto.createHash('sha256').update(new_password).digest('hex');
         users.set(userData.email, user);
+        saveData();
         return sendJson(res, 200, { success:true, message:'Password changed successfully' });
       }
 
@@ -331,7 +397,7 @@ export async function handleApiRequest(req, res) {
       // POST /users
       if (req.method === 'POST') {
         const body = await parseBody(req);
-        const newId = users.size + 1;
+        const newId = _nextId++;
         const pwHash = crypto.createHash('sha256').update(body.password||'password').digest('hex');
         const nUser = {
           id:newId, uuid:crypto.randomUUID(),
@@ -341,6 +407,7 @@ export async function handleApiRequest(req, res) {
           phone:body.phone||null, status:'active', created_at:new Date().toISOString()
         };
         users.set(nUser.email, nUser);
+        saveData();
         return sendJson(res, 201, { success:true, message:'User created', data:nUser });
       }
 
@@ -353,6 +420,7 @@ export async function handleApiRequest(req, res) {
         if (body.name) found.full_name = body.name;
         if (body.avatar) found.avatar_url = body.avatar;
         users.set(found.email, found);
+        saveData();
         return sendJson(res, 200, { success:true, message:'User updated', data:found });
       }
 
@@ -361,6 +429,7 @@ export async function handleApiRequest(req, res) {
         const found = Array.from(users.entries()).find(([_,u]) => String(u.id) === id || u.uuid === id);
         if (!found) return sendJson(res, 404, { success:false, message:'User not found' });
         users.delete(found[0]);
+        saveData();
         return sendJson(res, 200, { success:true, message:'User deleted' });
       }
 
@@ -371,6 +440,7 @@ export async function handleApiRequest(req, res) {
         const body = await parseBody(req);
         found.password_hash = crypto.createHash('sha256').update(body.new_password||'password').digest('hex');
         users.set(found.email, found);
+        saveData();
         return sendJson(res, 200, { success:true, message:'Password updated' });
       }
 
