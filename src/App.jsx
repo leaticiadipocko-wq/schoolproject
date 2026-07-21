@@ -105,7 +105,12 @@ export default function App() {
       >
         <Route index element={<StudentDashboard />} />
         <Route path="attendance"    element={<Attendance />} />
+        <Route path="timetable"     element={<Timetable />} />
         <Route path="results"       element={<Results />} />
+        <Route path="transcript"    element={<Transcript />} />
+        <Route path="fees"          element={<Fees />} />
+        <Route path="id-card"       element={<IDCard />} />
+        <Route path="check-in"      element={<CheckIn />} />
         <Route path="assignments"   element={<StudentAssignments />} />
         <Route path="chat"          element={<Chat />} />
         <Route path="discussions"   element={<Discussions />} />

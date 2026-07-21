@@ -13,8 +13,16 @@ export const STUDENT_NAV = [
     links: [
       { to: '/student',               label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/student/attendance',    label: 'Attendance',    icon: ClipboardCheck },
+      { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
+      { to: '/student/transcript',    label: 'Transcript',    icon: FileSpreadsheet },
       { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },
+    ],
+  },
+  {
+    title: 'Finance',
+    links: [
+      { to: '/student/fees',          label: 'Tuition & Fees', icon: Banknote },
     ],
   },
   {
@@ -35,6 +43,8 @@ export const STUDENT_NAV = [
     title: 'Services',
     links: [
       { to: '/student/library',       label: 'Library',         icon: Library },
+      { to: '/student/id-card',       label: 'ID Card',         icon: IdCard },
+      { to: '/student/check-in',      label: 'QR Check-In',     icon: MapPin },
       { to: '/student/exam-seating',  label: 'Exam Seating',    icon: Map },
       { to: '/student/events',        label: 'Events',          icon: CalendarDays },
       { to: '/student/complaints',    label: 'Complaints',      icon: AlertTriangle },
@@ -44,6 +54,8 @@ export const STUDENT_NAV = [
   {
     title: 'System',
     links: [
+      { to: '/student/profile',       label: 'Profile',        icon: UserCog },
+      { to: '/student/help',          label: 'Help & FAQ',     icon: FileText },
       { to: '/student/offline',       label: 'Offline Mode',   icon: WifiOff },
     ],
   },
