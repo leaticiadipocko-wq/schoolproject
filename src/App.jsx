@@ -69,6 +69,7 @@ import MinesupReports from '@/pages/admin/MinesupReports'
 import DataExport from '@/pages/admin/DataExport'
 import DepartmentFaculty from '@/pages/admin/DepartmentFaculty'
 import PayrollManagement from '@/pages/admin/PayrollManagement'
+import CourseManagement from '@/pages/admin/CourseManagement'
 
 // New domain pages
 import LecturerAssignments from '@/pages/lecturer/Assignments'
@@ -172,6 +173,7 @@ export default function App() {
         <Route path="complaints"    element={<StaffComplaints />} />
         <Route path="finance"       element={<Finance />} />
         <Route path="assignments"   element={<Assignments />} />
+        <Route path="courses"       element={<CourseManagement />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="chat"          element={<Chat />} />
         <Route path="library"       element={<Library />} />
@@ -215,6 +217,7 @@ export default function App() {
         <Route path="events"        element={<Events />} />
         <Route path="alumni"        element={<Alumni />} />
         <Route path="campus"        element={<CampusOverview />} />
+        <Route path="courses"       element={<CourseManagement />} />
         <Route path="departments"   element={<DepartmentFaculty />} />
         <Route path="payroll"       element={<PayrollManagement />} />
         <Route path="profile"       element={<Profile />} />
