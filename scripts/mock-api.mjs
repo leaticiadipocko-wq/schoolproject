@@ -648,6 +648,36 @@ const server = http.createServer(async (req, res) => {
       });
     }
 
+    // ── Library ───────────────────────────────────────────────
+    if (segments[0] === 'library' && segments[1] === 'books') {
+      const { MOCK_LIBRARY_BOOKS, MOCK_BORROWINGS } = await import('../src/lib/mockData.js');
+      return sendJson(res, 200, { success:true, data: { books: MOCK_LIBRARY_BOOKS, borrowings: MOCK_BORROWINGS } });
+    }
+
+    // ── Complaints ────────────────────────────────────────────
+    if (segments[0] === 'complaints') {
+      const { MOCK_COMPLAINTS } = await import('../src/lib/mockData.js');
+      return sendJson(res, 200, { success:true, data: MOCK_COMPLAINTS });
+    }
+
+    // ── Alumni ────────────────────────────────────────────────
+    if (segments[0] === 'alumni') {
+      const { MOCK_ALUMNI } = await import('../src/lib/mockData.js');
+      return sendJson(res, 200, { success:true, data: MOCK_ALUMNI });
+    }
+
+    // ── Events ────────────────────────────────────────────────
+    if (segments[0] === 'events') {
+      const { MOCK_EVENTS } = await import('../src/lib/mockData.js');
+      return sendJson(res, 200, { success:true, data: MOCK_EVENTS });
+    }
+
+    // ── Exam Seating ──────────────────────────────────────────
+    if (segments[0] === 'exam-seating') {
+      const { MOCK_EXAM_SEATING } = await import('../src/lib/mockData.js');
+      return sendJson(res, 200, { success:true, data: MOCK_EXAM_SEATING });
+    }
+
     // ── Health check ──────────────────────────────────────────
     if (path === '/health')
       return sendJson(res, 200, { success:true, status:'ok', uptime:process.uptime() });
@@ -677,6 +707,7 @@ server.listen(PORT, '0.0.0.0', () => {
     'POST /lessons', 'DELETE /lessons/{id}',
     'POST /assignments', 'POST /submissions', 'POST /submissions/{id}/grade',
     'POST /discussions', 'POST /discussions/{id}/reply',
+    'GET /library/books', 'GET/POST /complaints', 'GET /alumni', 'GET /events', 'GET /exam-seating',
     'GET /health',
   ];
   endpoints.forEach(e => console.log(`  ${e}`));

@@ -114,6 +114,13 @@ export function DataProvider({ children }) {
     submissions: [],
     discussions: [],
     passwordResets: [],
+    libraryBooks: [],
+    borrowings: [],
+    complaints: [],
+    examSeating: {},
+    alumni: [],
+    events: [],
+    campus: 'bonaberi',
   })
   const [loading, setLoading] = useState(false)
 
@@ -134,6 +141,11 @@ export function DataProvider({ children }) {
         fetchAnnouncements(),
         fetchUsers(),
         fetchTimetable(),
+        fetchLibraryData(),
+        fetchComplaints(),
+        fetchAlumni(),
+        fetchEvents(),
+        fetchExamSeating(),
       ]
 
       if (user.role === 'student') {
@@ -182,6 +194,61 @@ export function DataProvider({ children }) {
       }
     } catch (error) {
       console.error('Failed to fetch timetable:', error)
+    }
+  }
+
+  const fetchLibraryData = async () => {
+    try {
+      const response = await api.request('/library/books')
+      if (response.success) {
+        setStore(s => ({ ...s, libraryBooks: response.data.books, borrowings: response.data.borrowings }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch library data:', error)
+    }
+  }
+
+  const fetchComplaints = async () => {
+    try {
+      const response = await api.request('/complaints')
+      if (response.success) {
+        setStore(s => ({ ...s, complaints: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch complaints:', error)
+    }
+  }
+
+  const fetchAlumni = async () => {
+    try {
+      const response = await api.request('/alumni')
+      if (response.success) {
+        setStore(s => ({ ...s, alumni: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch alumni:', error)
+    }
+  }
+
+  const fetchEvents = async () => {
+    try {
+      const response = await api.request('/events')
+      if (response.success) {
+        setStore(s => ({ ...s, events: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch events:', error)
+    }
+  }
+
+  const fetchExamSeating = async () => {
+    try {
+      const response = await api.request('/exam-seating')
+      if (response.success) {
+        setStore(s => ({ ...s, examSeating: response.data }))
+      }
+    } catch (error) {
+      console.error('Failed to fetch exam seating:', error)
     }
   }
 
@@ -770,6 +837,104 @@ export function DataProvider({ children }) {
     }
   }, [])
 
+  // ── Campus ──────────────────────────────────────────────────
+  const setCampus = useCallback((campusId) => {
+    setStore(s => ({ ...s, campus: campusId }))
+  }, [])
+
+  // ── Library ─────────────────────────────────────────────────
+  const borrowBook = useCallback(async ({ bookId, userId, userName }) => {
+    const book = store.libraryBooks.find(b => b.id === bookId)
+    if (!book || book.available < 1) throw new Error('No copies available')
+    const borrowing = {
+      id: `br-${Date.now()}`,
+      bookId, userId, userName,
+      borrowDate: new Date().toISOString().split('T')[0],
+      dueDate: new Date(Date.now() + 21 * 86400000).toISOString().split('T')[0],
+      returned: false,
+    }
+    setStore(s => ({
+      ...s,
+      borrowings: [...s.borrowings, borrowing],
+      libraryBooks: s.libraryBooks.map(b =>
+        b.id === bookId ? { ...b, available: b.available - 1 } : b
+      ),
+    }))
+    return borrowing
+  }, [store.libraryBooks])
+
+  const returnBook = useCallback((borrowingId) => {
+    setStore(s => {
+      const br = s.borrowings.find(b => b.id === borrowingId)
+      if (!br) return s
+      return {
+        ...s,
+        borrowings: s.borrowings.map(b =>
+          b.id === borrowingId ? { ...b, returned: true, returnedDate: new Date().toISOString().split('T')[0] } : b
+        ),
+        libraryBooks: s.libraryBooks.map(b =>
+          b.id === br.bookId ? { ...b, available: b.available + 1 } : b
+        ),
+      }
+    })
+  }, [])
+
+  const addLibraryBook = useCallback((book) => {
+    setStore(s => ({
+      ...s,
+      libraryBooks: [{ ...book, id: `bk-${Date.now()}` }, ...s.libraryBooks],
+    }))
+  }, [])
+
+  // ── Complaints ──────────────────────────────────────────────
+  const submitComplaint = useCallback(async ({ category, subject, description, priority }) => {
+    const complaint = {
+      id: `cp-${Date.now()}`,
+      userId: user?.uid,
+      userName: user?.name,
+      category, subject, description,
+      status: 'open', priority: priority || 'medium',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    }
+    setStore(s => ({ ...s, complaints: [complaint, ...s.complaints] }))
+    return complaint
+  }, [user])
+
+  const updateComplaintStatus = useCallback((id, status, resolution) => {
+    setStore(s => ({
+      ...s,
+      complaints: s.complaints.map(c =>
+        c.id === id ? { ...c, status, resolution: resolution || c.resolution, updatedAt: new Date().toISOString() } : c
+      ),
+    }))
+  }, [])
+
+  // ── Events ──────────────────────────────────────────────────
+  const addEvent = useCallback((event) => {
+    setStore(s => ({
+      ...s,
+      events: [{ ...event, id: `ev-${Date.now()}` }, ...s.events],
+    }))
+  }, [])
+
+  const rsvpEvent = useCallback((eventId) => {
+    // Simple toggle RSVP (would be per-user in real system)
+    toast.success('RSVP recorded')
+  }, [])
+
+  // ── Alumni ──────────────────────────────────────────────────
+  const registerAlumni = useCallback((data) => {
+    const alumni = {
+      id: `al-${Date.now()}`,
+      ...data,
+      graduationYear: parseInt(data.graduationYear) || new Date().getFullYear(),
+    }
+    setStore(s => ({ ...s, alumni: [alumni, ...s.alumni] }))
+    toast.success('Registered as alumni!')
+    return alumni
+  }, [])
+
   const resetStore = useCallback(() => {
     localStorage.removeItem('siarm.store.v2')
     setStore(initialState)
@@ -795,6 +960,11 @@ export function DataProvider({ children }) {
     setTimetableSlot, removeTimetableSlot,
     toggleTheme,
     processPayment,
+    setCampus,
+    borrowBook, returnBook, addLibraryBook,
+    submitComplaint, updateComplaintStatus,
+    addEvent, rsvpEvent,
+    registerAlumni,
     resetStore,
   }
 

@@ -45,6 +45,12 @@ import Help           from '@/pages/Help'
 import OfflineStatus  from '@/pages/OfflineStatus'
 import Discussions    from '@/pages/Discussions'
 import Chat           from '@/pages/Chat'
+import Library        from '@/pages/Library'
+import Complaints     from '@/pages/Complaints'
+import Events         from '@/pages/Events'
+import Alumni         from '@/pages/Alumni'
+import ExamSeating    from '@/pages/ExamSeating'
+import CampusOverview from '@/pages/CampusOverview'
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
@@ -102,6 +108,11 @@ export default function App() {
         <Route path="discussions"   element={<Discussions />} />
         <Route path="announcements" element={<Announcements />} />
         <Route path="learning"      element={<Learning />} />
+        <Route path="library"       element={<Library />} />
+        <Route path="complaints"    element={<Complaints />} />
+        <Route path="events"        element={<Events />} />
+        <Route path="alumni"        element={<Alumni />} />
+        <Route path="exam-seating"  element={<ExamSeating />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />
@@ -125,6 +136,10 @@ export default function App() {
         <Route path="discussions"   element={<Discussions />} />
         <Route path="chat"          element={<Chat />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
+        <Route path="library"       element={<Library />} />
+        <Route path="complaints"    element={<Complaints />} />
+        <Route path="events"        element={<Events />} />
+        <Route path="alumni"        element={<Alumni />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />
@@ -146,6 +161,10 @@ export default function App() {
         <Route path="assignments"   element={<Assignments />} />
         <Route path="timetable"     element={<TimetableBuilder />} />
         <Route path="chat"          element={<Chat />} />
+        <Route path="library"       element={<Library />} />
+        <Route path="complaints"    element={<Complaints />} />
+        <Route path="events"        element={<Events />} />
+        <Route path="alumni"        element={<Alumni />} />
         <Route path="announcements" element={<AdminAnnouncements />} />
         <Route path="analytics"     element={<Analytics />} />
         <Route path="audit"         element={<AuditLog />} />
@@ -178,6 +197,11 @@ export default function App() {
         <Route path="audit"         element={<AuditLog />} />
         <Route path="minesup"       element={<MinesupReports />} />
         <Route path="export"        element={<DataExport />} />
+        <Route path="library"       element={<Library />} />
+        <Route path="complaints"    element={<Complaints />} />
+        <Route path="events"        element={<Events />} />
+        <Route path="alumni"        element={<Alumni />} />
+        <Route path="campus"        element={<CampusOverview />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />

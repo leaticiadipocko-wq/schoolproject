@@ -3,7 +3,8 @@ import {
   BookOpen, FileSpreadsheet, Users, TrendingUp,
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
   WifiOff, MapPin, Sparkles, ClipboardList, MessageSquare, Activity,
-  Archive, Globe, MessageCircle,
+  Archive, Globe, MessageCircle, Library, AlertTriangle, CalendarDays,
+  GraduationCap as GraduationIcon, Map, Building2,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -28,6 +29,16 @@ export const STUDENT_NAV = [
     links: [
       { to: '/student/learning',      label: 'Mobile Learning', icon: GraduationCap },
       { to: '/student/announcements', label: 'Announcements',   icon: Megaphone },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { to: '/student/library',       label: 'Library',         icon: Library },
+      { to: '/student/exam-seating',  label: 'Exam Seating',    icon: Map },
+      { to: '/student/events',        label: 'Events',          icon: CalendarDays },
+      { to: '/student/complaints',    label: 'Complaints',      icon: AlertTriangle },
+      { to: '/student/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
   },
   {
@@ -56,6 +67,15 @@ export const LECTURER_NAV = [
     links: [
       { to: '/lecturer/chat',          label: 'Chat',           icon: MessageCircle },
       { to: '/lecturer/announcements', label: 'Announcements', icon: Megaphone },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { to: '/lecturer/library',       label: 'Library',         icon: Library },
+      { to: '/lecturer/complaints',    label: 'Complaints',      icon: AlertTriangle },
+      { to: '/lecturer/events',        label: 'Events',          icon: CalendarDays },
+      { to: '/lecturer/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
   },
   {
@@ -89,6 +109,15 @@ export const STAFF_NAV = [
     title: 'Insights',
     links: [
       { to: '/staff/analytics',     label: 'Analytics',         icon: TrendingUp },
+    ],
+  },
+  {
+    title: 'Services',
+    links: [
+      { to: '/staff/library',       label: 'Library',         icon: Library },
+      { to: '/staff/complaints',    label: 'Complaints',      icon: AlertTriangle },
+      { to: '/staff/events',        label: 'Events',          icon: CalendarDays },
+      { to: '/staff/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
   },
   {
@@ -129,9 +158,19 @@ export const ADMIN_NAV = [
     ],
   },
   {
+    title: 'Services',
+    links: [
+      { to: '/admin/library',       label: 'Library',         icon: Library },
+      { to: '/admin/complaints',    label: 'Complaints',      icon: AlertTriangle },
+      { to: '/admin/events',        label: 'Events',          icon: CalendarDays },
+      { to: '/admin/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
+    ],
+  },
+  {
     title: 'System',
     links: [
-      { to: '/admin/offline',       label: 'Offline Mode',  icon: WifiOff },
+      { to: '/admin/campus',        label: 'Campus Sync',     icon: Building2 },
+      { to: '/admin/offline',       label: 'Offline Mode',    icon: WifiOff },
     ],
   },
 ]
