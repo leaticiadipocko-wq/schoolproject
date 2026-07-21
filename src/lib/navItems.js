@@ -165,6 +165,8 @@ export const ADMIN_NAV = [
       { to: '/admin/users',         label: 'Users',         icon: UserCog },
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/admin/announcements', label: 'Announcements', icon: Megaphone },
+      { to: '/admin/departments',   label: 'Departments',   icon: Building2 },
+      { to: '/admin/payroll',       label: 'Payroll',       icon: Banknote },
       { to: '/admin/settings',      label: 'Settings',      icon: Settings },
     ],
   },

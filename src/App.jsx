@@ -67,6 +67,8 @@ import Assignments from '@/pages/admin/Assignments'
 import AuditLog from '@/pages/admin/AuditLog'
 import MinesupReports from '@/pages/admin/MinesupReports'
 import DataExport from '@/pages/admin/DataExport'
+import DepartmentFaculty from '@/pages/admin/DepartmentFaculty'
+import PayrollManagement from '@/pages/admin/PayrollManagement'
 
 // New domain pages
 import LecturerAssignments from '@/pages/lecturer/Assignments'
@@ -213,6 +215,8 @@ export default function App() {
         <Route path="events"        element={<Events />} />
         <Route path="alumni"        element={<Alumni />} />
         <Route path="campus"        element={<CampusOverview />} />
+        <Route path="departments"   element={<DepartmentFaculty />} />
+        <Route path="payroll"       element={<PayrollManagement />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />

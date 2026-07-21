@@ -463,3 +463,39 @@ export const PAYMENT_METHODS = [
   { id: 'visa',    name: 'Visa / Mastercard',subtitle: 'Credit or debit card',  color: 'bg-blue-600',  textColor: 'text-blue-100',  code: ''        },
   { id: 'bank',    name: 'Bank Transfer',    subtitle: 'Afriland / UBA / Ecobank', color: 'bg-emerald-600', textColor: 'text-emerald-100', code: '' },
 ]
+
+// ── Departments & Faculties ──────────────────────────────────────
+export const DEPARTMENTS = [
+  { id: 'dept-1', code: 'CS',  name: 'Computer Science',          faculty: 'Science & Technology', hod: 'Dr. Nkengafac Mfortaw',   budget: 45000000, students: 320, lecturers: 14, established: '2015-09-01' },
+  { id: 'dept-2', code: 'BUS', name: 'Business Administration',    faculty: 'Management Sciences', hod: 'Prof. Marie Claire Etoh',  budget: 38000000, students: 280, lecturers: 11, established: '2015-09-01' },
+  { id: 'dept-3', code: 'ENG', name: 'Engineering',               faculty: 'Science & Technology', hod: 'Dr. Emmanuel Tabi',       budget: 52000000, students: 240, lecturers: 12, established: '2016-09-01' },
+  { id: 'dept-4', code: 'NRS', name: 'Nursing Science',           faculty: 'Health Sciences',     hod: 'Dr. Susan Ako',           budget: 35000000, students: 180, lecturers: 9,  established: '2017-09-01' },
+  { id: 'dept-5', code: 'LAW', name: 'Law',                       faculty: 'Social Sciences',     hod: 'Barrister John Ndifor',   budget: 28000000, students: 140, lecturers: 7,  established: '2018-09-01' },
+]
+
+export const FACULTIES = [
+  { id: 'fac-1', name: 'Science & Technology',   code: 'FST', dean: 'Prof. Fonkem',       departments: ['dept-1', 'dept-3'], established: '2015-01-01' },
+  { id: 'fac-2', name: 'Management Sciences',    code: 'FMS', dean: 'Prof. Beatrice Nkwi', departments: ['dept-2'],             established: '2015-01-01' },
+  { id: 'fac-3', name: 'Health Sciences',        code: 'FHS', dean: 'Dr. Michael Ngane',   departments: ['dept-4'],             established: '2017-01-01' },
+  { id: 'fac-4', name: 'Social Sciences',        code: 'FSS', dean: 'Dr. Christine Mbaku', departments: ['dept-5'],             established: '2018-01-01' },
+]
+
+// ── Payroll / Lecturer Salary ────────────────────────────────────
+export const MOCK_PAYROLL_RECORDS = [
+  { id: 'payroll-1',  lecturerId: 'lec-001', lecturerName: 'Dr. Nkengafac Mfortaw',   role: 'Senior Lecturer', department: 'Computer Science',      baseSalary: 450000, allowances: 120000, deductions: 45000,  netPay: 525000, bankAccount: 'CM1000123456', bankName: 'Afriland First Bank', paymentMethod: 'Bank Transfer', status: 'paid',      period: '2026-06', paidOn: '2026-06-30' },
+  { id: 'payroll-2',  lecturerId: 'lec-002', lecturerName: 'Dr. Smith John',           role: 'Lecturer',       department: 'Computer Science',      baseSalary: 350000, allowances: 80000,  deductions: 35000,  netPay: 395000, bankAccount: 'CM1000234567', bankName: 'Afriland First Bank', paymentMethod: 'Bank Transfer', status: 'paid',      period: '2026-06', paidOn: '2026-06-30' },
+  { id: 'payroll-3',  lecturerId: 'lec-003', lecturerName: 'Prof. Williams',           role: 'Professor',      department: 'Business Administration', baseSalary: 550000, allowances: 150000, deductions: 55000,  netPay: 645000, bankAccount: 'CM1000345678', bankName: 'UBA Cameroon',      paymentMethod: 'Bank Transfer', status: 'paid',      period: '2026-06', paidOn: '2026-06-30' },
+  { id: 'payroll-4',  lecturerId: 'lec-004', lecturerName: 'Dr. Johnson Anne',         role: 'Lecturer',       department: 'Business Administration', baseSalary: 320000, allowances: 70000,  deductions: 32000,  netPay: 358000, bankAccount: 'CM1000456789', bankName: 'Ecobank Cameroon',   paymentMethod: 'Bank Transfer', status: 'pending',   period: '2026-07', paidOn: null },
+  { id: 'payroll-5',  lecturerId: 'lec-005', lecturerName: 'Dr. Brown Chris',          role: 'Senior Lecturer', department: 'Engineering',           baseSalary: 420000, allowances: 100000, deductions: 42000,  netPay: 478000, bankAccount: 'CM1000567890', bankName: 'Afriland First Bank', paymentMethod: 'Bank Transfer', status: 'pending',   period: '2026-07', paidOn: null },
+  { id: 'payroll-6',  lecturerId: 'lec-006', lecturerName: 'Dr. Davis Paul',           role: 'Lecturer',       department: 'Engineering',           baseSalary: 310000, allowances: 60000,  deductions: 31000,  netPay: 339000, bankAccount: 'CM1000678901', bankName: 'Societe Generale',    paymentMethod: 'Bank Transfer', status: 'paid',      period: '2026-06', paidOn: '2026-06-28' },
+  { id: 'payroll-7',  lecturerId: 'lec-007', lecturerName: 'Dr. Wilson Mark',          role: 'Professor',      department: 'Nursing Science',        baseSalary: 500000, allowances: 130000, deductions: 50000,  netPay: 580000, bankAccount: 'CM1000789012', bankName: 'UBA Cameroon',      paymentMethod: 'Bank Transfer', status: 'paid',      period: '2026-06', paidOn: '2026-06-29' },
+  { id: 'payroll-8',  lecturerId: 'lec-008', lecturerName: 'Prof. Nkoma Ngouloure',    role: 'Professor',      department: 'Computer Science',      baseSalary: 580000, allowances: 160000, deductions: 58000,  netPay: 682000, bankAccount: 'CM1000890123', bankName: 'Afriland First Bank', paymentMethod: 'Bank Transfer', status: 'pending',   period: '2026-07', paidOn: null },
+]
+
+export const PAYROLL_SUMMARY = {
+  totalBudget:   8000000,
+  totalPaid:     3720000,
+  totalPending:  2442000,
+  month:         'July 2026',
+  currency:      'FCFA',
+}
