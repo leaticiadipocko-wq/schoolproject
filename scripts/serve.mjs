@@ -1,9 +1,10 @@
-// Static file server for the built SIARM app + deliverables download.
+// SIARM production server — serves static build + built-in mock API on a single port.
 import http from 'http'
 import fs from 'fs'
 import path from 'path'
+import { handleApiRequest } from './mock-api.mjs'
 
-const PORT = process.env.PORT || 4173
+const PORT = parseInt(process.env.PORT || '4173', 10)
 const ROOT = path.resolve(process.cwd())
 const DIST = path.join(ROOT, 'dist')
 const DELIVERABLES = path.join(ROOT, 'deliverables')
@@ -93,14 +94,21 @@ function downloadsPage() {
 
 const server = http.createServer((req, res) => {
   try {
-    let url = decodeURIComponent(req.url.split('?')[0])
+    const rawUrl = req.url.split('?')[0]
+    let url = decodeURIComponent(rawUrl)
 
-    // Deliverables index page
+    // ── API requests — handled by the built-in mock API ──────────
+    if (url.startsWith('/api')) {
+      req.url = url  // pass decoded URL to handler
+      return handleApiRequest(req, res)
+    }
+
+    // ── Deliverables index page ──────────────────────────────────
     if (url === '/deliverables' || url === '/deliverables/') {
       return send(res, 200, downloadsPage(), { 'Content-Type': 'text/html; charset=utf-8' })
     }
 
-    // Download a single deliverable
+    // ── Download a single deliverable ────────────────────────────
     if (url.startsWith('/downloads/')) {
       const name = url.replace('/downloads/', '')
       const fp = path.join(DELIVERABLES, name)
@@ -108,7 +116,7 @@ const server = http.createServer((req, res) => {
       return serveFile(res, fp, true)
     }
 
-    // Otherwise: serve from dist (SPA)
+    // ── Otherwise: serve from dist (SPA) ─────────────────────────
     let rel = url === '/' ? 'index.html' : url.slice(1)
     const fp = path.join(DIST, rel)
     if (fs.existsSync(fp) && fs.statSync(fp).isFile()) return serveFile(res, fp)

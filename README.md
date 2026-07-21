@@ -33,15 +33,26 @@ hierarchical role-based access model (Student / Lecturer / Staff / Admin).
 
 ## 🚀 Quickstart
 
+### Development mode (hot reload)
 ```bash
-# 1. Install dependencies
 npm install
-
-# 2. Run in demo mode (no Firebase needed)
 npm run dev
 ```
-
 Open `http://localhost:5173`.
+
+### Production mode (offline & self-contained)
+```bash
+npm install
+npm start
+```
+Open `http://localhost:4173`.
+
+The production server runs a **single process** on **one port** — it serves the built app AND the mock API together. No PHP, no database, no Firebase, no separate API process. Works entirely offline.
+
+To start only the API (useful if running the dev server separately):
+```bash
+./start-backend.sh
+```
 
 ### Demo credentials
 

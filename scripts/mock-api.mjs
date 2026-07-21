@@ -136,7 +136,7 @@ const STUDENT_USERS = [
   { id:'IUGET/2025/SWE/0001', name:'Jane Smith', email:'jane@iuget.cm', level:3, specialty:'SWE', program:'Software Engineering' },
 ];
 
-const server = http.createServer(async (req, res) => {
+export async function handleApiRequest(req, res) {
   try {
     const url = new URL(req.url, SELF);
     const path = url.pathname.replace('/api', '');
@@ -785,27 +785,15 @@ const server = http.createServer(async (req, res) => {
     console.error('SERVER ERROR:', err);
     sendJson(res, 500, { success:false, message:'Internal server error' });
   }
-});
+}
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`✓ Mock API running on http://0.0.0.0:${PORT}`);
-  const endpoints = [
-    'POST /auth/register', 'POST /auth/login', 'POST /auth/refresh',
-    'POST /auth/logout', 'GET /auth/me',
-    'POST /auth/forgot-password', 'POST /auth/reset-password', 'POST /auth/change-password',
-    'GET /users', 'GET/POST /users/{id}', 'PUT/DELETE /users/{id}',
-    'GET/POST /announcements', 'POST /announcements/{id}/pin', 'DELETE /announcements/{id}',
-    'GET/POST /timetable', 'DELETE /timetable/{day}/{time}',
-    'GET /results', 'GET /students/{id}[/timetable|attendance|results|transcript|fees|available-courses]',
-    'POST /students/{id}/register',
-    'GET /lecturer/courses', 'GET /lecturer/attendance/records',
-    'POST /lecturer/attendance', 'POST /lecturer/grades', 'POST /lecturer/publish-grades',
-    'POST /courses/enroll', 'POST /courses/unenroll',
-    'POST /lessons', 'DELETE /lessons/{id}',
-    'POST /assignments', 'POST /submissions', 'POST /submissions/{id}/grade',
-    'POST /discussions', 'POST /discussions/{id}/reply',
-    'GET /library/books', 'GET/POST /complaints', 'GET /alumni', 'GET /events', 'GET /exam-seating',
-    'GET /health',
-  ];
-  endpoints.forEach(e => console.log(`  ${e}`));
-});
+// Allow running standalone: node scripts/mock-api.mjs
+const isMain = process.argv[1] && (
+  process.argv[1].endsWith('mock-api.mjs') || process.argv[1].endsWith('mock-api')
+);
+if (isMain) {
+  const server = http.createServer(handleApiRequest);
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`✓ Mock API running on http://0.0.0.0:${PORT}`);
+  });
+}

@@ -9,6 +9,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "serve": "node scripts/serve.mjs",
+    "start": "npm run build && node scripts/serve.mjs",
     "zip:all": "node scripts/make-complete-zip.mjs",
     "lint": "eslint ."
   },
