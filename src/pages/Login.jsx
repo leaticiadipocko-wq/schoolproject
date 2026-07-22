@@ -1,14 +1,13 @@
 import { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Eye, EyeOff, ArrowRight, X, KeyRound, CheckCircle2 } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, ArrowRight, X, KeyRound, CheckCircle2, Zap, GraduationCap, BookOpen, Briefcase, ShieldCheck } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
 import { roleHome } from '@/lib/roles'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
 import LangToggle from '@/components/LangToggle'
-import { validatePassword } from '@/lib/auth'
 
 export default function Login() {
   const { login, resetPassword } = useAuth()
@@ -133,8 +132,28 @@ export default function Login() {
               <button type="button" onClick={() => setShowForgot(true)} className="text-brand-600 hover:underline">{t('login.forgot')}</button>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full py-3">
-              {loading ? t('login.signing') : <>{t('common.signIn')} <ArrowRight size={16} /></>}
+            {/* Quick sign-in — one tap demo */}
+            <div>
+              <div className="text-xs font-semibold uppercase tracking-wider text-ink-500 mb-2">{lang === 'en' ? 'Quick sign-in' : 'Connexion rapide'}</div>
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { icon: GraduationCap, label: 'Student', email:'student@iuget.cm', pass:'password', color:'border-brand-200 hover:border-brand-400' },
+                  { icon: BookOpen,      label: 'Lecturer', email:'lecturer@iuget.cm', pass:'password', color:'border-accent-200 hover:border-accent-400' },
+                  { icon: Briefcase,     label: 'Staff',    email:'staff@iuget.cm',    pass:'password', color:'border-emerald-200 hover:border-emerald-400' },
+                  { icon: ShieldCheck,   label: 'Admin',    email:'admin@iuget.cm',    pass:'password', color:'border-amber-200 hover:border-amber-400' },
+                ].map(d => (
+                  <button key={d.email} type="button" onClick={() => { setEmail(d.email); setPassword(d.pass); }}
+                    className={`text-left p-2.5 rounded-xl border-2 transition bg-white ${d.color}`}>
+                    <d.icon size={16} className="text-ink-500" />
+                    <div className="font-semibold text-xs mt-0.5">{d.label}</div>
+                    <div className="text-[10px] text-ink-400 truncate">{d.email}</div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-primary w-full py-3 text-base">
+              {loading ? <span className="flex items-center justify-center gap-2"><span className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" /> {t('login.signing')}</span> : <>{t('common.signIn')} <ArrowRight size={18} className="inline" /></>}
             </button>
           </form>
 

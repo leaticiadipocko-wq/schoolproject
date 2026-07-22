@@ -79,7 +79,67 @@
       "level": null,
       "specialty": null,
       "program": null
+    },
+    {
+      "id": 5,
+      "uuid": "a6de495a-cae7-487f-ad7f-6a656a34c1c9",
+      "email": "ghjk@gmail.com",
+      "password_hash": "e79d7356563892d4f1d70416be078e8b920a56c09dde7a04eb555dac19dde9ef",
+      "full_name": "ghjk",
+      "role": "student",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=ghjk",
+      "phone": null,
+      "status": "active",
+      "created_at": "2026-07-22T23:03:23.882Z",
+      "registration_number": "REG/2026/00005",
+      "matricule": "IUGET/2026/SWE/0005",
+      "programme_id": 1,
+      "level": 1,
+      "specialty": "SWE",
+      "studentId": "IUGET/2026/SWE/0005",
+      "program": "Software Engineering"
+    },
+    {
+      "id": 6,
+      "uuid": "ef7ef2a6-8ae9-4983-91ef-ff4e2736311d",
+      "email": "student@gmail.com",
+      "password_hash": "e79d7356563892d4f1d70416be078e8b920a56c09dde7a04eb555dac19dde9ef",
+      "full_name": "student",
+      "role": "student",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=student",
+      "phone": null,
+      "status": "active",
+      "created_at": "2026-07-22T23:04:13.338Z",
+      "last_login_at": "2026-07-22T23:06:21.250Z",
+      "registration_number": "REG/2026/00006",
+      "matricule": "IUGET/2026/SWE/0006",
+      "studentId": "IUGET/2026/SWE/0006",
+      "program": "Software Engineering"
+    },
+    {
+      "id": 7,
+      "uuid": "3286f72e-37d0-4307-a5df-144884d63474",
+      "email": "lec@gmail.com",
+      "password_hash": "3a9fbc438d94ac0cf7d5ef89290c4a087f26a8b03c7a7d8a9526716bba1045bf",
+      "full_name": "FGHJ",
+      "role": "lecturer",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=FGHJ",
+      "phone": null,
+      "status": "active",
+      "created_at": "2026-07-22T23:11:31.362Z"
+    },
+    {
+      "id": 8,
+      "uuid": "f7695fa3-09f9-4b16-97e5-c33fa7a22290",
+      "email": "staff@gmail.com",
+      "password_hash": "0f29aa906ce9ed1964724630fcf59388390ae9e7371a6f3b7daefc9529fb9514",
+      "full_name": "GYHJ",
+      "role": "staff",
+      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=GYHJ",
+      "phone": null,
+      "status": "active",
+      "created_at": "2026-07-22T23:15:50.056Z"
     }
   ],
-  "_savedAt": "2026-07-22T22:57:18.420Z"
+  "_savedAt": "2026-07-22T23:15:50.056Z"
 }

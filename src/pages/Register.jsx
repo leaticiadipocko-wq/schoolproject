@@ -63,7 +63,7 @@ export default function Register() {
       addNewUser({ ...u, name: u.name || name, uid: u.uid || u.id, role: u.role || role, phone, specialty })
       setSubmitted(true)
       toast.success(`Welcome to SIARM, ${(u.name || name).split(' ')[0]}!`)
-      setTimeout(() => navigate(roleHome(u.role), { replace: true }), 1500)
+      setTimeout(() => navigate(roleHome(u.role), { replace: true }), 500)
     } catch (err) {
       console.warn('Registration failed. Please try again.')
     } finally {

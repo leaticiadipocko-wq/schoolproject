@@ -124,19 +124,17 @@ export function DataProvider({ children }) {
   })
   const [loading, setLoading] = useState(false)
 
-  // Load initial data
+  // Lazy data loading — fires in background so login/nav is instant
   useEffect(() => {
     if (isAuthenticated) {
-      loadData()
+      setTimeout(() => loadData(), 100)
     }
   }, [isAuthenticated, user])
 
   const loadData = async () => {
     if (!isAuthenticated) return
     
-    setLoading(true)
     try {
-      // Load data based on user role
       const promises = [
         fetchAnnouncements(),
         fetchUsers(),

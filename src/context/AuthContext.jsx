@@ -68,7 +68,6 @@ export function AuthProvider({ children }) {
         TokenStorage.setUserData(userData)
         
         setUser(userData)
-        toast.success(`Welcome back, ${userData.full_name}!`)
         
         return userData
       }
