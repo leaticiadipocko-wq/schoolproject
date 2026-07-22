@@ -16,7 +16,14 @@ export default function Transcript() {
   const { user } = useAuth()
   const { results: allResults, signatures = {} } = useData()
   const registrarSig = signatures['registrar'] || signatures[user?.uid]
-  const MOCK_RESULTS = allResults.filter((r) => !r.studentId)
+  const studentId = user?.studentId || user?.matricule || user?.uid || ''
+  const MOCK_RESULTS = (() => {
+    const mine = allResults.filter(r => r.studentId === studentId)
+    if (mine.length) return mine
+    const noId = allResults.filter(r => !r.studentId)
+    if (noId.length) return noId
+    return allResults.slice(0, 6).map(r => ({ ...r, studentName: user?.name || r.studentName }))
+  })()
   const ref = useRef()
 
   const cgpa = MOCK_RESULTS.length

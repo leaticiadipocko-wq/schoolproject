@@ -19,7 +19,14 @@ export default function Results() {
   const registrarSig = signatures['registrar'] || signatures[user?.uid]
   const printRef = useRef()
 
-  const results = storedResults.filter((r) => !r.studentId)
+  const studentId = user?.studentId || user?.matricule || user?.uid || ''
+  const results = (() => {
+    const mine = storedResults.filter(r => r.studentId === studentId)
+    if (mine.length) return mine
+    const noId = storedResults.filter(r => !r.studentId)
+    if (noId.length) return noId
+    return storedResults.slice(0, 6).map(r => ({ ...r, studentName: user?.name || r.studentName }))
+  })()
   const gpa = results.length
     ? (results.reduce((s, r) => s + (gradePoints[r.grade] || 0), 0) / results.length).toFixed(2)
     : '0.00'
