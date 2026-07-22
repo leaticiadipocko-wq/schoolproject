@@ -313,7 +313,7 @@ export function DataProvider({ children }) {
         return response.data
       }
     } catch (error) {
-      toast.error('Failed to create announcement')
+      console.warn('Failed to create announcement')
     }
   }, [user])
 
@@ -327,7 +327,7 @@ export function DataProvider({ children }) {
         }))
       }
     } catch (error) {
-      toast.error('Failed to toggle pin')
+      console.warn('Failed to toggle pin')
     }
   }, [])
 
@@ -337,7 +337,7 @@ export function DataProvider({ children }) {
       setStore(s => ({ ...s, announcements: s.announcements.filter(a => a.id !== id) }))
       toast.success('Announcement deleted')
     } catch (error) {
-      toast.error('Failed to delete announcement')
+      console.warn('Failed to delete announcement')
     }
   }, [])
 
@@ -380,7 +380,7 @@ export function DataProvider({ children }) {
         toast.success(`Attendance saved · ${presentIds.length} / ${totalStudents} present`)
       }
     } catch (error) {
-      toast.error('Failed to save attendance')
+      console.warn('Failed to save attendance')
     }
   }, [])
 
@@ -409,7 +409,7 @@ export function DataProvider({ children }) {
         toast.success('Grades saved as draft')
       }
     } catch (error) {
-      toast.error('Failed to save grades')
+      console.warn('Failed to save grades')
     }
   }, [])
 
@@ -426,7 +426,7 @@ export function DataProvider({ children }) {
         toast.success(`${response.data.published} grades published`)
       }
     } catch (error) {
-      toast.error('Failed to publish grades')
+      console.warn('Failed to publish grades')
     }
   }, [])
 
@@ -445,7 +445,7 @@ export function DataProvider({ children }) {
         toast.success('Enrolled successfully')
       }
     } catch (error) {
-      toast.error('Enrollment failed')
+      console.warn('Enrollment failed')
     }
   }, [])
 
@@ -463,7 +463,7 @@ export function DataProvider({ children }) {
         toast.success('Unenrolled successfully')
       }
     } catch (error) {
-      toast.error('Unenrollment failed')
+      console.warn('Unenrollment failed')
     }
   }, [])
 
@@ -480,7 +480,7 @@ export function DataProvider({ children }) {
         return response.data
       }
     } catch (error) {
-      toast.error('Failed to add user')
+      console.warn('Failed to add user')
     }
   }, [])
 
@@ -495,7 +495,7 @@ export function DataProvider({ children }) {
         toast.success('User updated')
       }
     } catch (error) {
-      toast.error('Failed to update user')
+      console.warn('Failed to update user')
     }
   }, [])
 
@@ -507,7 +507,7 @@ export function DataProvider({ children }) {
         toast.success('User deleted')
       }
     } catch (error) {
-      toast.error('Failed to delete user')
+      console.warn('Failed to delete user')
     }
   }, [])
 
@@ -544,7 +544,7 @@ export function DataProvider({ children }) {
         toast.success('Timetable updated')
       }
     } catch (error) {
-      toast.error('Failed to update timetable')
+      console.warn('Failed to update timetable')
     }
   }, [])
 
@@ -557,7 +557,7 @@ export function DataProvider({ children }) {
       }))
       toast.success('Timetable slot removed')
     } catch (error) {
-      toast.error('Failed to remove timetable slot')
+      console.warn('Failed to remove timetable slot')
     }
   }, [])
 
@@ -687,7 +687,7 @@ export function DataProvider({ children }) {
         toast.success('Lesson published')
       }
     } catch (error) {
-      toast.error('Failed to publish lesson')
+      console.warn('Failed to publish lesson')
     }
   }, [])
 
@@ -697,7 +697,7 @@ export function DataProvider({ children }) {
       setStore(s => ({ ...s, lessons: s.lessons.filter(l => l.id !== id) }))
       toast.success('Lesson deleted')
     } catch (error) {
-      toast.error('Failed to delete lesson')
+      console.warn('Failed to delete lesson')
     }
   }, [])
 
@@ -730,7 +730,7 @@ export function DataProvider({ children }) {
         toast.success('Assignment created')
       }
     } catch (error) {
-      toast.error('Failed to create assignment')
+      console.warn('Failed to create assignment')
     }
   }, [])
 
@@ -745,7 +745,7 @@ export function DataProvider({ children }) {
         toast.success('Assignment submitted')
       }
     } catch (error) {
-      toast.error('Failed to submit assignment')
+      console.warn('Failed to submit assignment')
     }
   }, [])
 
@@ -763,7 +763,7 @@ export function DataProvider({ children }) {
         toast.success('Submission graded')
       }
     } catch (error) {
-      toast.error('Failed to grade submission')
+      console.warn('Failed to grade submission')
     }
   }, [])
 
@@ -779,7 +779,7 @@ export function DataProvider({ children }) {
         toast.success('Discussion posted')
       }
     } catch (error) {
-      toast.error('Failed to post discussion')
+      console.warn('Failed to post discussion')
     }
   }, [])
 
@@ -801,7 +801,7 @@ export function DataProvider({ children }) {
         toast.success('Reply posted')
       }
     } catch (error) {
-      toast.error('Failed to post reply')
+      console.warn('Failed to post reply')
     }
   }, [])
 

@@ -76,7 +76,7 @@ export function AuthProvider({ children }) {
       throw new Error(response.message || 'Login failed')
     } catch (error) {
       const message = error.message || 'Invalid email or password'
-      toast.error(message)
+      console.warn(message)
       throw new Error(message)
     }
   }
@@ -105,7 +105,7 @@ export function AuthProvider({ children }) {
       throw new Error(response.message || 'Registration failed')
     } catch (error) {
       const message = error.message || 'Registration failed'
-      toast.error(message)
+      console.warn(message)
       throw new Error(message)
     }
   }
@@ -122,7 +122,7 @@ export function AuthProvider({ children }) {
       throw new Error(response.message || 'Failed to send reset link')
     } catch (error) {
       const message = error.message || 'Failed to process request'
-      toast.error(message)
+      console.warn(message)
       throw new Error(message)
     }
   }
@@ -139,7 +139,7 @@ export function AuthProvider({ children }) {
       throw new Error(response.message || 'Failed to change password')
     } catch (error) {
       const message = error.message || 'Failed to change password'
-      toast.error(message)
+      console.warn(message)
       throw new Error(message)
     }
   }

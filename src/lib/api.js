@@ -114,7 +114,7 @@ class ApiClient {
         console.error('Token refresh failed:', error)
         if (error instanceof TypeError && error.message === 'Failed to fetch') {
           this.clearTokens()
-          throw new Error('Unable to reach server. Please check your connection and try again.')
+          throw new Error('')
         }
         this.clearTokens()
         return null
@@ -133,7 +133,7 @@ class ApiClient {
     if (this.accessToken && this.isTokenExpired(this.accessToken)) {
       const newToken = await this.refreshAccessToken()
       if (!newToken) {
-        throw new Error('Session expired. Please log in again.')
+        throw new Error('')
       }
     }
 
@@ -179,7 +179,7 @@ class ApiClient {
           return retryData
         }
         this.clearTokens()
-        throw new Error('Session expired. Please log in again.')
+        throw new Error('')
       }
 
       const data = await response.json()
@@ -191,7 +191,7 @@ class ApiClient {
       return data
     } catch (error) {
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
-        throw new Error('Unable to reach server. Please check your connection and try again.')
+        throw new Error('')
       }
       throw error
     }
