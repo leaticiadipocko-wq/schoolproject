@@ -3,7 +3,7 @@ import { motion } from 'framer-motion'
 import {
   GraduationCap, Calendar, Clock, Wallet, ArrowRight, CheckCircle2,
   Globe, Briefcase, Building2, Phone, Mail, MapPin, ShieldCheck,
-  BookOpen, Award, Users, Languages,
+  BookOpen, Award, Users, Languages, Megaphone, ExternalLink,
 } from 'lucide-react'
 import Logo from '@/components/Logo'
 import { useLang } from '@/context/LanguageContext'
@@ -100,10 +100,11 @@ export default function ParentPortal() {
         <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3.5">
           <Link to="/"><Logo size={42} /></Link>
           <div className="hidden md:flex items-center gap-6 text-sm font-medium text-ink-600">
-            <a href="#specialties" className="hover:text-accent-600 transition">{t('parent.nav.specialties')}</a>
-            <a href="#fees"        className="hover:text-accent-600 transition">{t('parent.nav.fees')}</a>
-            <a href="#calendar"    className="hover:text-accent-600 transition">{t('parent.nav.calendar')}</a>
-            <a href="#contact"     className="hover:text-accent-600 transition">{t('parent.nav.contact')}</a>
+            <a href="#announcements" className="hover:text-accent-600 transition">Announcements</a>
+            <a href="#specialties"   className="hover:text-accent-600 transition">{t('parent.nav.specialties')}</a>
+            <a href="#fees"          className="hover:text-accent-600 transition">{t('parent.nav.fees')}</a>
+            <a href="#calendar"      className="hover:text-accent-600 transition">{t('parent.nav.calendar')}</a>
+            <a href="#contact"       className="hover:text-accent-600 transition">{t('parent.nav.contact')}</a>
           </div>
           <div className="flex items-center gap-2">
             <LangToggle compact />
@@ -266,6 +267,50 @@ export default function ParentPortal() {
                 </motion.div>
               )
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Announcements */}
+      <section id="announcements" className="py-20 bg-white border-b border-ink-100">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="badge-info">School News</span>
+            <h2 className="text-4xl md:text-5xl font-display font-bold mt-4">
+              Latest <span className="gradient-text">Announcements</span>
+            </h2>
+            <p className="text-lg text-ink-600 mt-3">
+              Stay informed with the latest news, deadlines, and updates from IUGET.
+            </p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-4 max-w-4xl mx-auto">
+            {[
+              { title: 'Mid-semester exams begin June 10', body: 'All students should consult their timetable for room allocations. Bring your student ID card.', date: '25 May 2026', author: 'Registrar' },
+              { title: 'Library extends opening hours', body: 'The IUGET library will now open from 7am to 10pm during the exam period.', date: '24 May 2026', author: 'Library' },
+              { title: 'Tuition payment deadline extended', body: 'The deadline for second-semester fees has been pushed to June 5. Use the SIARM payment portal.', date: '20 May 2026', author: 'Bursary' },
+              { title: 'Design Project deadline reminder', body: 'CS509 students: final project submissions are due June 15. See your supervisor for details.', date: '23 May 2026', author: 'Dr Romeo Mougnol' },
+            ].map((a) => (
+              <div key={a.title} className="rounded-2xl border border-ink-100 bg-white shadow-soft p-5 hover:shadow-lg transition">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center shrink-0">
+                    <Megaphone size={20} />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-display font-bold">{a.title}</h3>
+                    <p className="text-sm text-ink-600 mt-1.5 leading-relaxed">{a.body}</p>
+                    <div className="flex items-center justify-between mt-3 text-xs text-ink-500">
+                      <span>{a.author}</span>
+                      <span>{a.date}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="text-center mt-8">
+            <Link to="/login" className="btn-secondary px-6 py-3">
+              View full newsfeed <ExternalLink size={16} />
+            </Link>
           </div>
         </div>
       </section>

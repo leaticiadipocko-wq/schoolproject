@@ -9,27 +9,19 @@ import {
 
 export const STUDENT_NAV = [
   {
-    title: 'Main',
+    title: 'My Resources',
     links: [
       { to: '/student',               label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/student/attendance',    label: 'Attendance',    icon: ClipboardCheck },
       { to: '/student/timetable',     label: 'Timetable',     icon: CalendarClock },
       { to: '/student/results',       label: 'Results',       icon: FileText },
       { to: '/student/transcript',    label: 'Transcript',    icon: FileSpreadsheet },
-      { to: '/student/assignments',   label: 'Assignments',   icon: ClipboardList },
     ],
   },
   {
     title: 'Finance',
     links: [
       { to: '/student/fees',          label: 'Tuition & Fees', icon: Banknote },
-    ],
-  },
-  {
-    title: 'Communicate',
-    links: [
-      { to: '/student/chat',          label: 'Chat',           icon: MessageCircle },
-      { to: '/student/discussions',   label: 'Discussions',   icon: MessageSquare },
     ],
   },
   {
@@ -40,23 +32,20 @@ export const STUDENT_NAV = [
     ],
   },
   {
-    title: 'Services',
+    title: 'Information',
     links: [
       { to: '/student/library',       label: 'Library',         icon: Library },
       { to: '/student/id-card',       label: 'ID Card',         icon: IdCard },
-      { to: '/student/check-in',      label: 'QR Check-In',     icon: MapPin },
       { to: '/student/exam-seating',  label: 'Exam Seating',    icon: Map },
       { to: '/student/events',        label: 'Events',          icon: CalendarDays },
-      { to: '/student/complaints',    label: 'Complaints',      icon: AlertTriangle },
-      { to: '/student/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
   },
   {
-    title: 'System',
+    title: 'Personal',
     links: [
-      { to: '/student/profile',       label: 'Profile',        icon: UserCog },
-      { to: '/student/help',          label: 'Help & FAQ',     icon: FileText },
-      { to: '/student/offline',       label: 'Offline Mode',   icon: WifiOff },
+      { to: '/student/profile',       label: 'Upload Documents', icon: UserCog },
+      { to: '/student/help',          label: 'Help & FAQ',      icon: FileText },
+      { to: '/student/offline',       label: 'Offline Mode',    icon: WifiOff },
     ],
   },
 ]
@@ -82,18 +71,18 @@ export const LECTURER_NAV = [
     ],
   },
   {
-    title: 'Services',
+    title: 'Resources',
     links: [
       { to: '/lecturer/library',       label: 'Library',         icon: Library },
-      { to: '/lecturer/complaints',    label: 'Complaints',      icon: AlertTriangle },
       { to: '/lecturer/events',        label: 'Events',          icon: CalendarDays },
-      { to: '/lecturer/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
   },
   {
     title: 'System',
     links: [
-      { to: '/lecturer/offline', label: 'Offline Mode', icon: WifiOff },
+      { to: '/lecturer/profile',       label: 'Profile',         icon: UserCog },
+      { to: '/lecturer/help',          label: 'Help & FAQ',      icon: FileText },
+      { to: '/lecturer/offline',       label: 'Offline Mode',    icon: WifiOff },
     ],
   },
 ]
@@ -122,7 +111,7 @@ export const STAFF_NAV = [
   {
     title: 'Finance',
     links: [
-      { to: '/staff/finance',       label: 'Tuition Tracking', icon: Banknote},
+      { to: '/staff/finance',       label: 'Tuition Tracking', icon: Banknote },
     ],
   },
   {
@@ -132,10 +121,21 @@ export const STAFF_NAV = [
     ],
   },
   {
+    title: 'Administration',
+    links: [
+      { to: '/admin/courses',       label: 'Courses',           icon: BookOpen },
+      { to: '/admin/departments',   label: 'Departments',       icon: Building2 },
+      { to: '/admin/payroll',       label: 'Payroll',           icon: Banknote },
+      { to: '/admin/settings',      label: 'Settings',          icon: Settings },
+      { to: '/admin/audit',         label: 'Audit Log',         icon: Activity },
+      { to: '/admin/minesup',       label: 'MINESUP Reports',   icon: Globe },
+      { to: '/admin/export',        label: 'Data Export',       icon: Archive },
+    ],
+  },
+  {
     title: 'Services',
     links: [
       { to: '/staff/library',       label: 'Library',         icon: Library },
-      { to: '/staff/complaints',    label: 'Complaints',      icon: AlertTriangle },
       { to: '/staff/events',        label: 'Events',          icon: CalendarDays },
       { to: '/staff/alumni',        label: 'Alumni Network',  icon: GraduationIcon },
     ],
@@ -143,7 +143,9 @@ export const STAFF_NAV = [
   {
     title: 'System',
     links: [
-      { to: '/staff/offline',       label: 'Offline Mode',      icon: WifiOff },
+      { to: '/staff/profile',       label: 'Profile',          icon: UserCog },
+      { to: '/staff/help',          label: 'Help & FAQ',       icon: FileText },
+      { to: '/staff/offline',       label: 'Offline Mode',     icon: WifiOff },
     ],
   },
 ]
@@ -154,13 +156,13 @@ export const ADMIN_NAV = [
     links: [
       { to: '/admin',           label: 'Dashboard',     icon: LayoutDashboard },
       { to: '/admin/analytics', label: 'Analytics',     icon: TrendingUp },
-      { to: '/admin/finance',   label: 'Finance',       icon: Banknote},
+      { to: '/admin/finance',   label: 'Finance',       icon: Banknote },
     ],
   },
   {
     title: 'Manage',
     links: [
-      { to: '/admin/enrollment',    label: 'Enrolment',     icon: UserPlus},
+      { to: '/admin/enrollment',    label: 'Enrolment',     icon: UserPlus },
       { to: '/admin/assignments',   label: 'Assignments',   icon: MapPin },
       { to: '/admin/users',         label: 'Users',         icon: UserCog },
       { to: '/admin/timetable',     label: 'Timetable',     icon: CalendarClock },
@@ -169,6 +171,14 @@ export const ADMIN_NAV = [
       { to: '/admin/departments',   label: 'Departments',   icon: Building2 },
       { to: '/admin/payroll',       label: 'Payroll',       icon: Banknote },
       { to: '/admin/settings',      label: 'Settings',      icon: Settings },
+    ],
+  },
+  {
+    title: 'Academic',
+    links: [
+      { to: '/staff/attendance',    label: 'Attendance',    icon: ClipboardCheck },
+      { to: '/staff/grades',        label: 'Grades',        icon: FileSpreadsheet },
+      { to: '/staff/complaints',    label: 'Complaints',    icon: AlertTriangle },
     ],
   },
   {
@@ -193,6 +203,8 @@ export const ADMIN_NAV = [
     title: 'System',
     links: [
       { to: '/admin/campus',        label: 'Campus Sync',     icon: Building2 },
+      { to: '/admin/profile',       label: 'Profile',         icon: UserCog },
+      { to: '/admin/help',          label: 'Help & FAQ',      icon: FileText },
       { to: '/admin/offline',       label: 'Offline Mode',    icon: WifiOff },
     ],
   },

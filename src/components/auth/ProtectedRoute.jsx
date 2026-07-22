@@ -1,13 +1,13 @@
 import { Navigate, useLocation } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
-import { ROLES, ROLE_HIERARCHY } from '@/lib/roles'
+import { ROLES } from '@/lib/roles'
 
 /**
- * Guards a route based on auth state and **exact** role match.
- * - Students can ONLY access /student/* routes
- * - Lecturers can access /lecturer/* AND /student/* (they teach)
- * - Staff can access /staff/* AND /student/*, /lecturer/*
- * - Admins can access everything
+ * Strict role-based route guard.
+ * - Student  → ONLY /student/* (view own resources, upload docs)
+ * - Lecturer → ONLY /lecturer/* (teaching duties only)
+ * - Staff    → /staff/* AND /admin/* (staff+admin overlap)
+ * - Admin    → /admin/* AND /staff/* (admin+staff overlap)
  */
 export default function ProtectedRoute({ children, requiredRole }) {
   const { user, loading } = useAuth()
@@ -28,27 +28,30 @@ export default function ProtectedRoute({ children, requiredRole }) {
     return <Navigate to="/login" state={{ from: location }} replace />
   }
 
-  // Restrict students to student-only routes
-  if (user.role === ROLES.STUDENT && requiredRole !== ROLES.STUDENT) {
-    return <Navigate to="/student" replace />
+  const role = user.role
+
+  // Student — can ONLY access /student/* routes
+  if (role === ROLES.STUDENT) {
+    if (requiredRole !== ROLES.STUDENT) return <Navigate to="/student" replace />
+    return children
   }
 
-  // Lecturers can access lecturer and student routes
-  if (user.role === ROLES.LECTURER && requiredRole === ROLES.ADMIN) {
-    return <Navigate to="/lecturer" replace />
+  // Lecturer — can ONLY access /lecturer/* routes
+  if (role === ROLES.LECTURER) {
+    if (requiredRole !== ROLES.LECTURER) return <Navigate to="/lecturer" replace />
+    return children
   }
 
-  // Staff can access staff, lecturer, and student routes but not admin
-  if (user.role === ROLES.STAFF && requiredRole === ROLES.ADMIN) {
+  // Staff — can access /staff/* and /admin/*
+  if (role === ROLES.STAFF) {
+    if (requiredRole === ROLES.ADMIN || requiredRole === ROLES.STAFF) return children
     return <Navigate to="/staff" replace />
   }
 
-  // Role hierarchy check: user must have sufficient rank
-  if (requiredRole && !(ROLE_HIERARCHY[user.role] >= ROLE_HIERARCHY[requiredRole])) {
-    if (user.role === ROLES.STUDENT) return <Navigate to="/student" replace />
-    if (user.role === ROLES.LECTURER) return <Navigate to="/lecturer" replace />
-    if (user.role === ROLES.STAFF) return <Navigate to="/staff" replace />
-    return <Navigate to="/" replace />
+  // Admin — can access /admin/* and /staff/*
+  if (role === ROLES.ADMIN) {
+    if (requiredRole === ROLES.ADMIN || requiredRole === ROLES.STAFF) return children
+    return <Navigate to="/admin" replace />
   }
 
   return children
