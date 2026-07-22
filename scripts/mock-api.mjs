@@ -175,15 +175,20 @@ const TIMETABLE = [
 ];
 
 const RESULTS = [
-  { id:1, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Mathematics',        semester:'Semester 1', ca:28, exam:65, total:93, grade:'A' },
-  { id:2, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Physics',            semester:'Semester 1', ca:25, exam:58, total:83, grade:'A' },
-  { id:3, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Programming',        semester:'Semester 1', ca:30, exam:70, total:100,grade:'A' },
-  { id:4, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Database Systems',   semester:'Semester 2', ca:27, exam:62, total:89, grade:'A' },
-  { id:5, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Web Development',    semester:'Semester 2', ca:26, exam:55, total:81, grade:'A' },
-  { id:6, studentId:'IUGET/2024/SWE/0001', studentName:'John Doe',   course:'Software Engineering',semester:'Semester 2', ca:24, exam:50, total:74, grade:'B+' },
-  { id:7, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Mathematics',        semester:'Semester 1', ca:22, exam:45, total:67, grade:'B' },
-  { id:8, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Physics',            semester:'Semester 1', ca:20, exam:40, total:60, grade:'B' },
-  { id:9, studentId:'IUGET/2024/SWE/0002', studentName:'Jane Smith', course:'Programming',        semester:'Semester 1', ca:28, exam:60, total:88, grade:'A' },
+  { id:1, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Mathematics',        semester:'Semester 1', ca:28, exam:65, total:93, grade:'A' },
+  { id:2, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Physics',            semester:'Semester 1', ca:25, exam:58, total:83, grade:'A' },
+  { id:3, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Programming',        semester:'Semester 1', ca:30, exam:65, total:95, grade:'A' },
+  { id:4, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Database Systems',   semester:'Semester 2', ca:27, exam:62, total:89, grade:'A' },
+  { id:5, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Web Development',    semester:'Semester 2', ca:26, exam:55, total:81, grade:'A' },
+  { id:6, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Software Engineering',semester:'Semester 2', ca:24, exam:50, total:74, grade:'B+' },
+  { id:7, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Compiler Design',     semester:'Semester 2', ca:22, exam:45, total:67, grade:'B' },
+  { id:8, studentId:'IUGET/2025/SWE/0142', studentName:'Chituh Innocentia', course:'Research Methodology', semester:'Semester 2', ca:29, exam:60, total:89, grade:'A' },
+  { id:9, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Mathematics',      semester:'Semester 1', ca:25, exam:60, total:85, grade:'A' },
+  { id:10, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Physics',         semester:'Semester 1', ca:28, exam:55, total:83, grade:'A' },
+  { id:11, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Programming',     semester:'Semester 1', ca:30, exam:50, total:80, grade:'A' },
+  { id:12, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Database Systems',semester:'Semester 2', ca:22, exam:48, total:70, grade:'B+' },
+  { id:13, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Web Development', semester:'Semester 2', ca:25, exam:45, total:70, grade:'B+' },
+  { id:14, studentId:'IUGET/2026/SWE/0011', studentName:'Result Check Student', course:'Software Engineering', semester:'Semester 2', ca:20, exam:40, total:60, grade:'B' },
 ];
 
 const COURSES = [
@@ -529,19 +534,29 @@ export async function handleApiRequest(req, res) {
 
       // GET /students/{id}/attendance
       if (req.method === 'GET' && sub === 'attendance')
-        return sendJson(res, 200, { success:true, data:[] });
+        return sendJson(res, 200, { success:true, data:{ records:[
+          { course_id:'MATH101', course:'Mathematics', period:'Semester 1', attended:22, total:24, percent:92 },
+          { course_id:'PHY101', course:'Physics', period:'Semester 1', attended:20, total:24, percent:83 },
+          { course_id:'CS101', course:'Programming', period:'Semester 1', attended:23, total:24, percent:96 },
+          { course_id:'DB101', course:'Database Systems', period:'Semester 2', attended:18, total:20, percent:90 },
+          { course_id:'WEB101', course:'Web Development', period:'Semester 2', attended:19, total:20, percent:95 },
+          { course_id:'SE101', course:'Software Engineering', period:'Semester 2', attended:17, total:20, percent:85 },
+        ]} });
 
       // GET /students/{id}/results
       if (req.method === 'GET' && sub === 'results')
-        return sendJson(res, 200, { success:true, data:RESULTS });
+        return sendJson(res, 200, { success:true, data:{ results:RESULTS } });
 
       // GET /students/{id}/transcript
       if (req.method === 'GET' && sub === 'transcript')
-        return sendJson(res, 200, { success:true, data:RESULTS });
+        return sendJson(res, 200, { success:true, data:{ results:RESULTS } });
 
       // GET /students/{id}/fees
       if (req.method === 'GET' && sub === 'fees')
-        return sendJson(res, 200, { success:true, data:{ total:500000, paid:300000, balance:200000, sessions:[{session:'2025/2026', tuition:500000, paid:300000, balance:200000}] } });
+        return sendJson(res, 200, { success:true, data:{ fees:{ total:500000, paid:350000, balance:150000, currency:'FCFA', academicYear:'2025 / 2026' }, payments:[
+          { id:'pay-1', date:'2025-10-15T10:30:00Z', amount:200000, method:'MTN Mobile Money', methodId:'momo', phone:'670000001', reference:'PAYSTACK-REF-001', status:'success' },
+          { id:'pay-2', date:'2026-01-20T14:15:00Z', amount:150000, method:'Orange Money', methodId:'om', phone:'670000001', reference:'PAYSTACK-REF-002', status:'success' },
+        ] } });
 
       // POST /students/{id}/register
       if (req.method === 'POST' && sub === 'register')
@@ -716,32 +731,42 @@ export async function handleApiRequest(req, res) {
 
     // ── Library ───────────────────────────────────────────────
     if (segments[0] === 'library' && segments[1] === 'books') {
-      const { MOCK_LIBRARY_BOOKS, MOCK_BORROWINGS } = await import('../src/lib/mockData.js');
-      return sendJson(res, 200, { success:true, data: { books: MOCK_LIBRARY_BOOKS, borrowings: MOCK_BORROWINGS } });
+      return sendJson(res, 200, { success:true, data: { books: [
+        { id:'bk-1', title:'Compilers: Principles, Techniques, and Tools', author:'Aho, Lam, Sethi, Ullman', isbn:'978-0321548463', total:5, available:3, category:'Computer Science' },
+        { id:'bk-2', title:'Introduction to Algorithms', author:'Cormen, Leiserson, Rivest, Stein', isbn:'978-0262033848', total:3, available:1, category:'Computer Science' },
+        { id:'bk-3', title:'Database System Concepts', author:'Silberschatz, Korth, Sudarshan', isbn:'978-0078022159', total:4, available:2, category:'Database' },
+      ], borrowings: [
+        { id:'br-1', bookId:'bk-1', userId:'stu-001', userName:'Chituh Innocentia', borrowDate:'2026-05-01', dueDate:'2026-05-22', returned:false },
+      ] } });
     }
 
     // ── Complaints ────────────────────────────────────────────
     if (segments[0] === 'complaints') {
-      const { MOCK_COMPLAINTS } = await import('../src/lib/mockData.js');
-      return sendJson(res, 200, { success:true, data: MOCK_COMPLAINTS });
+      return sendJson(res, 200, { success:true, data: [
+        { id:'cp-1', userId:'stu-001', userName:'Chituh Innocentia', category:'Academic', subject:'Grade discrepancy', description:'My CA score for Mathematics appears lower than expected.', status:'open', priority:'high', createdAt:new Date(Date.now()-172800000).toISOString(), updatedAt:new Date(Date.now()-172800000).toISOString() },
+      ] });
     }
 
     // ── Alumni ────────────────────────────────────────────────
     if (segments[0] === 'alumni') {
-      const { MOCK_ALUMNI } = await import('../src/lib/mockData.js');
-      return sendJson(res, 200, { success:true, data: MOCK_ALUMNI });
+      return sendJson(res, 200, { success:true, data: [] });
     }
 
     // ── Events ────────────────────────────────────────────────
     if (segments[0] === 'events') {
-      const { MOCK_EVENTS } = await import('../src/lib/mockData.js');
-      return sendJson(res, 200, { success:true, data: MOCK_EVENTS });
+      return sendJson(res, 200, { success:true, data: [
+        { id:'ev-1', title:'End of Semester Exams', date:'2026-06-15', description:'Final examinations for Semester 2 begin.', type:'academic' },
+        { id:'ev-2', title:'Project Defense', date:'2026-07-10', description:'Level 3 student project presentations.', type:'academic' },
+        { id:'ev-3', title:'Graduation Ceremony', date:'2026-08-20', description:'Graduation ceremony for the 2025/2026 academic year.', type:'social' },
+      ] });
     }
 
     // ── Exam Seating ──────────────────────────────────────────
     if (segments[0] === 'exam-seating') {
-      const { MOCK_EXAM_SEATING } = await import('../src/lib/mockData.js');
-      return sendJson(res, 200, { success:true, data: MOCK_EXAM_SEATING });
+      return sendJson(res, 200, { success:true, data: {
+        'MAT101': { venue:'Hall A', date:'2026-06-15', time:'08:00 - 11:00', seat:'A-042' },
+        'PHY101': { venue:'Hall B', date:'2026-06-17', time:'08:00 - 11:00', seat:'B-018' },
+      } });
     }
 
     // ── Payments (Paystack integration) ───────────────────────

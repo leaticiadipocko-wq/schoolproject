@@ -134,6 +134,7 @@ export function DataProvider({ children }) {
   const loadData = async () => {
     if (!isAuthenticated) return
     
+    setLoading(true)
     try {
       const promises = [
         fetchAnnouncements(),
