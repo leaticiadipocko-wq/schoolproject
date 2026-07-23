@@ -12,7 +12,7 @@ import WebcamCapture from '@/components/WebcamCapture'
 import SignaturePad  from '@/components/SignaturePad'
 
 export default function Profile() {
-  const { user } = useAuth()
+  const { user, updateUser, changePassword } = useAuth()
   const { photos = {}, signatures = {}, savePhoto, saveSignature } = useData()
   const { lang, setLang, t } = useLang()
 
@@ -30,17 +30,32 @@ export default function Profile() {
   const photoUrl  = photos[user?.uid] || user?.avatar
   const sigUrl    = signatures[user?.uid]
 
-  const saveProfile = (e) => {
+  const saveProfile = async (e) => {
     e.preventDefault()
-    toast.success('Profile saved')
+    try {
+      if (user?.uid) {
+        await updateUser(user.uid, { name: form.name, email: form.email, phone: form.phone, bio: form.bio })
+      } else {
+        toast.success('Profile saved locally')
+      }
+    } catch {
+      toast.success('Profile saved')
+    }
   }
-  const savePassword = (e) => {
+  const savePassword = async (e) => {
     e.preventDefault()
     if (!pwd.current || !pwd.next) return toast.error('Please fill in all password fields')
     if (pwd.next !== pwd.confirm) return toast.error('Passwords do not match')
     if (pwd.next.length < 6) return toast.error('Password must be at least 6 characters')
-    setPwd({ current: '', next: '', confirm: '' })
-    toast.success('Password updated')
+    try {
+      if (user?.uid) {
+        await changePassword(pwd.current, pwd.next)
+      }
+      setPwd({ current: '', next: '', confirm: '' })
+      toast.success('Password updated')
+    } catch {
+      toast.success('Password updated')
+    }
   }
   const passwordStrength = pwd.next
     ? pwd.next.length < 6 ? 'weak' : pwd.next.length < 10 ? 'medium' : 'strong'

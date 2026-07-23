@@ -140,7 +140,10 @@ export function DataProvider({ children }) {
     borrowings: [],
     complaints: [],
     examSeating: {},
-    alumni: [],
+  alumni: [
+    { id:'al-1', name:'Dr. Nkengafac Mfortaw', graduationYear:2018, program:'BTech Software Engineering', email:'nkengafac.mfortaw@example.com', company:'Google', position:'Senior Software Engineer', linkedin:'nkengafac-mfortaw', testimonial:'SIARM gave me the foundation I needed to excel in my career.' },
+    { id:'al-2', name:'Veronica Munteng', graduationYear:2019, program:'BTech Computer Networks', email:'veronica.munteng@example.com', company:'MTN Cameroon', position:'Network Engineer', linkedin:'veronica-munteng', testimonial:'The hands-on networking labs prepared me perfectly for industry.' },
+  ],
     events: [],
     leaves: [],
     notificationPrefs: { email: true, sms: false, inApp: true },
@@ -1196,8 +1199,16 @@ const initialState = {
   assignments: [
     { id:'as-1', title:'LR Parser Construction', course:'Compiler Design', description:'Construct an LR parsing table for the given grammar and parse the input string.', dueDate:new Date(Date.now()+604800000).toISOString(), lecturer:'Mr Nkoma Ngouloure', createdAt:new Date(Date.now()-86400000).toISOString() },
   ],
-  submissions: [],
-  discussions: [],
+  submissions: [
+    { id:'sub-1', assignmentId:'as-1', studentId:'stu-001', studentName:'Chituh Innocentia', answer:'I have constructed the LR parsing table for grammar G. The parsing table has 12 states and resolves the shift/reduce conflict using FOLLOW sets.', file:'LR_Parser_Solution.pdf', submittedAt:new Date(Date.now()-3600000).toISOString(), grade:null, feedback:null },
+  ],
+  discussions: [
+    { id:'dc-1', course:'Compiler Design', author:'Chituh Innocentia', role:'student', body:'Hi everyone! I am working on the LR parser assignment and got stuck on item set construction for grammar G. Has anyone completed it yet?', createdAt:new Date(Date.now()-86400000).toISOString(), replies:[
+      { id:'dr-1', discussionId:'dc-1', author:'Mr Nkoma Ngouloure', role:'lecturer', body:'Great question Innocentia. Remember that an item set is a closure of LR items. Start with CLOSURE({E\'→·E}) and then apply the goto function for each grammar symbol.', createdAt:new Date(Date.now()-43200000).toISOString() },
+      { id:'dr-2', discussionId:'dc-1', author:'Nkwenti Deshnic', role:'student', body:'Thank you sir! That helped me get started. I was trying to compute all items at once instead of step by step.', createdAt:new Date(Date.now()-21600000).toISOString() },
+    ]},
+    { id:'dc-2', course:'Research Methodology', author:'Mr Nkoma Ngouloure', role:'lecturer', body:'Reminder: Your research proposal abstracts are due next Friday. Submit via the portal. Maximum 300 words including title and keywords.', createdAt:new Date(Date.now()-172800000).toISOString(), replies:[] },
+  ],
   passwordResets: [],
   libraryBooks: [
     { id:'bk-1', title:'Compilers: Principles, Techniques, and Tools', author:'Aho, Lam, Sethi, Ullman', isbn:'978-0321548463', total:5, available:3, category:'Computer Science' },
@@ -1214,7 +1225,10 @@ const initialState = {
     'MAT101': { venue:'Hall A', date:'2026-06-15', time:'08:00 - 11:00', seat:'A-042' },
     'PHY101': { venue:'Hall B', date:'2026-06-17', time:'08:00 - 11:00', seat:'B-018' },
   },
-  alumni: [],
+  alumni: [
+    { id:'al-1', name:'Fonkem Elvis', graduationYear:2020, program:'BTech Software Engineering', email:'fonkem.elvis@alumni.iuget.cm', company:'Afriland First Bank', position:'IT Project Manager', linkedin:'https://linkedin.com/in/fonkemelvis', testimonial:'SIARM gave me the skills to succeed in the tech industry.' },
+    { id:'al-2', name:'Ndam Esther', graduationYear:2018, program:'BTech Computer Networks', email:'ndam.esther@alumni.iuget.cm', company:'Orange Cameroon', position:'Network Architect', linkedin:'https://linkedin.com/in/ndamesther' },
+  ],
   leaves: [
     { id:'lv-1', userId:'lec-001', userName:'Dr. Nkengafac Mfortaw', type:'annual', reason:'Family event', startDate:'2026-07-15', endDate:'2026-07-22', contact:'670000002', status:'pending', createdAt:new Date(Date.now()-86400000).toISOString() },
     { id:'lv-2', userId:'stf-001', userName:'Veronica Munteng', type:'sick', reason:'Medical appointment', startDate:'2026-07-10', endDate:'2026-07-11', contact:'670000003', status:'approved', createdAt:new Date(Date.now()-172800000).toISOString() },

@@ -34,7 +34,7 @@ export default function Login() {
       toast.success(t('login.success', { name: u.name?.split(' ')[0] || '' }))
       navigate(from || roleHome(u.role), { replace: true })
     } catch (err) {
-      // silently handle — any credential is accepted
+      toast.error(err.message || 'Login failed. Check your credentials.')
       console.warn(err)
     } finally {
       setLoading(false)

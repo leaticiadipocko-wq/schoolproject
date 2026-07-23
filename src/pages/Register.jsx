@@ -65,7 +65,8 @@ export default function Register() {
       toast.success(`Welcome to SIARM, ${(u.name || name).split(' ')[0]}!`)
       setTimeout(() => navigate(roleHome(u.role), { replace: true }), 500)
     } catch (err) {
-      console.warn('Registration failed. Please try again.')
+      toast.error(err.message || 'Registration failed. Please try again.')
+      console.warn(err)
     } finally {
       setLoading(false)
     }
