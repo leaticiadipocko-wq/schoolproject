@@ -781,7 +781,7 @@ export async function handleApiRequest(req, res) {
 
       // POST /payments/initialize — create a Paystack transaction
       if (req.method === 'POST' && segments[1] === 'initialize') {
-        const body = JSON.parse(req.body || '{}');
+        const body = await parseBody(req);
         const user = users.get(userData.email);
         if (!user) return sendJson(res, 404, { success:false, message:'User not found' });
 
@@ -831,7 +831,7 @@ export async function handleApiRequest(req, res) {
 
       // POST /payments/verify — verify a transaction
       if (req.method === 'POST' && segments[1] === 'verify') {
-        const body = JSON.parse(req.body || '{}');
+        const body = await parseBody(req);
         const result = await verifyTransaction(body.reference);
         return sendJson(res, 200, {
           success: true,
@@ -847,7 +847,7 @@ export async function handleApiRequest(req, res) {
 
       // POST /payments/webhook — Paystack webhook handler
       if (req.method === 'POST' && segments[1] === 'webhook') {
-        const body = JSON.parse(req.body || '{}');
+        const body = await parseBody(req);
         const event = req.headers['x-paystack-event'] || body.event;
         const webhookResult = await handleWebhook(event, body.data);
         if (webhookResult.success) {
