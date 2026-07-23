@@ -829,15 +829,17 @@ export function DataProvider({ children }) {
   }, [])
 
   // Chat
-  const sendMessage = useCallback((conversationId, text) => {
+  const sendMessage = useCallback((conversationId, text, repliedTo = null) => {
     if (!text.trim()) return
     const newMsg = {
-      id: `msg-${Date.now()}`,
+      id: `msg-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
       conversationId,
-      sender: { uid: user?.uid, name: user?.name, avatar: user?.avatar },
+      sender: { uid: user?.uid, name: user?.name, avatar: user?.avatar, role: user?.role },
       text: text.trim(),
       timestamp: new Date().toISOString(),
       read: false,
+      status: 'sent',
+      repliedTo,
     }
     setStore(s => ({
       ...s,
@@ -846,13 +848,21 @@ export function DataProvider({ children }) {
         c.id === conversationId
           ? {
               ...c,
-              lastMessage: { text: text.trim(), timestamp: newMsg.timestamp, sender: user?.name },
-              unread: 0,
+              lastMessage: { text: text.trim(), timestamp: newMsg.timestamp, sender: user?.name, senderUid: user?.uid },
+              unread: s.conversations.find(cc => cc.id === conversationId)?.unread || 0,
               updatedAt: newMsg.timestamp,
             }
           : c
       ),
     }))
+    setTimeout(() => {
+      setStore(s => ({
+        ...s,
+        messages: s.messages.map(m =>
+          m.id === newMsg.id ? { ...m, status: 'delivered' } : m
+        ),
+      }))
+    }, 300)
     if (window.siarmSyncMessage) window.siarmSyncMessage(newMsg)
     return newMsg
   }, [user])
