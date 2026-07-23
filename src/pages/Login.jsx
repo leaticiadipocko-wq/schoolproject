@@ -159,14 +159,14 @@ export default function Login() {
 
           <div className="mt-6 text-center text-sm text-ink-600">
             {t('login.newAccount')}{' '}
-            <Link to="/register" className="text-brand-600 font-medium hover:underline">
+            <a href="/register" className="text-brand-600 font-medium hover:underline">
               {t('login.createAccount')}
-            </Link>
+            </a>
           </div>
           <div className="mt-3 text-center">
-            <Link to="/parent" className="text-sm text-accent-700 hover:underline font-medium">
+            <a href="/parent" className="text-sm text-accent-700 hover:underline font-medium">
               {t('login.parentCta')}
-            </Link>
+            </a>
           </div>
         </div>
       </div>

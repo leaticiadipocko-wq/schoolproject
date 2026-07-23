@@ -39,11 +39,11 @@ export default function Landing() {
           </div>
           <div className="flex items-center gap-2">
             <LangToggle compact />
-            <Link to="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</Link>
-            <Link to="/login"  className="btn-ghost">{t('common.signIn')}</Link>
-            <Link to="/register" className="btn-primary">
+            <a href="/parent" className="btn-ghost hidden md:inline-flex">{t('landing.nav.parent')}</a>
+            <a href="/login"  className="btn-ghost">{t('common.signIn')}</a>
+            <a href="/register" className="btn-primary">
               {t('common.getStarted')} <ArrowRight size={16} />
-            </Link>
+            </a>
           </div>
         </div>
       </nav>
@@ -70,12 +70,12 @@ export default function Landing() {
               {t('landing.hero.motto')}
             </p>
             <div className="mt-10 flex flex-wrap justify-center gap-3">
-              <Link to="/parent" className="btn-primary px-6 py-3 text-base">
+              <a href="/parent" className="btn-primary px-6 py-3 text-base">
                 {t('landing.hero.cta.parent')} <ArrowRight size={18} />
-              </Link>
-              <Link to="/login" className="btn-secondary px-6 py-3 text-base">
+              </a>
+              <a href="/login" className="btn-secondary px-6 py-3 text-base">
                 {t('landing.hero.cta.demo')}
-              </Link>
+              </a>
             </div>
           </motion.div>
 
@@ -174,12 +174,12 @@ export default function Landing() {
             {t('landing.cta.subtitle')}
           </p>
           <div className="mt-8 flex justify-center gap-3">
-            <Link to="/register" className="btn-primary px-6 py-3 text-base">
+            <a href="/register" className="btn-primary px-6 py-3 text-base">
               {t('common.getStarted')} <ArrowRight size={18} />
-            </Link>
-            <Link to="/parent" className="btn-secondary px-6 py-3 text-base">
+            </a>
+            <a href="/parent" className="btn-secondary px-6 py-3 text-base">
               {t('landing.hero.cta.parent')}
-            </Link>
+            </a>
           </div>
         </div>
       </section>
