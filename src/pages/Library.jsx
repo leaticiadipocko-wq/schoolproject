@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import toast from 'react-hot-toast'
-import { Search, BookOpen, User, Calendar, ArrowLeft, Plus, X, CheckCircle, Clock, AlertTriangle } from 'lucide-react'
+import { Search, BookOpen, Plus, X, CheckCircle, Clock, AlertTriangle, Bell } from 'lucide-react'
 import PageHeader from '@/components/ui/PageHeader'
 import { useAuth } from '@/context/AuthContext'
 import { useData } from '@/context/DataContext'
@@ -8,7 +8,7 @@ import { useLang } from '@/context/LanguageContext'
 
 export default function Library() {
   const { user } = useAuth()
-  const { libraryBooks, borrowings, borrowBook, returnBook, addLibraryBook } = useData()
+  const { libraryBooks, borrowings, borrowBook, returnBook, addLibraryBook, reservations = [] } = useData()
   const { lang } = useLang()
   const [search, setSearch] = useState('')
   const [tab, setTab] = useState('catalog')
@@ -18,10 +18,11 @@ export default function Library() {
   const filtered = libraryBooks.filter(b =>
     !search.trim() || b.title.toLowerCase().includes(search.toLowerCase()) ||
     b.author.toLowerCase().includes(search.toLowerCase()) ||
-    b.isbn.includes(search)
+    (b.isbn || '').includes(search)
   )
 
   const myBorrowings = borrowings.filter(b => b.userId === user?.uid)
+  const myReservations = reservations.filter(r => r.userId === user?.uid)
 
   const handleBorrow = async (book) => {
     try {
@@ -29,6 +30,24 @@ export default function Library() {
       toast.success(`Borrowed "${book.title}"`)
     } catch (e) {
       toast.error(e.message)
+    }
+  }
+
+  const handleReserve = (book) => {
+    if (window.confirm(`Reserve "${book.title}"? You'll be notified when a copy becomes available.`)) {
+      const r = {
+        id: `res-${Date.now()}`,
+        bookId: book.id,
+        bookTitle: book.title,
+        userId: user?.uid,
+        userName: user?.name,
+        reservedAt: new Date().toISOString(),
+        status: 'waiting',
+      }
+      const existing = [...(typeof window.__reservations !== 'undefined' ? window.__reservations : [])]
+      existing.push(r)
+      window.__reservations = existing
+      toast.success(`"${book.title}" reserved! We'll notify you when available.`)
     }
   }
 
@@ -50,11 +69,15 @@ export default function Library() {
         ) : null}
       />
 
-      <div className="flex gap-1 bg-ink-100 rounded-xl p-1 w-fit">
-        {['catalog', 'borrowed'].map(t => (
-          <button key={t} onClick={() => setTab(t)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === t ? 'bg-white shadow-soft text-ink-900' : 'text-ink-500 hover:text-ink-700'}`}
-          >{t === 'catalog' ? (lang === 'en' ? 'Catalog' : 'Catalogue') : (lang === 'en' ? 'My Borrowings' : 'Mes emprunts')}</button>
+      <div className="flex gap-1 bg-ink-100 rounded-xl p-1 w-fit flex-wrap">
+        {[
+          { id:'catalog', labelEn:'Catalog', labelFr:'Catalogue' },
+          { id:'borrowed', labelEn:'My Borrowings', labelFr:'Mes emprunts' },
+          { id:'reserved', labelEn:'Reservations', labelFr:'Réservations' },
+        ].map(t => (
+          <button key={t.id} onClick={() => setTab(t.id)}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition ${tab === t.id ? 'bg-white shadow-soft text-ink-900' : 'text-ink-500 hover:text-ink-700'}`}
+          >{lang === 'en' ? t.labelEn : t.labelFr}</button>
         ))}
       </div>
 
@@ -84,11 +107,15 @@ export default function Library() {
                     </span>
                     <span className="text-ink-400">{book.category}</span>
                   </div>
-                  <button
-                    onClick={() => handleBorrow(book)}
-                    disabled={book.available < 1}
-                    className="text-xs px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium hover:bg-brand-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
-                  >Borrow</button>
+                  {book.available > 0 ? (
+                    <button onClick={() => handleBorrow(book)}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-brand-600 text-white font-medium hover:bg-brand-700 transition"
+                    >Borrow</button>
+                  ) : (
+                    <button onClick={() => handleReserve(book)}
+                      className="text-xs px-3 py-1.5 rounded-lg bg-amber-600 text-white font-medium hover:bg-amber-700 transition"
+                    ><Bell size={12} className="inline mr-1" />Reserve</button>
+                  )}
                 </div>
               </div>
             ))}
@@ -123,6 +150,31 @@ export default function Library() {
               </div>
             )
           })}
+        </div>
+      )}
+
+      {tab === 'reserved' && (
+        <div className="space-y-3">
+          {myReservations.length === 0 ? (
+            <div className="card text-center py-12 text-ink-500">
+              <Bell size={40} className="mx-auto text-ink-300 mb-3" />
+              <p>{lang === 'en' ? 'No reservations.' : 'Aucune réservation.'}</p>
+              <p className="text-xs text-ink-400 mt-2">{lang === 'en' ? 'Reserve a book when all copies are borrowed.' : 'Réservez un livre quand tous les exemplaires sont empruntés.'}</p>
+            </div>
+          ) : myReservations.map(r => (
+            <div key={r.id} className="card-hover flex items-center gap-4">
+              <div className="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <Bell size={20} />
+              </div>
+              <div className="flex-1">
+                <div className="font-medium text-sm">{r.bookTitle}</div>
+                <div className="text-xs text-ink-500">
+                  Reserved {new Date(r.reservedAt).toLocaleDateString()} · Status: <span className="font-medium text-amber-700">Waiting</span>
+                </div>
+                <div className="text-[11px] text-ink-400 mt-0.5">We'll notify you when a copy is available</div>
+              </div>
+            </div>
+          ))}
         </div>
       )}
 

@@ -5,8 +5,15 @@ import { useData } from '@/context/DataContext'
 import { useLang } from '@/context/LanguageContext'
 import {
   Send, Search, ArrowLeft, Phone, Video, MoreVertical,
-  Check, CheckCheck, User as UserIcon, Users, Plus, X, MessageCircle,
+  Check, CheckCheck, User as UserIcon, Users, Plus, X, MessageCircle, GraduationCap,
 } from 'lucide-react'
+
+const ROLE_BADGES = {
+  student:  { label: 'Student',  class: 'bg-blue-100 text-blue-700' },
+  lecturer: { label: 'Lecturer', class: 'bg-amber-100 text-amber-700' },
+  staff:    { label: 'Staff',    class: 'bg-purple-100 text-purple-700' },
+  admin:    { label: 'Admin',    class: 'bg-brand-100 text-brand-700' },
+}
 
 function formatTime(ts) {
   const d = new Date(ts)
@@ -269,7 +276,22 @@ export default function Chat() {
                     {formatTime(latestTimestamp(conv))}
                   </span>
                 </div>
-                <div className="flex items-center gap-1 mt-0.5">
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  {conv.type === 'group' && conv.participants && (
+                    <div className="flex items-center gap-1 text-[10px] text-ink-500">
+                      {Object.entries(
+                        conv.participants.reduce((acc, p) => {
+                          const role = ROLE_BADGES[p.role] ? p.role : 'student'
+                          acc[role] = (acc[role] || 0) + 1
+                          return acc
+                        }, {})
+                      ).map(([role, count]) => (
+                        <span key={role} className={`${ROLE_BADGES[role]?.class || 'bg-ink-100 text-ink-600'} px-1.5 py-0.5 rounded-full`}>
+                          {count}{role === 'student' ? 'S' : role === 'lecturer' ? 'L' : role === 'staff' ? 'St' : 'A'}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                   <span className="text-xs text-ink-500 truncate flex-1">
                     {latestMessage(conv)}
                   </span>
@@ -279,6 +301,11 @@ export default function Chat() {
                     </span>
                   )}
                 </div>
+                {conv.type === 'direct' && conv.participants?.find(p => p.uid !== user?.uid)?.role && (
+                  <span className={`text-[10px] inline-block mt-0.5 px-1.5 py-0.5 rounded-full ${ROLE_BADGES[conv.participants.find(p => p.uid !== user?.uid).role]?.class || 'bg-ink-100 text-ink-600'}`}>
+                    {ROLE_BADGES[conv.participants.find(p => p.uid !== user?.uid).role]?.label || conv.participants.find(p => p.uid !== user?.uid).role}
+                  </span>
+                )}
               </div>
             </button>
           ))}
@@ -326,7 +353,22 @@ export default function Chat() {
                 <div className="font-medium text-sm truncate">{convName}</div>
                 <div className="text-[11px] text-ink-500">
                   {activeConv.type === 'group'
-                    ? `${activeConv.participants?.length || 0} participants`
+                    ? (
+                      <span className="flex items-center gap-1.5 flex-wrap">
+                        <span>{activeConv.participants?.length || 0} participants</span>
+                        {Object.entries(
+                          activeConv.participants.reduce((acc, p) => {
+                            const role = ROLE_BADGES[p.role] ? p.role : 'guest'
+                            acc[role] = (acc[role] || 0) + 1
+                            return acc
+                          }, {})
+                        ).map(([role, count]) => (
+                          <span key={role} className={`${ROLE_BADGES[role]?.class || 'bg-ink-100 text-ink-600'} px-1.5 py-0.5 rounded-full text-[10px]`}>
+                            {count} {ROLE_BADGES[role]?.label || role}
+                          </span>
+                        ))}
+                      </span>
+                    )
                     : formatLastSeen(activeConv.updatedAt)
                   }
                 </div>
@@ -403,8 +445,13 @@ export default function Chat() {
                       <div className={`max-w-[85%] sm:max-w-[75%] ${isMe ? 'order-1' : 'order-2'}`}>
                         {/* Sender name for group messages */}
                         {!isMe && activeConv.type === 'group' && showAvatar && (
-                          <div className="text-[11px] font-medium text-brand-700 mb-0.5 ml-1">
-                            {msg.sender?.name}
+                          <div className="text-[11px] font-medium mb-0.5 ml-1 flex items-center gap-1">
+                            <span className="text-brand-700">{msg.sender?.name}</span>
+                            {msg.sender?.role && ROLE_BADGES[msg.sender.role] && (
+                              <span className={`${ROLE_BADGES[msg.sender.role].class} px-1.5 py-0.5 rounded-full text-[9px] font-normal`}>
+                                {ROLE_BADGES[msg.sender.role].label}
+                              </span>
+                            )}
                           </div>
                         )}
                         <div className={`relative px-3 py-2 text-sm leading-relaxed shadow-sm ${
@@ -522,8 +569,15 @@ export default function Chat() {
                         </div>
                       )}
                       <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium truncate">{u.name}</div>
-                        <div className="text-[11px] text-ink-500">{(u.role || u.role || '')}{u.email ? ` · ${u.email}` : ''}</div>
+                        <div className="text-sm font-medium truncate flex items-center gap-1">
+                          {u.name}
+                          {u.role && ROLE_BADGES[u.role] && (
+                            <span className={`${ROLE_BADGES[u.role].class} px-1.5 py-0.5 rounded-full text-[9px] font-normal`}>
+                              {ROLE_BADGES[u.role].label}
+                            </span>
+                          )}
+                        </div>
+                        <div className="text-[11px] text-ink-500">{u.email || ''}</div>
                       </div>
                       {selectedUsers.find(p => p.uid === u.uid) && (
                         <Check size={16} className="text-brand-600 shrink-0" />

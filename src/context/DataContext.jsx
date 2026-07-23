@@ -63,6 +63,20 @@ export function DataProvider({ children }) {
         unread: 0,
         updatedAt: new Date(Date.now() - 86400000).toISOString(),
       },
+      {
+        id: 'conv-5',
+        type: 'group',
+        name: 'Academic Committee — SWE Programme',
+        participants: [
+          { uid: 'stu-001', name: 'Chituh Innocentia', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Innocentia' },
+          { uid: 'stu-002', name: 'Nkwenti Deshnic', role: 'student', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Deshnic' },
+          { uid: 'lec-001', name: 'Mr Nkoma Ngouloure', role: 'lecturer', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Nkoma' },
+          { uid: 'sta-001', name: 'Mrs. Linda Foncha', role: 'staff', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Linda' },
+          { uid: 'adm-001', name: 'Prof. James Murdza', role: 'admin', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=James' },
+        ],
+        unread: 3,
+        updatedAt: new Date(Date.now() - 120000).toISOString(),
+      },
     ],
     messages: [
       { id: 'msg-1', conversationId: 'conv-1', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Good morning Mr Nkoma! I had a question about the Compiler Design assignment.', timestamp: new Date(Date.now() - 3600000).toISOString(), read: true },
@@ -87,6 +101,14 @@ export function DataProvider({ children }) {
       { id: 'msg-20', conversationId: 'conv-3', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'We are already a group of 3! Innocentia, Deshnic and I.', timestamp: new Date(Date.now() - 600000).toISOString(), read: false },
       { id: 'msg-21', conversationId: 'conv-4', sender: { uid: 'stu-005', name: 'Winner Chinuere' }, text: 'Hey Innocentia! Are you coming to the study group tonight?', timestamp: new Date(Date.now() - 90000000).toISOString(), read: true },
       { id: 'msg-22', conversationId: 'conv-4', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Hi Winner! Yes I will be there at 6pm in the library.', timestamp: new Date(Date.now() - 86400000).toISOString(), read: true },
+      { id: 'msg-23', conversationId: 'conv-5', sender: { uid: 'sta-001', name: 'Mrs. Linda Foncha' }, text: 'Attention everyone: The SWE Programme Academic Committee meeting is scheduled for Friday 10am in Conference Room B. Please confirm your availability.', timestamp: new Date(Date.now() - 7200000).toISOString(), read: true },
+      { id: 'msg-24', conversationId: 'conv-5', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'Noted, Mrs. Foncha. I will be there. I also have the updated curriculum proposal ready for review.', timestamp: new Date(Date.now() - 6000000).toISOString(), read: true },
+      { id: 'msg-25', conversationId: 'conv-5', sender: { uid: 'adm-001', name: 'Prof. James Murdza' }, text: 'Excellent. Linda, please circulate the agenda beforehand. Mr Nkoma, please send me the proposal by Wednesday so I can review it before the meeting.', timestamp: new Date(Date.now() - 5400000).toISOString(), read: true },
+      { id: 'msg-26', conversationId: 'conv-5', sender: { uid: 'stu-001', name: 'Chituh Innocentia' }, text: 'Good morning everyone! As student representative, I would like to raise the issue of lab equipment availability for the Design Project. Many students are struggling without adequate hardware.', timestamp: new Date(Date.now() - 3600000).toISOString(), read: true },
+      { id: 'msg-27', conversationId: 'conv-5', sender: { uid: 'adm-001', name: 'Prof. James Murdza' }, text: 'Thank you Innocentia. That is a valid concern. Linda, please check the inventory and budget for additional workstations. We can discuss this at Friday meeting.', timestamp: new Date(Date.now() - 2400000).toISOString(), read: true },
+      { id: 'msg-28', conversationId: 'conv-5', sender: { uid: 'sta-001', name: 'Mrs. Linda Foncha' }, text: 'Understood Prof. I will prepare a report on current lab inventory and submit it by Thursday. I will also coordinate with the IT department.', timestamp: new Date(Date.now() - 1200000).toISOString(), read: true },
+      { id: 'msg-29', conversationId: 'conv-5', sender: { uid: 'stu-002', name: 'Nkwenti Deshnic' }, text: 'Thank you everyone for taking this seriously. It will really help our batch.', timestamp: new Date(Date.now() - 600000).toISOString(), read: false },
+      { id: 'msg-30', conversationId: 'conv-5', sender: { uid: 'lec-001', name: 'Mr Nkoma Ngouloure' }, text: 'I second the students request. The Design Project requires dedicated lab time and our current setup is insufficient for the class size.', timestamp: new Date(Date.now() - 120000).toISOString(), read: false },
     ],
     results: [
       { id: 1, studentId: 'IUGET/2024/SWE/0001', studentName: 'John Doe', course: 'Mathematics', semester: 'Semester 1', ca: 28, exam: 65, total: 93, grade: 'A' },
@@ -120,6 +142,8 @@ export function DataProvider({ children }) {
     examSeating: {},
     alumni: [],
     events: [],
+    leaves: [],
+    notificationPrefs: { email: true, sms: false, inApp: true },
     campus: 'bonaberi',
   })
   const [loading, setLoading] = useState(false)
@@ -1011,6 +1035,34 @@ export function DataProvider({ children }) {
     return alumni
   }, [])
 
+  // ── Leave Management ────────────────────────────────────────────
+  const submitLeave = useCallback((data) => {
+    const leave = {
+      id: `lv-${Date.now()}`,
+      ...data,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    }
+    setStore(s => ({ ...s, leaves: [leave, ...s.leaves] }))
+    return leave
+  }, [])
+
+  const approveLeave = useCallback((id) => {
+    setStore(s => ({ ...s, leaves: s.leaves.map(l => l.id === id ? { ...l, status: 'approved' } : l) }))
+    toast.success('Leave approved')
+  }, [])
+
+  const rejectLeave = useCallback((id) => {
+    setStore(s => ({ ...s, leaves: s.leaves.map(l => l.id === id ? { ...l, status: 'rejected' } : l) }))
+    toast.success('Leave rejected')
+  }, [])
+
+  // ── Notification Preferences ────────────────────────────────────
+  const updateNotificationPrefs = useCallback((prefs) => {
+    setStore(s => ({ ...s, notificationPrefs: { ...s.notificationPrefs, ...prefs } }))
+    toast.success('Notification preferences updated')
+  }, [])
+
   const resetStore = useCallback(() => {
     localStorage.removeItem('siarm.store.v2')
     setStore(initialState)
@@ -1041,6 +1093,8 @@ export function DataProvider({ children }) {
     submitComplaint, updateComplaintStatus,
     addEvent, rsvpEvent,
     registerAlumni,
+    submitLeave, approveLeave, rejectLeave,
+    updateNotificationPrefs,
     resetStore,
   }
 
@@ -1151,6 +1205,11 @@ const initialState = {
     'PHY101': { venue:'Hall B', date:'2026-06-17', time:'08:00 - 11:00', seat:'B-018' },
   },
   alumni: [],
+  leaves: [
+    { id:'lv-1', userId:'lec-001', userName:'Dr. Nkengafac Mfortaw', type:'annual', reason:'Family event', startDate:'2026-07-15', endDate:'2026-07-22', contact:'670000002', status:'pending', createdAt:new Date(Date.now()-86400000).toISOString() },
+    { id:'lv-2', userId:'stf-001', userName:'Veronica Munteng', type:'sick', reason:'Medical appointment', startDate:'2026-07-10', endDate:'2026-07-11', contact:'670000003', status:'approved', createdAt:new Date(Date.now()-172800000).toISOString() },
+  ],
+  notificationPrefs: { email: true, sms: false, inApp: true },
   events: [
     { id:'ev-1', title:'End of Semester Exams', date:'2026-06-15', description:'Final examinations for Semester 2 begin.', type:'academic' },
     { id:'ev-2', title:'Project Defense', date:'2026-07-10', description:'Level 3 student project presentations.', type:'academic' },

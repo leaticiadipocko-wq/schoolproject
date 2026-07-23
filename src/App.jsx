@@ -54,6 +54,7 @@ import Events         from '@/pages/Events'
 import Alumni         from '@/pages/Alumni'
 import ExamSeating    from '@/pages/ExamSeating'
 import CampusOverview from '@/pages/CampusOverview'
+import LeaveManagement from '@/pages/LeaveManagement'
 
 // Admin pages
 import AdminDashboard from '@/pages/admin/AdminDashboard'
@@ -185,6 +186,7 @@ export default function App() {
         <Route path="audit"         element={<AuditLog />} />
         <Route path="minesup"       element={<MinesupReports />} />
         <Route path="export"        element={<DataExport />} />
+        <Route path="leave"         element={<LeaveManagement />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />
@@ -220,6 +222,7 @@ export default function App() {
         <Route path="courses"       element={<CourseManagement />} />
         <Route path="departments"   element={<DepartmentFaculty />} />
         <Route path="payroll"       element={<PayrollManagement />} />
+        <Route path="leave"         element={<LeaveManagement />} />
         <Route path="profile"       element={<Profile />} />
         <Route path="help"          element={<Help />} />
         <Route path="offline"       element={<OfflineStatus />} />

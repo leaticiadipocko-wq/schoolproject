@@ -4,7 +4,7 @@ import {
   UserCog, Settings, Wallet, IdCard, UserPlus, Banknote, GraduationCap,
   WifiOff, MapPin, Sparkles, ClipboardList, MessageSquare, Activity,
   Archive, Globe, MessageCircle, Library, AlertTriangle, CalendarDays,
-  GraduationCap as GraduationIcon, Map, Building2,
+  GraduationCap as GraduationIcon, Map, Building2, Bell, Umbrella,
 } from 'lucide-react'
 
 export const STUDENT_NAV = [
@@ -133,6 +133,12 @@ export const STAFF_NAV = [
     ],
   },
   {
+    title: 'HR',
+    links: [
+      { to: '/staff/leave',         label: 'Leave Management',  icon: Umbrella },
+    ],
+  },
+  {
     title: 'Services',
     links: [
       { to: '/staff/library',       label: 'Library',         icon: Library },
@@ -179,6 +185,12 @@ export const ADMIN_NAV = [
       { to: '/staff/attendance',    label: 'Attendance',    icon: ClipboardCheck },
       { to: '/staff/grades',        label: 'Grades',        icon: FileSpreadsheet },
       { to: '/staff/complaints',    label: 'Complaints',    icon: AlertTriangle },
+    ],
+  },
+  {
+    title: 'HR',
+    links: [
+      { to: '/admin/leave',         label: 'Leave Management', icon: Umbrella },
     ],
   },
   {
